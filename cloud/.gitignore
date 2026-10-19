@@ -1,0 +1,59 @@
+# =========================
+#  Python
+# =========================
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+.hypothesis/
+.pytest_cache/
+htmlcov/
+.coverage
+*.sqlite3
+
+# =========================
+#  Node.js / Frontend
+# =========================
+node_modules/
+.npm-cache/
+frontend/dist/
+
+# =========================
+#  Build & Runtime
+# =========================
+backend/logs/*.log
+backend/uploads/*
+!backend/uploads/.gitkeep
+!backend/logs/.gitkeep
+backend/*.db
+
+# =========================
+#  Secrets & Certificates
+# =========================
+.env
+!.env.example
+!frontend/.env.production
+*.pem
+
+# =========================
+#  Tunnel / Deploy Binaries
+# =========================
+deploy/cloudflared*
+deploy/cpolar*
+deploy/frpc*
+deploy/*.log
+cloudflared*
+cpolar*
+frpc*
+*.log
+*.bak_*
+test_file_upload.py
+
+# =========================
+#  IDE & OS
+# =========================
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

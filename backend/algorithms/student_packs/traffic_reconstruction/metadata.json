@@ -1,0 +1,18 @@
+{
+  "task_id": "traffic_reconstruction",
+  "module_id": "traffic_reconstruction",
+  "task_name": "交通流重构自研算法",
+  "input_files": [
+    "test_observed_counts.csv",
+    "input_link.csv",
+    "input_node.csv",
+    "input_zone.csv"
+  ],
+  "submission_columns": [
+    "link_id",
+    "time_interval",
+    "simulated_link_count"
+  ],
+  "baseline_file": "baseline_reconstruction.csv",
+  "primary_metric": "rmse_to_observed"
+}

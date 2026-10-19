@@ -1,0 +1,7 @@
+{
+    "algorithm": "BO",
+    "saturation_level": 90,
+    "cycle_time": 105,
+    "green_ratio": 60,
+    "description": "BO算法配置 - 贝叶斯优化算法，高效参数搜索"
+}

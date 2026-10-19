@@ -1,0 +1,92 @@
+# 综合交通实验教学平台 - Docker Compose 编排
+# 
+# 架构说明:
+#   用户 → 前端(5173) → 教学后端(8000) → 算法代理 → Docker容器内的算法服务
+#   算法容器只暴露给教学后端，不直接暴露给用户
+#
+# 使用方法:
+#   构建: docker-compose build
+#   启动: docker-compose up -d
+#   停止: docker-compose down
+#   查看日志: docker-compose logs -f
+
+version: '3.8'
+
+services:
+  # ============================================
+  # 算法后端服务（Docker封装，源码不暴露）
+  # ============================================
+  
+  # 多源数据融合算法
+  algo-fusion:
+    build:
+      context: ..
+      dockerfile: docker/algorithms/Dockerfile.fusion
+    container_name: algo-fusion
+    restart: unless-stopped
+    networks:
+      - algo-network
+    # 不暴露端口到宿主机，只在内部网络可访问
+    expose:
+      - "5000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 交通流重构算法
+  algo-reconstruction:
+    build:
+      context: ..
+      dockerfile: docker/algorithms/Dockerfile.reconstruction
+    container_name: algo-reconstruction
+    restart: unless-stopped
+    networks:
+      - algo-network
+    expose:
+      - "5001"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5001/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 交通流预测算法
+  algo-prediction:
+    build:
+      context: ..
+      dockerfile: docker/algorithms/Dockerfile.prediction
+    container_name: algo-prediction
+    restart: unless-stopped
+    networks:
+      - algo-network
+    expose:
+      - "5002"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5002/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 三层级协同优化算法
+  algo-optimization:
+    build:
+      context: ..
+      dockerfile: docker/algorithms/Dockerfile.optimization
+    container_name: algo-optimization
+    restart: unless-stopped
+    networks:
+      - algo-network
+    expose:
+      - "5003"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5003/api/three-level-optimization/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  algo-network:
+    driver: bridge
+    name: algo-network

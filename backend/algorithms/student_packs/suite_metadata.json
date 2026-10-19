@@ -1,0 +1,192 @@
+{
+  "tasks": {
+    "traffic_prediction": {
+      "task_id": "traffic_flow_prediction_lag5",
+      "task_name": "交通流短时预测学生自研算法任务",
+      "created_by": "student_algorithm_pack.py",
+      "source_data": "Traffic flow data.csv",
+      "target": "target_total_flow",
+      "prediction_column": "prediction_total_flow",
+      "id_column": "sample_id",
+      "time_step": 5,
+      "train_ratio": 0.8,
+      "train_size": 2300,
+      "test_size": 575,
+      "feature_columns": [
+        "sample_id",
+        "datetime",
+        "hour",
+        "minute",
+        "day_of_week",
+        "speed",
+        "quality_index",
+        "day_type_id",
+        "flow_lag_5",
+        "flow_lag_4",
+        "flow_lag_3",
+        "flow_lag_2",
+        "flow_lag_1"
+      ],
+      "submission_columns": [
+        "sample_id",
+        "prediction_total_flow"
+      ],
+      "baseline": {
+        "name": "decision_tree_lag5",
+        "model": "DecisionTreeRegressor(max_depth=10, random_state=42)",
+        "feature_columns": [
+          "flow_lag_5",
+          "flow_lag_4",
+          "flow_lag_3",
+          "flow_lag_2",
+          "flow_lag_1"
+        ],
+        "metrics": {
+          "mae": 79.6619,
+          "rmse": 118.4984,
+          "mape": 10.7515,
+          "r2": 0.937576
+        }
+      },
+      "evaluation": {
+        "primary_metric": "rmse",
+        "smaller_is_better": [
+          "mae",
+          "rmse",
+          "mape"
+        ],
+        "larger_is_better": [
+          "r2"
+        ]
+      },
+      "suite_task_id": "traffic_prediction"
+    },
+    "data_fusion": {
+      "task_id": "data_fusion",
+      "module_id": "data_fusion",
+      "task_name": "多源感知结果融合自研算法",
+      "input_files": [
+        "train_features.csv",
+        "test_features.csv"
+      ],
+      "submission_columns": [
+        "frame_id",
+        "class_name",
+        "prediction_fused_prob"
+      ],
+      "baseline_file": "baseline_predictions.csv",
+      "reference_note": "无人工标注真值时，以平台贝叶斯融合结果作为可重复参考基线。",
+      "train_size": 375,
+      "test_size": 375
+    },
+    "signal_optimization": {
+      "task_id": "signal_optimization",
+      "module_id": "signal_optimization",
+      "task_name": "单点交叉口信号配时自研算法",
+      "input_files": [
+        "scenario_config.json"
+      ],
+      "submission_columns": [
+        "cycle",
+        "phase_id",
+        "green_time"
+      ],
+      "baseline_file": "baseline_solution.csv",
+      "primary_metric": "green_time_mae",
+      "constraints": {
+        "cycle_min": 40,
+        "cycle_max": 180,
+        "green_min": 10,
+        "green_max": 80
+      }
+    },
+    "path_guidance": {
+      "task_id": "path_guidance",
+      "module_id": "path_guidance",
+      "task_name": "SiouxFalls路网路径诱导自研算法",
+      "input_files": [
+        "network_edges.csv",
+        "od_pairs.csv"
+      ],
+      "submission_columns": [
+        "origin",
+        "destination",
+        "path",
+        "total_cost"
+      ],
+      "baseline_file": "baseline_paths.csv",
+      "primary_metric": "cost_ratio_mean"
+    },
+    "traffic_reconstruction": {
+      "task_id": "traffic_reconstruction",
+      "module_id": "traffic_reconstruction",
+      "task_name": "交通流重构自研算法",
+      "input_files": [
+        "test_observed_counts.csv",
+        "input_link.csv",
+        "input_node.csv",
+        "input_zone.csv"
+      ],
+      "submission_columns": [
+        "link_id",
+        "time_interval",
+        "simulated_link_count"
+      ],
+      "baseline_file": "baseline_reconstruction.csv",
+      "primary_metric": "rmse_to_observed"
+    },
+    "vehicle_speed_control": {
+      "task_id": "vehicle_speed_control",
+      "module_id": "vehicle_speed_control",
+      "task_name": "车速控制算法结果对比",
+      "input_files": [
+        "scenario.json"
+      ],
+      "submission_columns": [
+        "algorithm",
+        "average_delay",
+        "avg_speed",
+        "speed_std",
+        "avg_accel",
+        "throughput"
+      ],
+      "baseline_file": "baseline_metrics.csv",
+      "primary_metric": "delay_delta",
+      "note": "学生可在外部环境运行控制算法后提交同格式指标；平台侧统一比较指标。"
+    },
+    "coordination_control": {
+      "task_id": "coordination_control",
+      "module_id": "three_level_control,multi_level_coordination,hierarchical_control",
+      "task_name": "三层级/多层级协调控制指标对比",
+      "input_files": [
+        "baseline_none.json",
+        "baseline_local.json",
+        "baseline_full.json"
+      ],
+      "submission_columns": [
+        "step",
+        "avg_speed",
+        "waiting_count"
+      ],
+      "baseline_file": "baseline_full_timeseries.csv",
+      "primary_metric": "avg_speed_rmse_to_full_baseline"
+    }
+  },
+  "catalog": {
+    "included_offline_tasks": [
+      "traffic_prediction",
+      "data_fusion",
+      "signal_optimization",
+      "path_guidance",
+      "traffic_reconstruction",
+      "vehicle_speed_control",
+      "coordination_control"
+    ],
+    "format_only_or_external_dependency": {
+      "data_collection": "依赖YOLO/视频输入，建议提交 detection_results.json 或 trajectories.csv 后由教师按检测指标评测。",
+      "carla_simulation": "依赖CARLA服务与地图环境，建议提交 trajectory.csv、collision_count、completion_rate 等指标。",
+      "vehicle_dev_control": "依赖车规级控制/硬件或CARLA环境，纳入CARLA同类指标规范。",
+      "simulation": "作为仿真承载模块，不单独作为学生算法题目；由信号、路径、速度、协调任务复用。"
+    }
+  }
+}

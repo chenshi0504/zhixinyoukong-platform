@@ -1,0 +1,30 @@
+{
+  "algorithm": "MPC",
+  "scenario": "模型预测车速控制",
+  "objective": "优化车速轨迹",
+  "parameters": {
+    "prediction_horizon": 10,
+    "control_horizon": 5,
+    "speed_min": 20,
+    "speed_max": 60,
+    "acceleration_max": 2.5,
+    "deceleration_max": 3.0,
+    "optimization_weight": 0.5,
+    "response_time": 200,
+    "safety_threshold": 0.8
+  },
+  "vehicle": {
+    "type": "sedan",
+    "length": 4.5,
+    "max_speed": 120
+  },
+  "road_segment": {
+    "length": 2000,
+    "speed_limits": [
+      30,
+      50,
+      60,
+      40
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": "coordination_control",
+  "module_id": "three_level_control,multi_level_coordination,hierarchical_control",
+  "task_name": "三层级/多层级协调控制指标对比",
+  "input_files": [
+    "baseline_none.json",
+    "baseline_local.json",
+    "baseline_full.json"
+  ],
+  "submission_columns": [
+    "step",
+    "avg_speed",
+    "waiting_count"
+  ],
+  "baseline_file": "baseline_full_timeseries.csv",
+  "primary_metric": "avg_speed_rmse_to_full_baseline"
+}

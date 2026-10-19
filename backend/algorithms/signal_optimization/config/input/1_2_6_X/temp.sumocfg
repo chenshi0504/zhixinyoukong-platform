@@ -1,0 +1,40 @@
+<configuration>
+    <input>
+        <net-file value="D:\chenshi\&#26234;&#20449;&#20248;&#25511;_&#38754;&#21521;&#36710;&#36335;&#20113;&#19968;&#20307;&#21270;&#30340;&#32508;&#21512;&#20132;&#36890;&#23454;&#39564;&#24179;&#21488;\backend\algorithms\signal_optimization\config\siouxfalls.net.xml" />
+        <route-files value="D:\chenshi\&#26234;&#20449;&#20248;&#25511;_&#38754;&#21521;&#36710;&#36335;&#20113;&#19968;&#20307;&#21270;&#30340;&#32508;&#21512;&#20132;&#36890;&#23454;&#39564;&#24179;&#21488;\backend\algorithms\signal_optimization\config\input\1_2_6_X\siouxfalls.rou.xml" />
+    </input>
+    
+    <time>
+        <begin value="0" />
+        
+    </time>
+    
+    <processing>
+        <ignore-route-errors value="false" />
+        <time-to-teleport value="300" />
+        <max-depart-delay value="-1" />
+        <routing-algorithm value="dijkstra" />
+        <step-length value="1.0" />
+        <collision.action value="warn" />
+    </processing>
+    
+    <output>
+        <summary-output value="D:\chenshi\&#26234;&#20449;&#20248;&#25511;_&#38754;&#21521;&#36710;&#36335;&#20113;&#19968;&#20307;&#21270;&#30340;&#32508;&#21512;&#20132;&#36890;&#23454;&#39564;&#24179;&#21488;\backend\algorithms\signal_optimization\output\1_2_6_X\summary.xml" />
+        <tripinfo-output value="D:\chenshi\&#26234;&#20449;&#20248;&#25511;_&#38754;&#21521;&#36710;&#36335;&#20113;&#19968;&#20307;&#21270;&#30340;&#32508;&#21512;&#20132;&#36890;&#23454;&#39564;&#24179;&#21488;\backend\algorithms\signal_optimization\output\1_2_6_X\tripinfo.xml" />
+        <edgedata-output value="D:\chenshi\&#26234;&#20449;&#20248;&#25511;_&#38754;&#21521;&#36710;&#36335;&#20113;&#19968;&#20307;&#21270;&#30340;&#32508;&#21512;&#20132;&#36890;&#23454;&#39564;&#24179;&#21488;\backend\algorithms\signal_optimization\output\1_2_6_X\edgedata.xml" />
+    </output>
+    
+    <report>
+        <verbose value="false" />
+        <no-step-log value="true" />
+        <duration-log.statistics value="true" />
+        <no-warnings value="false" />
+    </report>
+    
+    <gui_only>
+        <delay value="0" />
+        <start value="true" />
+        <quit-on-end value="true" />
+        <gui-settings-file value="D:\chenshi\&#26234;&#20449;&#20248;&#25511;_&#38754;&#21521;&#36710;&#36335;&#20113;&#19968;&#20307;&#21270;&#30340;&#32508;&#21512;&#20132;&#36890;&#23454;&#39564;&#24179;&#21488;\backend\algorithms\signal_optimization\config\osm.view.xml" />
+    </gui_only>
+</configuration>

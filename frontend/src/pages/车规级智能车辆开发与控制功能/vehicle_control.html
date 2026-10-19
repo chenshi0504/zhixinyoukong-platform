@@ -1,0 +1,399 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智控 HIL - 车规级智能车辆开发与控制</title>
+    <link rel="stylesheet" href="vehicle_control.css">
+    <link rel="stylesheet" href="../../components/chat-log-widget.css">
+</head>
+<body>
+    <main class="workspace theme-day">
+        <aside class="sidebar">
+            <div class="sidebar-title">
+                <div class="sidebar-mark">HIL</div>
+                <div>
+                    <strong>智控 HIL</strong>
+                    <span>Digital Twin Fleet</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="HIL 功能视图">
+                <button class="view-tab active" data-view="pointcloud" type="button">
+                    <span class="nav-icon">PC</span>
+                    经管学院点云底图场景
+                </button>
+                <button class="view-tab" data-view="overview" type="button">
+                    <span class="nav-icon">MP</span>
+                    总览地图
+                </button>
+                <button class="view-tab" data-view="fleet" type="button">
+                    <span class="nav-icon">CAR</span>
+                    小车管理
+                </button>
+                <button class="view-tab" data-view="commands" type="button">
+                    <span class="nav-icon">CMD</span>
+                    指令记录
+                </button>
+            </nav>
+
+            <div class="sidebar-status">
+                <div>
+                    <span>服务器</span>
+                    <strong id="serverStatus">检查中...</strong>
+                </div>
+                <div>
+                    <span>当前状态</span>
+                    <strong id="statusValue">就绪</strong>
+                </div>
+                <div>
+                    <span>地图</span>
+                    <strong>DLUT-SEM</strong>
+                </div>
+            </div>
+        </aside>
+
+        <section class="content">
+            <header class="topbar glass-card">
+                <div>
+                    <p class="eyebrow">大连理工大学经管学院 · HIL 实车/虚拟车统一控制</p>
+                    <h1 id="viewTitle">经管学院点云底图场景</h1>
+                </div>
+                <div class="top-actions">
+                    <span class="status-chip live">HIL 资源接口</span>
+                    <button class="btn btn-primary" id="startNativeHilBtn" type="button">启动原生 HIL</button>
+                    <button class="btn btn-secondary" id="openNativeHilBtn" type="button">新页面打开</button>
+                    <button class="btn btn-secondary" id="backBtn" type="button">返回</button>
+                    <button class="btn btn-primary" id="refreshBtn" type="button">刷新</button>
+                </div>
+            </header>
+
+            <section class="teaching-strip glass-card">
+                <strong>教学提示</strong>
+                <span>本页沿用 HIL 项目原有工作流：加载点云底图与路点，选择车辆，启动通信，下发路径/拓扑目标，再在车辆管理与指令记录中观察闭环反馈。</span>
+            </section>
+
+            <section class="native-hil-panel glass-card">
+                <div class="native-hil-head">
+                    <div>
+                        <span class="map-kicker">Native HIL Workbench</span>
+                        <h2>原生 HIL 小车控制界面</h2>
+                        <p>这里直接连接 http://10.8.129.232:5173/%E3%80%81 的最新 HIL Vue 管理台，所有地图、车辆、路径与拓扑操作以原项目为准。</p>
+                    </div>
+                    <div class="native-hil-actions">
+                        <span class="native-status" id="nativeHilStatus">正在检测 HIL 原生服务...</span>
+                        <button class="btn btn-primary" id="startNativeHilBtnInline" type="button">启动/连接</button>
+                    </div>
+                </div>
+                <div class="native-frame-shell">
+                    <iframe id="nativeHilFrame" title="HIL 原生小车控制工作台" loading="lazy"></iframe>
+                </div>
+            </section>
+
+            <section class="view-panel active" id="view-pointcloud">
+                <section class="pointcloud-header glass-card">
+                    <div>
+                        <span class="map-kicker">LiDAR 2D Alignment</span>
+                        <h2>经管学院点云底图场景</h2>
+                    </div>
+                    <div class="pointcloud-header-actions">
+                        <span class="status-chip" id="mapRouteName">SEM_10M_BUILDING_LOOP</span>
+                        <span class="status-chip subtle" id="mapScale">HIL assets loading</span>
+                        <button class="tool-btn active" id="togglePointcloud" title="点云底图" type="button">点云</button>
+                        <button class="tool-btn active" id="toggleRoute" title="导航路线" type="button">路线</button>
+                        <button class="tool-btn active" id="toggleVehicle" title="车辆位置" type="button">车辆</button>
+                    </div>
+                </section>
+
+                <section class="pointcloud-workbench">
+                    <div class="pointcloud-canvas glass-card">
+                        <div class="map-stage" id="mapStage">
+                            <div class="pointcloud-frame" id="pointcloudFrame">
+                                <img class="pointcloud-base-image" id="pointcloudBaseImage" alt="HIL 点云地图">
+                                <svg class="pointcloud-route-layer" id="pointcloudRouteLayer" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+                                <div class="waypoint-layer" id="waypointLayer"></div>
+                                <div class="vehicle-layer" id="vehicleLayer"></div>
+                                <div class="map-overlay top-left">
+                                    <span id="mapName">DLUT-SEM-CAMPUS</span>
+                                    <strong>HIL Pointcloud Workbench</strong>
+                                </div>
+                                <div class="map-overlay bottom-right">
+                                    <span>HIL 原始点云 PNG + 经纬度百分比叠加</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <aside class="pointcloud-command-panel glass-card">
+                            <div class="pointcloud-command-head">
+                                <div>
+                                    <span>MQTT Command</span>
+                                    <strong>路径与车端控制</strong>
+                                </div>
+                            </div>
+                            <div class="pointcloud-command-form">
+                                <label class="form-group">
+                                    <span>目标车辆</span>
+                                    <select id="carSelect" class="form-control"></select>
+                                </label>
+                                <label class="form-group">
+                                    <span>实验路径</span>
+                                    <select id="routeSelect" class="form-control">
+                                        <option value="SEM_10M_BUILDING_LOOP">经管学院 10m 外侧环线</option>
+                                        <option value="NAVIGATION_WAYPOINTS_LATEST">HIL 导航路点 YAML 路线</option>
+                                        <option value="HOLD_POSITION">当前位置保持</option>
+                                    </select>
+                                </label>
+                                <div class="pointcloud-command-row">
+                                    <label class="form-group">
+                                        <span>模式</span>
+                                        <select id="routeMode" class="form-control">
+                                            <option value="REPLACE_ROUTE">替换当前路线</option>
+                                            <option value="APPEND_ROUTE">追加后续任务</option>
+                                        </select>
+                                    </label>
+                                    <label class="form-group">
+                                        <span>速度 m/s</span>
+                                        <input type="number" id="targetSpeed" class="form-control" value="1.2" min="0" max="8" step="0.1">
+                                    </label>
+                                </div>
+                                <div class="speed-display">
+                                    <span class="speed-value" id="speedDisplay">1.2 m/s</span>
+                                    <span class="speed-kmh" id="speedKmh">(4.3 km/h)</span>
+                                </div>
+                                <label class="check-row">
+                                    <input type="checkbox" id="enableMqtt">
+                                    <span>连接真实 MQTT 桥接</span>
+                                </label>
+                                <div class="control-buttons">
+                                    <button class="btn btn-outline step-btn" id="startMqttBtn" type="button">启动 HIL 通信</button>
+                                    <button class="btn btn-primary step-btn" id="sendRouteBtn" type="button">发送路径</button>
+                                    <button class="btn btn-primary step-btn" id="startSimBtn" type="button">启动闭环</button>
+                                    <button class="btn btn-danger step-btn" id="stopSimBtn" type="button">安全停车</button>
+                                    <button class="btn btn-secondary step-btn" id="resetBtn" type="button">重置</button>
+                                </div>
+
+                                <div class="pointcloud-goal-panel">
+                                    <div class="pointcloud-goal-head">
+                                        <span>Topology Goal</span>
+                                        <strong>道路拓扑目标节点</strong>
+                                    </div>
+                                    <div class="pointcloud-command-row">
+                                        <label class="form-group">
+                                            <span>节点 ID</span>
+                                            <input type="number" id="goalNodeInput" class="form-control" value="8" min="0" step="1">
+                                        </label>
+                                        <button class="btn btn-warning" id="sendGoalBtn" type="button">发送节点</button>
+                                    </div>
+                                    <p class="hint-text compact" id="goalStatus">等待下发</p>
+                                </div>
+                            </div>
+                        </aside>
+                    </div>
+
+                    <aside class="pointcloud-side glass-card">
+                        <div class="panel-head">
+                            <h3>位置数据</h3>
+                            <span id="carStatusDisplay">--</span>
+                        </div>
+                        <div class="telemetry-list">
+                            <div class="telemetry-row">
+                                <span>局部坐标</span>
+                                <strong id="positionDisplay">--, --</strong>
+                            </div>
+                            <div class="telemetry-row">
+                                <span>经纬度</span>
+                                <strong id="geoDisplay">--, --</strong>
+                            </div>
+                            <div class="telemetry-row">
+                                <span>当前速度</span>
+                                <strong id="currentSpeedDisplay">-- m/s</strong>
+                            </div>
+                            <div class="telemetry-row">
+                                <span>航向角</span>
+                                <strong id="headingDisplay">-- deg</strong>
+                            </div>
+                            <div class="telemetry-row">
+                                <span>当前路段</span>
+                                <strong id="edgeDisplay">--</strong>
+                            </div>
+                            <div class="telemetry-row">
+                                <span>下一节点/模式</span>
+                                <strong id="nextEdgeDisplay">-- / --</strong>
+                            </div>
+                            <div class="telemetry-row">
+                                <span>距下一节点</span>
+                                <strong id="junctionDistDisplay">-- m</strong>
+                            </div>
+                            <div class="telemetry-row">
+                                <span>电量 / 里程</span>
+                                <strong id="distanceDisplay">--</strong>
+                            </div>
+                        </div>
+
+                        <div class="metric-grid">
+                            <article class="metric-card">
+                                <span>MQTT 桥接</span>
+                                <strong id="mqttStatusDisplay">未启用</strong>
+                            </article>
+                            <article class="metric-card">
+                                <span>闭环实验</span>
+                                <strong id="hilStatusDisplay">未启动</strong>
+                            </article>
+                            <article class="metric-card">
+                                <span>实验步数</span>
+                                <strong id="simStep">0</strong>
+                            </article>
+                        </div>
+
+                        <div class="control-panel-section">
+                            <div class="panel-head small">
+                                <h3>速度控制指令</h3>
+                            </div>
+                            <div class="inline-control">
+                                <input type="range" id="speedSlider" min="0" max="8" step="0.1" value="1.2">
+                                <span id="sliderValue">1.2</span>
+                                <button class="btn btn-sm btn-primary" id="applySpeedBtn" type="button">发送</button>
+                            </div>
+                            <div class="quick-commands">
+                                <button class="btn btn-sm cmd-btn" data-cmd="crawl" type="button">低速巡航</button>
+                                <button class="btn btn-sm cmd-btn" data-cmd="normal" type="button">教学巡航</button>
+                                <button class="btn btn-sm cmd-btn" data-cmd="fast" type="button">快速验证</button>
+                                <button class="btn btn-sm cmd-btn cmd-stop" data-cmd="emergency" type="button">安全停车</button>
+                            </div>
+                        </div>
+
+                        <div class="topic-panel">
+                            <div class="panel-head small">
+                                <h3>通信主题</h3>
+                            </div>
+                            <div class="topic-list" id="topicList"></div>
+                        </div>
+                    </aside>
+                </section>
+            </section>
+
+            <section class="view-panel" id="view-overview">
+                <section class="overview-shell">
+                    <article class="overview-card glass-card">
+                        <span>Campus Map</span>
+                        <strong>大连理工大学经管学院 HIL 校园地图</strong>
+                        <p>总览地图用于教学说明，实际控制在点云底图工作台完成，保留 HIL 原项目的操作流程和复现方式。</p>
+                    </article>
+                    <article class="overview-card glass-card">
+                        <span>Experiment Flow</span>
+                        <strong>通信准备 -> 路径下发 -> 闭环启动 -> 轨迹回放</strong>
+                        <p>每一步都通过后端 HIL 接口产生真实状态、指令记录和轨迹文件。</p>
+                    </article>
+                    <article class="overview-card glass-card">
+                        <span>Data Source</span>
+                        <strong>navigation_waypoints_latest.yaml</strong>
+                        <p>导航路线和点云栅格来自 HIL 原始资源，前端只做可视化和控制编排。</p>
+                    </article>
+                </section>
+            </section>
+
+            <section class="view-panel" id="view-fleet">
+                <section class="fleet-ops-grid">
+                    <article class="fleet-policy-card glass-card">
+                        <span>接入车辆</span>
+                        <strong id="fleetCount">0</strong>
+                        <small>真实车与虚拟车统一管理</small>
+                    </article>
+                    <article class="fleet-policy-card glass-card">
+                        <span>运行模式</span>
+                        <strong>HIL</strong>
+                        <small>MQTT 优先，本地闭环兜底</small>
+                    </article>
+                    <article class="fleet-policy-card glass-card">
+                        <span>地图资源</span>
+                        <strong>DLUT-SEM</strong>
+                        <small>经管学院点云底图</small>
+                    </article>
+                </section>
+                <section class="panel glass-card table-panel fleet-table-panel">
+                    <div class="panel-head">
+                        <h3>小车管理</h3>
+                        <span>Fleet Overview</span>
+                    </div>
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>车辆</th>
+                                    <th>类型</th>
+                                    <th>通信</th>
+                                    <th>速度</th>
+                                    <th>电量</th>
+                                    <th>位置</th>
+                                    <th>״̬</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fleetBody">
+                                <tr class="no-data"><td colspan="7">正在加载车辆列表</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </section>
+
+            <section class="view-panel" id="view-commands">
+                <section class="view-stack">
+                    <section class="panel glass-card">
+                        <div class="panel-head">
+                            <h3>指令记录</h3>
+                            <span>Command Records</span>
+                        </div>
+                        <div class="command-log" id="commandLog">
+                            <p class="hint-text">暂无指令记录</p>
+                        </div>
+                    </section>
+
+                    <section class="panel glass-card">
+                        <div class="panel-head">
+                            <h3>轨迹数据记录</h3>
+                            <span class="trajectory-count" id="trajectoryCount">共 0 条记录</span>
+                        </div>
+                        <div class="data-table-container">
+                            <table class="data-table" id="trajectoryTable">
+                                <thead>
+                                    <tr>
+                                        <th>步数</th>
+                                        <th>时间(s)</th>
+                                        <th>X</th>
+                                        <th>Y</th>
+                                        <th>速度</th>
+                                        <th>航向</th>
+                                        <th>路段</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="trajectoryBody">
+                                    <tr class="no-data"><td colspan="7">暂无轨迹数据</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section class="panel glass-card">
+                        <div class="panel-head">
+                            <h3>轨迹输出文件</h3>
+                            <span>CSV / JSON</span>
+                        </div>
+                        <div class="output-files" id="outputFiles">
+                            <p class="hint-text">实验结束后将生成 CSV 轨迹和 JSON 摘要文件</p>
+                        </div>
+                    </section>
+                </section>
+            </section>
+        </section>
+    </main>
+
+    <script src="vehicle_control.js"></script>
+    <script src="../../components/chat-log-widget.js"></script>
+    <link rel="stylesheet" href="/src/components/ai-assistant.css?v=deepseek-professional-20260620">
+    <script src="/src/components/ai-assistant.js?v=deepseek-professional-20260620"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+    <!-- 局域网访问守卫：仅本机可操作，局域网内页面全部功能禁用 -->
+    <script src="/src/components/lan-guard.js"></script>
+</body>
+</html>
+

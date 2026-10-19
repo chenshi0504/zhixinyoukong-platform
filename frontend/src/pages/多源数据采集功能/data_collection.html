@@ -1,0 +1,243 @@
+﻿
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多源数据采集功能 - 综合交通实验平台</title>
+    <link rel="stylesheet" href="data_collection.css">
+    <link rel="stylesheet" href="../../components/chat-log-widget.css">
+</head>
+<body>
+    <!-- 顶部标题区域 -->
+    <header class="header">
+        <h1 class="main-title">多源数据采集功能</h1>
+        <p class="subtitle">基于YOLO11 + BoTSORT的多目标车辆检测与跟踪</p>
+    </header>
+
+    <!-- 导航操作区 -->
+    <nav class="nav-actions">
+        <div class="nav-content">
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="backBtn">返回</button>
+                <span class="server-status" id="serverStatus">服务器: 检查中...</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 左侧配置面板 -->
+        <aside class="config-panel">
+            <!-- 算法讲解 -->
+            <div class="config-section algorithm-section">
+                <h3>算法讲解</h3>
+                <div class="algorithm-description">
+                    <p><strong>YOLO11 + BoTSORT 车辆检测跟踪算法</strong></p>
+                    <p style="margin-top: 8px; font-size: 0.9em; color: #555; line-height: 1.6;">
+                        基于深度学习的实时车辆检测与多目标跟踪方法，能够识别视频中的多类车辆目标，并进行跨帧跟踪和分时段流量统计，为交通数据采集提供自动化解决方案。
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                        <strong>核心步骤：</strong><br>
+                        1. 加载视频文件和YOLO11预训练模型（COCO数据集）<br>
+                        2. 逐帧检测车辆目标（类型+位置+置信度）<br>
+                        3. BoTSORT算法跨帧跟踪并分配唯一ID<br>
+                        4. 每15分钟输出分类流量统计结果
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                        <strong>算法组成：</strong><br>
+                        • YOLO11：基于PyTorch的最新单阶段目标检测器，C3k2模块，精度速度均衡最优<br>
+                        • BoTSORT：ultralytics内置跟踪器，卡尔曼滤波 + Re-ID特征 + 运动补偿<br>
+                        • 流量统计：基于跟踪ID去重，按15分钟时段汇总分类计数
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                        <strong>检测目标：</strong>小汽车 (Car) · 公交车 (Bus) · 卡车 (Truck)
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                        <strong>参数配置：</strong>IOU阈值 0.45 · 置信度阈值 0.50 · NMS重叠阈值 1.0
+                    </p>
+                </div>
+            </div>
+
+            <!-- 模型选择 -->
+            <div class="config-section">
+                <h3>检测模型</h3>
+                <div class="config-item">
+                    <label style="font-size:13px;color:#555;margin-bottom:8px;display:block;">YOLO 模型版本</label>
+                    <select id="modelSelect" class="algorithm-select">
+                            <option value="yolo11n.pt" selected>YOLO11n (Nano - 最快)</option>
+                            <option value="yolo11s.pt">YOLO11s (Small)</option>
+                            <option value="yolo11m.pt">YOLO11m (Medium)</option>
+                            <option value="yolo11l.pt">YOLO11l (Large)</option>
+                            <option value="yolo11x.pt">YOLO11x (XLarge - 最精确)</option>
+                    </select>
+                    <p class="hint-text" style="margin-top:6px;">首次使用新模型时会自动下载权重文件</p>
+                </div>
+            </div>
+
+            <!-- 视频选择 -->
+            <div class="config-section">
+                <h3>视频选择</h3>
+                <div class="scenario-section">
+                    <label class="scenario-label">内置城市交通场景</label>
+                    <div class="scenario-grid" id="scenarioGrid">
+                        <div class="scenario-loading">正在加载场景...</div>
+                    </div>
+                    <p class="hint-text">选择场景后点击“开始交通流采集”，系统将实时展示车辆检测框、跟踪 ID 和流量统计。</p>
+                </div>
+                <div class="config-item">
+                    <label style="font-size:13px;color:#555;margin-bottom:8px;display:block;">选择视频来源</label>
+                    <select id="videoSourceSelect" class="algorithm-select" style="margin-bottom:10px;">
+                        <option value="default" selected>内置场景视频</option>
+                        <option value="custom">手动选择文件...</option>
+                    </select>
+                </div>
+                <div class="config-item" id="customFileSection" style="display:none;">
+                    <input type="file" id="videoFileInput" class="file-input" accept=".mp4,.avi,.mov,.mkv">
+                    <label for="videoFileInput" class="file-input-label">
+                        <span class="file-icon">📁</span>
+                        <span class="file-text" id="fileText">点击选择视频文件...</span>
+                    </label>
+                </div>
+                <div class="video-info" id="videoInfo">
+                    <p class="hint-text">正在查找默认视频...</p>
+                </div>
+            </div>
+
+            <!-- 操作控制 -->
+            <div class="config-section">
+                <h3>操作控制</h3>
+                <div class="control-buttons-vertical">
+                    <button class="btn step-btn" id="startBtn">开始交通流采集</button>
+                    <button class="btn step-btn" id="stopBtn" disabled>停止</button>
+                    <button class="btn step-btn" id="statsBtn">数据统计</button>
+                    <button class="btn step-btn" id="resetBtn">重置状态</button>
+                </div>
+                <div class="status-bar">
+                    <span class="status-label">状态:</span>
+                    <span class="status-value" id="statusValue">就绪</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 右侧展示区域 -->
+        <section class="display-area">
+            <!-- 统计分析区 -->
+            <div class="statistics-section">
+                <h3>车辆流量统计</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🚗</div>
+                        <div class="stat-content">
+                            <div class="stat-label">小汽车</div>
+                            <div class="stat-value" id="carCount">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🚌</div>
+                        <div class="stat-content">
+                            <div class="stat-label">公交车</div>
+                            <div class="stat-value" id="busCount">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🚚</div>
+                        <div class="stat-content">
+                            <div class="stat-label">卡车</div>
+                            <div class="stat-value" id="truckCount">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card highlight">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-content">
+                            <div class="stat-label">总流量</div>
+                            <div class="stat-value" id="totalDetections">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 实时检测视频展示区域 -->
+            <div class="video-preview-section">
+                <h3>实时检测画面</h3>
+                <div class="video-preview-container">
+                    <div class="video-preview-wrapper" id="videoPreviewWrapper">
+                        <!-- 实时检测帧图像 -->
+                        <img id="realtimeFrame" class="realtime-frame" alt="实时检测画面">
+                        <!-- 检测完成后的输出视频 -->
+                        <video id="outputVideoPreview" class="video-preview" controls>
+                            您的浏览器不支持视频播放
+                        </video>
+                        <div class="video-placeholder-overlay" id="videoPlaceholder">
+                            <div class="placeholder-icon">🎬</div>
+                            <p>实时检测画面展示区</p>
+                            <p class="placeholder-hint">开始检测后将在此实时显示检测画面</p>
+                        </div>
+                    </div>
+                    <div class="video-info-bar" id="videoInfoBar">
+                        <span id="frameInfo">帧: 0/0</span>
+                        <span id="fpsInfo">FPS: --</span>
+                        <span id="detectionInfo">检测中: 0 辆</span>
+                    </div>
+                    <!-- 控制按钮 -->
+                    <div class="video-control-bar" id="videoControlBar">
+                        <button class="btn btn-sm btn-primary" id="loadOutputBtn">加载输出视频</button>
+                        <button class="btn btn-sm btn-success" id="refreshOutputBtn">刷新</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分时段统计表格 -->
+            <div class="realtime-section">
+                <h3>分时段流量统计（每15分钟）</h3>
+                <div class="data-table-container">
+                    <table class="data-table" id="realtimeDataTable">
+                        <thead>
+                            <tr>
+                                <th>时段</th>
+                                <th>间隔</th>
+                                <th>小汽车</th>
+                                <th>公交车</th>
+                                <th>卡车</th>
+                                <th>总计</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dataTableBody">
+                            <tr class="no-data">
+                                <td colspan="6">暂无检测数据</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 检测结果区 -->
+            <div class="visualization-section">
+                <h3>检测结果</h3>
+                <div class="visualization-controls">
+                    <button class="btn btn-primary" id="generateDashboardBtn">查看结果</button>
+                    <button class="btn btn-info" id="downloadResultBtn" disabled>下载文件</button>
+                </div>
+                <div class="visualization-display" id="visualizationDisplay">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">🎬</div>
+                        <p>检测结果展示区</p>
+                        <p class="placeholder-hint">完成检测后显示输出视频和统计结果</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="data_collection.js"></script>
+    <script src="../../components/chat-log-widget.js"></script>
+    <!-- AI实验助手 -->
+    <link rel="stylesheet" href="/src/components/ai-assistant.css?v=deepseek-professional-20260620">
+    <script src="/src/components/ai-assistant.js?v=deepseek-professional-20260620"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+</html>
+
+
+

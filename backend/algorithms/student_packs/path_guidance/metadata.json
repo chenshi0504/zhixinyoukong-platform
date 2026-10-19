@@ -1,0 +1,17 @@
+{
+  "task_id": "path_guidance",
+  "module_id": "path_guidance",
+  "task_name": "SiouxFalls路网路径诱导自研算法",
+  "input_files": [
+    "network_edges.csv",
+    "od_pairs.csv"
+  ],
+  "submission_columns": [
+    "origin",
+    "destination",
+    "path",
+    "total_cost"
+  ],
+  "baseline_file": "baseline_paths.csv",
+  "primary_metric": "cost_ratio_mean"
+}

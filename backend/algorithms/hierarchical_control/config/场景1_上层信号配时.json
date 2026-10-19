@@ -1,0 +1,34 @@
+{
+  "scenario": "单一对象优化-上层信号配时",
+  "algorithm": "MPC-TuRBO",
+  "objective": "最小化剩余流量",
+  "parameters": {
+    "cycle_length": 120,
+    "green_time_min": 20,
+    "green_time_max": 80,
+    "optimization_horizon": 300,
+    "iterations": 50
+  },
+  "intersections": [
+    {
+      "id": "J1",
+      "phases": 4,
+      "approach_lanes": [
+        3,
+        3,
+        3,
+        3
+      ]
+    },
+    {
+      "id": "J2",
+      "phases": 4,
+      "approach_lanes": [
+        2,
+        2,
+        2,
+        2
+      ]
+    }
+  ]
+}

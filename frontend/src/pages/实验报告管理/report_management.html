@@ -1,0 +1,492 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实验报告管理 - 车路协同仿真平台</title>
+    <link rel="stylesheet" href="report_management.css">
+    <style>
+        /* 确保基本样式加载 */
+        body {
+            font-family: 'Microsoft YaHei', '微软雅黑', Arial, sans-serif !important;
+            background-color: #f5f7fa !important;
+            color: #333 !important;
+            line-height: 1.6 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2C5AA0 0%, #1e3d72 100%) !important;
+            color: white !important;
+            padding: 1rem 2rem !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .main-content {
+            display: flex !important;
+            max-width: 1400px !important;
+            margin: 2rem auto !important;
+            gap: 2rem !important;
+            padding: 0 2rem !important;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部标题区域 -->
+    <header class="header">
+        <h1 class="main-title">实验报告管理</h1>
+        <p class="subtitle">批阅和管理学生实验报告，跟踪学习成果</p>
+    </header>
+
+    <!-- 导航操作区 -->
+    <nav class="nav-actions">
+        <div class="nav-content">
+            <div class="nav-buttons">
+                <button class="btn btn-primary" id="batchReviewBtn">批量批阅</button>
+                <button class="btn btn-secondary" id="exportReportsBtn">导出报告</button>
+                <button class="btn btn-info" id="templateMgmtBtn">模板管理</button>
+                <button class="btn btn-secondary" id="backBtn">返回</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <!-- 统计信息面板 -->
+            <div class="stats-panel">
+                <h3>批阅统计</h3>
+                <div class="stat-item">
+                    <span class="stat-label">报告总数</span>
+                    <span class="stat-value" id="totalReports">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">待批阅</span>
+                    <span class="stat-value pending" id="pendingReports">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">已批阅</span>
+                    <span class="stat-value completed" id="reviewedReports">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">平均分</span>
+                    <span class="stat-value" id="averageScore">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">批阅进度</span>
+                    <span class="stat-value" id="reviewProgress">0%</span>
+                </div>
+            </div>
+
+            <!-- 云端平台连接状态 -->
+            <div class="stats-panel" style="margin-top: 15px;">
+                <h3>云端平台</h3>
+                <div class="stat-item" style="flex-direction: column; align-items: flex-start;">
+                    <div style="display: flex; align-items: center; width: 100%;">
+                        <span id="cloudStatusDot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ccc;margin-right:8px;"></span>
+                        <span id="cloudStatusText" style="font-size:13px;color:#999;">检测中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 筛选面板 -->
+            <div class="filter-panel">
+                <h3>筛选条件</h3>
+                <div class="filter-group">
+                    <label for="experimentFilter">实验类型</label>
+                    <select id="experimentFilter" class="filter-select">
+                        <option value="all">全部实验</option>
+                        <option value="仿真实验">仿真实验</option>
+                        <option value="数据分析">数据分析</option>
+                        <option value="算法设计">算法设计</option>
+                        <option value="系统集成">系统集成</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="statusFilter">批阅状态</label>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="all">全部状态</option>
+                        <option value="pending">待批阅</option>
+                        <option value="reviewing">批阅中</option>
+                        <option value="reviewed">已批阅</option>
+                        <option value="revision_required">需修改</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="classFilter">班级</label>
+                    <select id="classFilter" class="filter-select">
+                        <option value="all">全部班级</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="dateFilter">提交时间</label>
+                    <select id="dateFilter" class="filter-select">
+                        <option value="all">全部时间</option>
+                        <option value="today">今天</option>
+                        <option value="week">本周</option>
+                        <option value="month">本月</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="searchInput">搜索报告</label>
+                    <input type="text" id="searchInput" class="search-input" placeholder="输入学生姓名或实验名称">
+                </div>
+            </div>
+        </aside>
+
+        <!-- 报告列表区域 -->
+        <section class="content-area">
+            <div class="report-container">
+                <div class="report-header">
+                    <h2>实验报告列表</h2>
+                    <div class="report-actions">
+                        <button class="icon-refresh-btn" id="refreshReportsBtn" type="button" title="刷新最新报告数据">↻</button>
+                        <div class="report-controls">
+                            <button class="btn btn-sm" id="selectAllBtn">全选</button>
+                            <button class="btn btn-sm btn-primary" id="batchDownloadBtn" disabled>批量下载</button>
+                            <button class="btn btn-sm btn-info" id="batchScoreBtn" disabled>批量评分</button>
+                            <span class="selected-count">已选择 <span id="selectedCount">0</span> 份报告</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-table-wrapper">
+                    <table class="report-table" id="reportTable">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAllCheckbox"></th>
+                                <th class="sortable" data-sort="studentName">学生姓名 <span class="sort-icon">↕</span></th>
+                                <th class="sortable" data-sort="studentClass">班级 <span class="sort-icon">↕</span></th>
+                                <th class="sortable" data-sort="experimentName">实验名称 <span class="sort-icon">↕</span>
+                                </th>
+                                <th class="sortable" data-sort="experimentType">实验类型 <span class="sort-icon">↕</span>
+                                </th>
+                                <th class="sortable" data-sort="submitTime">提交时间 <span class="sort-icon">↕</span></th>
+                                <th>文件信息</th>
+                                <th class="sortable" data-sort="reviewStatus">批阅状态 <span class="sort-icon">↕</span></th>
+                                <th class="sortable" data-sort="score">成绩 <span class="sort-icon">↕</span></th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportTableBody">
+                            <!-- 报告数据将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分页导航 -->
+                <div class="pagination" id="pagination">
+                    <button class="page-btn" id="prevPageBtn" disabled>上一页</button>
+                    <div class="page-numbers" id="pageNumbers"></div>
+                    <button class="page-btn" id="nextPageBtn">下一页</button>
+                    <div class="page-info">
+                        <span>每页显示</span>
+                        <select id="pageSizeSelect" class="page-size-select">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span>条记录</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 报告详情与批阅模态框 -->
+    <div class="modal large-modal" id="reviewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>报告批阅</h3>
+                <button class="close-btn" id="closeReviewModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="review-container">
+                    <!-- 报告信息 -->
+                    <div class="report-info">
+                        <div class="info-item">
+                            <label>学生姓名：</label>
+                            <span id="reviewStudentName"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>实验名称：</label>
+                            <span id="reviewExperimentName"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>提交时间：</label>
+                            <span id="reviewSubmitTime"></span>
+                        </div>
+                        <div class="info-item">
+                            <label>文件名称：</label>
+                            <span id="reviewFileName"></span>
+                        </div>
+                    </div>
+
+                    <div class="review-content">
+                        <!-- 报告预览区域 -->
+                        <div class="report-preview">
+                            <div class="preview-header">
+                                <h4>报告内容</h4>
+                                <div class="preview-controls">
+                                    <button class="btn btn-sm" id="downloadReportBtn">下载报告</button>
+                                    <button class="btn btn-sm" id="fullscreenBtn">全屏查看</button>
+                                </div>
+                            </div>
+                            <div class="preview-area" id="previewArea">
+                                <div class="preview-placeholder">
+                                    <div class="placeholder-icon">📄</div>
+                                    <p>报告预览区域</p>
+                                    <p class="placeholder-hint">支持PDF、Word、图片等格式</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 批阅工具区域 -->
+                        <div class="review-panel">
+                            <div class="review-tabs">
+                                <button class="tab-btn active" data-tab="score">评分</button>
+                                <button class="tab-btn" data-tab="comment">批注</button>
+                                <button class="tab-btn" data-tab="feedback">反馈</button>
+                            </div>
+
+                            <!-- 评分面板 -->
+                            <div class="tab-content active" id="scoreTab">
+                                <h4>评分标准</h4>
+                                <div class="score-criteria">
+                                    <div class="criteria-item">
+                                        <label>实验过程 (30分)</label>
+                                        <input type="number" class="score-input" id="processScore" min="0" max="30"
+                                            placeholder="0">
+                                        <span class="score-max">/30</span>
+                                    </div>
+                                    <div class="criteria-item">
+                                        <label>数据分析 (25分)</label>
+                                        <input type="number" class="score-input" id="analysisScore" min="0" max="25"
+                                            placeholder="0">
+                                        <span class="score-max">/25</span>
+                                    </div>
+                                    <div class="criteria-item">
+                                        <label>结论总结 (20分)</label>
+                                        <input type="number" class="score-input" id="conclusionScore" min="0" max="20"
+                                            placeholder="0">
+                                        <span class="score-max">/20</span>
+                                    </div>
+                                    <div class="criteria-item">
+                                        <label>报告规范 (15分)</label>
+                                        <input type="number" class="score-input" id="formatScore" min="0" max="15"
+                                            placeholder="0">
+                                        <span class="score-max">/15</span>
+                                    </div>
+                                    <div class="criteria-item">
+                                        <label>创新性 (10分)</label>
+                                        <input type="number" class="score-input" id="innovationScore" min="0" max="10"
+                                            placeholder="0">
+                                        <span class="score-max">/10</span>
+                                    </div>
+                                </div>
+                                <div class="total-score">
+                                    <label>总分：</label>
+                                    <span id="totalScore">0</span>
+                                    <span>/100</span>
+                                    <span class="score-grade-indicator" id="scoreGrade"></span>
+                                </div>
+
+                                <!-- 评分标准说明 -->
+                                <div class="scoring-tips" style="margin-top: 20px;">
+                                    <h5>📊 评分标准说明</h5>
+                                    <ul>
+                                        <li><strong>实验过程(30分)：</strong>实验步骤完整性、操作规范性、数据记录准确性</li>
+                                        <li><strong>数据分析(25分)：</strong>分析方法正确性、结果解读深度、图表质量</li>
+                                        <li><strong>结论总结(20分)：</strong>结论合理性、与实验目的的契合度</li>
+                                        <li><strong>报告规范(15分)：</strong>格式规范、语言表达、参考文献</li>
+                                        <li><strong>创新性(10分)：</strong>独立思考、创新方法、额外探索</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- 批注面板 -->
+                            <div class="tab-content" id="commentTab">
+                                <h4>批注工具</h4>
+                                <div class="comment-tools">
+                                    <button class="tool-btn" id="addCommentBtn">添加批注</button>
+                                    <button class="tool-btn" id="highlightBtn">高亮标记</button>
+                                    <button class="tool-btn" id="correctionBtn">修改建议</button>
+                                </div>
+                                <div class="comment-list" id="commentList">
+                                    <p class="no-comments">暂无批注</p>
+                                </div>
+                            </div>
+
+                            <!-- 反馈面板 -->
+                            <div class="tab-content" id="feedbackTab">
+                                <h4>批阅反馈</h4>
+
+                                <!-- 快速评语模板 -->
+                                <div class="quick-feedback-templates">
+                                    <h5>💡 快速评语模板（点击插入）</h5>
+                                    <div class="template-tags">
+                                        <span class="template-tag" data-template="excellent">实验过程完整，数据分析准确</span>
+                                        <span class="template-tag" data-template="good">报告结构清晰，逻辑严谨</span>
+                                        <span class="template-tag" data-template="creative">具有创新性思考</span>
+                                        <span class="template-tag" data-template="detailed">数据记录详实</span>
+                                        <span class="template-tag" data-template="improve-analysis">数据分析需要更深入</span>
+                                        <span class="template-tag" data-template="improve-format">报告格式需要规范</span>
+                                        <span class="template-tag" data-template="improve-conclusion">结论总结不够充分</span>
+                                        <span class="template-tag" data-template="improve-process">实验步骤描述不够详细</span>
+                                    </div>
+                                </div>
+
+                                <div class="feedback-section">
+                                    <label for="overallFeedback">总体评价</label>
+                                    <textarea id="overallFeedback" class="feedback-textarea" rows="4"
+                                        placeholder="请输入对该报告的总体评价..." maxlength="500"></textarea>
+                                    <div class="char-count">
+                                        <span id="overallFeedbackCount">0</span>/500
+                                    </div>
+                                </div>
+
+                                <div class="feedback-section">
+                                    <label for="improvementSuggestions">改进建议</label>
+                                    <textarea id="improvementSuggestions" class="feedback-textarea" rows="4"
+                                        placeholder="请输入具体的改进建议..." maxlength="500"></textarea>
+                                    <div class="char-count">
+                                        <span id="improvementSuggestionsCount">0</span>/500
+                                    </div>
+                                </div>
+
+                                <!-- 评分建议提示 -->
+                                <div class="scoring-tips">
+                                    <h5>📋 评分建议</h5>
+                                    <ul id="scoringTipsList">
+                                        <li>请根据评分标准客观评价学生报告</li>
+                                        <li>建议提供具体的改进意见</li>
+                                        <li>鼓励学生的创新思维和独立思考</li>
+                                    </ul>
+                                </div>
+
+                                <div class="feedback-section">
+                                    <label for="reviewStatus">批阅结果</label>
+                                    <select id="reviewStatus" class="review-status-select">
+                                        <option value="approved">✅ 通过</option>
+                                        <option value="revision_required">📝 需要修改</option>
+                                        <option value="rejected">❌ 不通过</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelReviewBtn">取消</button>
+                <button type="button" class="btn btn-primary" id="saveReviewBtn">保存批阅</button>
+                <button type="button" class="btn btn-success" id="submitReviewBtn">提交批阅</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量评分模态框 -->
+    <div class="modal" id="batchScoreModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>批量评分</h3>
+                <button class="close-btn" id="closeBatchScoreModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="batch-score-info">
+                    <p>已选择 <span id="batchScoreCount">0</span> 份报告进行批量评分</p>
+                </div>
+                <div class="batch-score-form">
+                    <div class="form-group">
+                        <label for="batchProcessScore">实验过程 (30分)</label>
+                        <input type="number" id="batchProcessScore" min="0" max="30" placeholder="统一评分">
+                    </div>
+                    <div class="form-group">
+                        <label for="batchAnalysisScore">数据分析 (25分)</label>
+                        <input type="number" id="batchAnalysisScore" min="0" max="25" placeholder="统一评分">
+                    </div>
+                    <div class="form-group">
+                        <label for="batchConclusionScore">结论总结 (20分)</label>
+                        <input type="number" id="batchConclusionScore" min="0" max="20" placeholder="统一评分">
+                    </div>
+                    <div class="form-group">
+                        <label for="batchFormatScore">报告规范 (15分)</label>
+                        <input type="number" id="batchFormatScore" min="0" max="15" placeholder="统一评分">
+                    </div>
+                    <div class="form-group">
+                        <label for="batchInnovationScore">创新性 (10分)</label>
+                        <input type="number" id="batchInnovationScore" min="0" max="10" placeholder="统一评分">
+                    </div>
+                    <div class="form-group">
+                        <label for="batchFeedback">统一反馈</label>
+                        <textarea id="batchFeedback" rows="3" placeholder="输入统一的批阅反馈..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelBatchScoreBtn">取消</button>
+                <button type="button" class="btn btn-primary" id="confirmBatchScoreBtn">确认评分</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模板管理模态框 -->
+    <div class="modal" id="templateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>报告模板管理</h3>
+                <button class="close-btn" id="closeTemplateModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="template-actions">
+                    <button class="btn btn-primary" id="createTemplateBtn">创建模板</button>
+                    <button class="btn btn-secondary" id="importTemplateBtn">导入模板</button>
+                </div>
+                <div class="template-list" id="templateList">
+                    <!-- 模板列表将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeTemplateBtn">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JSZip库用于ZIP文件打包 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <script>
+        // 添加错误处理和调试信息
+        window.addEventListener('error', function (e) {
+            console.error('页面错误:', e.error);
+            document.body.innerHTML = '<div style="padding: 20px; color: red;">页面加载出错: ' + e.message + '</div>';
+        });
+
+        // 检查CSS是否加载
+        window.addEventListener('load', function () {
+            const header = document.querySelector('.header');
+            if (header && getComputedStyle(header).backgroundColor === 'rgba(0, 0, 0, 0)') {
+                console.warn('CSS可能未正确加载');
+            }
+        });
+
+        // 检查JSZip是否加载成功
+        window.addEventListener('load', function () {
+            if (typeof JSZip === 'undefined') {
+                console.warn('JSZip库未加载，将使用备用下载方式');
+            } else {
+                console.log('JSZip库加载成功');
+            }
+        });
+    </script>
+    <script src="../../utils/cloud-status-checker.js"></script>
+    <script src="report_management.js"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+
+</html>
+

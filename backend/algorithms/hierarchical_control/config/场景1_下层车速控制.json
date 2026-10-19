@@ -1,0 +1,25 @@
+{
+  "scenario": "单一对象优化-下层车速控制",
+  "algorithm": "MPC-TuRBO",
+  "objective": "提升车队通行效率",
+  "parameters": {
+    "prediction_horizon": 10,
+    "control_horizon": 5,
+    "speed_min": 20,
+    "speed_max": 60,
+    "acceleration_max": 2.5,
+    "deceleration_max": 3.0
+  },
+  "vehicle_platoons": [
+    {
+      "platoon_id": "P1",
+      "vehicle_count": 8,
+      "spacing": 5
+    },
+    {
+      "platoon_id": "P2",
+      "vehicle_count": 6,
+      "spacing": 6
+    }
+  ]
+}

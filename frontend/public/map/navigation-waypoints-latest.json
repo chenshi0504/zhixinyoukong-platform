@@ -1,0 +1,662 @@
+{
+  "routeName": "annotated_navigation_route",
+  "frameId": "sc_map",
+  "loop": false,
+  "bidirectionalHeadings": true,
+  "visibleWaypointIndices": [
+    0,
+    4,
+    8,
+    15
+  ],
+  "source": "navigation_waypoints_latest.yaml",
+  "generatedAt": "2026-05-23T13:45:51.768Z",
+  "transform": {
+    "method": "local_xy_to_wgs84_initial_registration",
+    "anchorLat": 38.8841831004763,
+    "anchorLon": 121.520019502113,
+    "anchorSource": "DLUT official SEM building point converted GCJ-02 to WGS84",
+    "localAnchorX": 41.23796463012695,
+    "localAnchorY": -40.61397933959961,
+    "rotationDeg": 0,
+    "scale": 1,
+    "axisAssumption": "PLY x=east, PLY y=north",
+    "confidence": "initial visual test; refine with measured ground control points"
+  },
+  "waypoints": [
+    {
+      "index": 0,
+      "name": "wp_001",
+      "x": -2.622487783432007,
+      "y": 14.818085670471191,
+      "z": 0,
+      "yaw_deg": 5.81716283307314,
+      "reverse_yaw_deg": -174.18283716692687,
+      "position": {
+        "x": -2.622487783432007,
+        "y": 14.818085670471191,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.05074252167478316,
+        "w": 0.9987117684768134
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.9987117684768134,
+        "w": 0.05074252167478322
+      },
+      "latitude": 38.88468243,
+      "longitude": 121.51951401,
+      "display": true
+    },
+    {
+      "index": 1,
+      "name": "wp_002",
+      "x": 10.242738723754883,
+      "y": 14.063695907592773,
+      "z": 0,
+      "yaw_deg": -39.974208042065726,
+      "reverse_yaw_deg": 140.02579195793427,
+      "position": {
+        "x": 10.242738723754883,
+        "y": 14.063695907592773,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.3418086311925522,
+        "w": 0.939769577951039
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.9397695779510389,
+        "w": 0.3418086311925522
+      },
+      "latitude": 38.88467563,
+      "longitude": 121.51966228,
+      "display": false
+    },
+    {
+      "index": 2,
+      "name": "wp_003",
+      "x": 16.427181243896484,
+      "y": 7.034829139709473,
+      "z": 0,
+      "yaw_deg": -56.18779647120662,
+      "reverse_yaw_deg": 123.81220352879339,
+      "position": {
+        "x": 16.427181243896484,
+        "y": 7.034829139709473,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.4709179356727263,
+        "w": 0.8821770218395728
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.8821770218395727,
+        "w": 0.47091793567272633
+      },
+      "latitude": 38.88461232,
+      "longitude": 121.51973356,
+      "display": false
+    },
+    {
+      "index": 3,
+      "name": "wp_004",
+      "x": 43.849647521972656,
+      "y": -39.35662841796875,
+      "z": 0,
+      "yaw_deg": -64.34370145345675,
+      "reverse_yaw_deg": 115.65629854654325,
+      "position": {
+        "x": 43.849647521972656,
+        "y": -39.35662841796875,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.532460479188849,
+        "w": 0.846454864775424
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.846454864775424,
+        "w": 0.532460479188849
+      },
+      "latitude": 38.88419443,
+      "longitude": 121.5200496,
+      "display": false
+    },
+    {
+      "index": 4,
+      "name": "wp_005",
+      "x": 46.81230545043945,
+      "y": -50.06821060180664,
+      "z": 0,
+      "yaw_deg": -61.29515397520768,
+      "reverse_yaw_deg": 118.70484602479232,
+      "position": {
+        "x": 46.81230545043945,
+        "y": -50.06821060180664,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.5097559789015582,
+        "w": 0.8603190349946432
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.8603190349946431,
+        "w": 0.5097559789015583
+      },
+      "latitude": 38.88409794,
+      "longitude": 121.52008375,
+      "display": true
+    },
+    {
+      "index": 5,
+      "name": "wp_006",
+      "x": 54.32823944091797,
+      "y": -60.68147277832031,
+      "z": 0,
+      "yaw_deg": -59.36461649192252,
+      "reverse_yaw_deg": 120.6353835080775,
+      "position": {
+        "x": 54.32823944091797,
+        "y": -60.68147277832031,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.4951904293352532,
+        "w": 0.868784460435825
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.868784460435825,
+        "w": 0.49519042933525326
+      },
+      "latitude": 38.88400233,
+      "longitude": 121.52017037,
+      "display": false
+    },
+    {
+      "index": 6,
+      "name": "wp_007",
+      "x": 59.87395095825195,
+      "y": -66.8348617553711,
+      "z": 0,
+      "yaw_deg": -25.04644370531475,
+      "reverse_yaw_deg": 154.95355629468526,
+      "position": {
+        "x": 59.87395095825195,
+        "y": -66.8348617553711,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.21683528676182318,
+        "w": 0.9762082044394618
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.9762082044394618,
+        "w": 0.21683528676182323
+      },
+      "latitude": 38.8839469,
+      "longitude": 121.52023428,
+      "display": false
+    },
+    {
+      "index": 7,
+      "name": "wp_008",
+      "x": 67.27967071533203,
+      "y": -66.52691650390625,
+      "z": 0,
+      "yaw_deg": 18.709365165072935,
+      "reverse_yaw_deg": -161.29063483492706,
+      "position": {
+        "x": 67.27967071533203,
+        "y": -66.52691650390625,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.16254559368232607,
+        "w": 0.9867010337353763
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.9867010337353763,
+        "w": 0.16254559368232616
+      },
+      "latitude": 38.88394968,
+      "longitude": 121.52031963,
+      "display": false
+    },
+    {
+      "index": 8,
+      "name": "wp_009",
+      "x": 101.894287109375,
+      "y": -49.843727111816406,
+      "z": 0,
+      "yaw_deg": 26.898982253518962,
+      "reverse_yaw_deg": -153.10101774648103,
+      "position": {
+        "x": 101.894287109375,
+        "y": -49.843727111816406,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.2325880843094731,
+        "w": 0.9725753354045379
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.9725753354045379,
+        "w": 0.23258808430947317
+      },
+      "latitude": 38.88409996,
+      "longitude": 121.52071857,
+      "display": true
+    },
+    {
+      "index": 9,
+      "name": "wp_010",
+      "x": 40.151397705078125,
+      "y": -54.096778869628906,
+      "z": 0,
+      "yaw_deg": -155.99859732212647,
+      "reverse_yaw_deg": 24.001402677873532,
+      "position": {
+        "x": 40.151397705078125,
+        "y": -54.096778869628906,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.9781450556813769,
+        "w": 0.20792366398771475
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.2079236639877147,
+        "w": 0.9781450556813769
+      },
+      "latitude": 38.88406165,
+      "longitude": 121.52000698,
+      "display": false
+    },
+    {
+      "index": 10,
+      "name": "wp_011",
+      "x": 22.741487503051758,
+      "y": -62.982322692871094,
+      "z": 0,
+      "yaw_deg": -154.73270372173465,
+      "reverse_yaw_deg": 25.267296278265356,
+      "position": {
+        "x": 22.741487503051758,
+        "y": -62.982322692871094,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.9757884844964398,
+        "w": 0.218716331178404
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.21871633117840392,
+        "w": 0.9757884844964398
+      },
+      "latitude": 38.88398161,
+      "longitude": 121.51980633,
+      "display": false
+    },
+    {
+      "index": 11,
+      "name": "wp_012",
+      "x": 15.140785217285156,
+      "y": -64.44989013671875,
+      "z": 0,
+      "yaw_deg": -178.75562650445005,
+      "reverse_yaw_deg": 1.2443734955499486,
+      "position": {
+        "x": 15.140785217285156,
+        "y": -64.44989013671875,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.9999410393876904,
+        "w": 0.01085899388827254
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.010858993888272477,
+        "w": 0.9999410393876903
+      },
+      "latitude": 38.88396839,
+      "longitude": 121.51971873,
+      "display": false
+    },
+    {
+      "index": 12,
+      "name": "wp_013",
+      "x": 9.873754501342773,
+      "y": -62.39838790893555,
+      "z": 0,
+      "yaw_deg": 156.6552517089315,
+      "reverse_yaw_deg": -23.344748291068505,
+      "position": {
+        "x": 9.873754501342773,
+        "y": -62.39838790893555,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.9793204731450251,
+        "w": 0.20231512765733606
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.202315127657336,
+        "w": 0.9793204731450251
+      },
+      "latitude": 38.88398687,
+      "longitude": 121.51965803,
+      "display": false
+    },
+    {
+      "index": 13,
+      "name": "wp_014",
+      "x": 5.697358131408691,
+      "y": -59.56038284301758,
+      "z": 0,
+      "yaw_deg": 126.43570810361372,
+      "reverse_yaw_deg": -53.56429189638628,
+      "position": {
+        "x": 5.697358131408691,
+        "y": -59.56038284301758,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.8927262739610865,
+        "w": 0.45059937836126135
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.4505993783612613,
+        "w": 0.8927262739610865
+      },
+      "latitude": 38.88401243,
+      "longitude": 121.51960989,
+      "display": false
+    },
+    {
+      "index": 14,
+      "name": "wp_015",
+      "x": -10.133598327636719,
+      "y": -35.13516616821289,
+      "z": 0,
+      "yaw_deg": 125.60780721393813,
+      "reverse_yaw_deg": -54.39219278606187,
+      "position": {
+        "x": -10.133598327636719,
+        "y": -35.13516616821289,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.8894475136718745,
+        "w": 0.45703732935387315
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.4570373293538731,
+        "w": 0.8894475136718745
+      },
+      "latitude": 38.88423245,
+      "longitude": 121.51942744,
+      "display": false
+    },
+    {
+      "index": 15,
+      "name": "wp_016",
+      "x": -22.26772689819336,
+      "y": -15.28339958190918,
+      "z": 0,
+      "yaw_deg": 121.69927244253336,
+      "reverse_yaw_deg": -58.300727557466644,
+      "position": {
+        "x": -22.26772689819336,
+        "y": -15.28339958190918,
+        "z": 0
+      },
+      "orientation": {
+        "x": 0,
+        "y": 0,
+        "z": 0.8733443900311941,
+        "w": 0.4871032502468461
+      },
+      "reverse_orientation": {
+        "x": 0,
+        "y": 0,
+        "z": -0.48710325024684603,
+        "w": 0.8733443900311941
+      },
+      "latitude": 38.88441128,
+      "longitude": 121.5192876,
+      "display": true
+    }
+  ],
+  "topology": {
+    "nodeIndexBase": 0,
+    "nodes": [
+      {
+        "id": 0,
+        "waypoint": "wp_001",
+        "state_forward": "wp_001_forward",
+        "state_reverse": "wp_001_reverse"
+      },
+      {
+        "id": 1,
+        "waypoint": "wp_002",
+        "state_forward": "wp_002_forward",
+        "state_reverse": "wp_002_reverse"
+      },
+      {
+        "id": 2,
+        "waypoint": "wp_003",
+        "state_forward": "wp_003_forward",
+        "state_reverse": "wp_003_reverse"
+      },
+      {
+        "id": 3,
+        "waypoint": "wp_004",
+        "state_forward": "wp_004_forward",
+        "state_reverse": "wp_004_reverse"
+      },
+      {
+        "id": 4,
+        "waypoint": "wp_005",
+        "state_forward": "wp_005_forward",
+        "state_reverse": "wp_005_reverse"
+      },
+      {
+        "id": 5,
+        "waypoint": "wp_006",
+        "state_forward": "wp_006_forward",
+        "state_reverse": "wp_006_reverse"
+      },
+      {
+        "id": 6,
+        "waypoint": "wp_007",
+        "state_forward": "wp_007_forward",
+        "state_reverse": "wp_007_reverse"
+      },
+      {
+        "id": 7,
+        "waypoint": "wp_008",
+        "state_forward": "wp_008_forward",
+        "state_reverse": "wp_008_reverse"
+      },
+      {
+        "id": 8,
+        "waypoint": "wp_009",
+        "state_forward": "wp_009_forward",
+        "state_reverse": "wp_009_reverse"
+      },
+      {
+        "id": 9,
+        "waypoint": "wp_010",
+        "state_forward": "wp_010_forward",
+        "state_reverse": "wp_010_reverse"
+      },
+      {
+        "id": 10,
+        "waypoint": "wp_011",
+        "state_forward": "wp_011_forward",
+        "state_reverse": "wp_011_reverse"
+      },
+      {
+        "id": 11,
+        "waypoint": "wp_012",
+        "state_forward": "wp_012_forward",
+        "state_reverse": "wp_012_reverse"
+      },
+      {
+        "id": 12,
+        "waypoint": "wp_013",
+        "state_forward": "wp_013_forward",
+        "state_reverse": "wp_013_reverse"
+      },
+      {
+        "id": 13,
+        "waypoint": "wp_014",
+        "state_forward": "wp_014_forward",
+        "state_reverse": "wp_014_reverse"
+      },
+      {
+        "id": 14,
+        "waypoint": "wp_015",
+        "state_forward": "wp_015_forward",
+        "state_reverse": "wp_015_reverse"
+      },
+      {
+        "id": 15,
+        "waypoint": "wp_016",
+        "state_forward": "wp_016_forward",
+        "state_reverse": "wp_016_reverse"
+      }
+    ],
+    "headingStates": {
+      "perWaypoint": [
+        "forward",
+        "reverse"
+      ],
+      "reverseOffsetDeg": 180
+    },
+    "undirectedEdges": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        7,
+        8
+      ],
+      [
+        4,
+        9
+      ],
+      [
+        9,
+        10
+      ],
+      [
+        10,
+        11
+      ],
+      [
+        11,
+        12
+      ],
+      [
+        12,
+        13
+      ],
+      [
+        13,
+        14
+      ],
+      [
+        14,
+        15
+      ]
+    ]
+  }
+}

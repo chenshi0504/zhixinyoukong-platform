@@ -1,0 +1,15 @@
+__pycache__
+*.pyc
+*.pyo
+.git
+.gitignore
+.vscode
+.kiro
+*.md
+*.bat
+node_modules
+frontend
+docs
+tools
+项目开发-阶段3
+conda_env

@@ -1,0 +1,7 @@
+{
+    "algorithm": "MPC-TuRBO",
+    "saturation_level": 110,
+    "cycle_time": 115,
+    "green_ratio": 65,
+    "description": "MPC-TuRBO算法配置 - 模型预测控制结合TuRBO优化"
+}

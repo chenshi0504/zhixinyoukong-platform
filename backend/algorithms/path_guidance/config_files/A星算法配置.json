@@ -1,0 +1,14 @@
+{
+    "algorithm": "astar",
+    "algorithm_name": "A*算法",
+    "description": "启发式搜索算法，高效快速的路径规划",
+    "networkFile": "network2.xml",
+    "density": 60,
+    "targetSpeed": 80,
+    "parameters": {
+        "heuristic_function": "euclidean",
+        "weight_factor": 1.0,
+        "max_search_nodes": 5000,
+        "admissible": true
+    }
+}

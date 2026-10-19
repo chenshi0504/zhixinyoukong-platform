@@ -1,0 +1,13 @@
+link_type,link_type_name,type_code,default_lane_capacity,default_speed_limit,default_number_of_lanes
+1,Freeway,f,3000,60,2
+2,Highway/Expressway,h,3000,60,2
+3,Principal arterial,a,3000,60,2
+4,Major arterial,a,3000,60,2
+5,Minor arterial,a,3000,60,2
+11,Collector,a,3000,60,2
+7,Local,a,3000,60,2
+8,Frontage road,a,3000,60,2
+9,Ramp,r,3000,60,2
+10,Zonal connector,c,3000,60,2
+100,Transit link,t,3000,60,2
+200,Walking link,w,3000,60,2

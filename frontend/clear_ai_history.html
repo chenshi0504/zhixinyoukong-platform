@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清除AI助手历史数据</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .status {
+            font-size: 48px;
+            margin: 20px 0;
+        }
+        .message {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>清除AI助手历史数据</h1>
+        <div class="status">🗑️</div>
+        <div class="message" id="message">
+            点击下方按钮清除所有AI助手的对话历史和状态数据
+        </div>
+        <button class="btn" onclick="clearData()">清除数据</button>
+    </div>
+
+    <script>
+        function clearData() {
+            try {
+                // 清除AI助手相关的localStorage数据
+                localStorage.removeItem('aiAssistantHistory');
+                localStorage.removeItem('aiAssistantViewMode');
+
+                document.getElementById('message').innerHTML =
+                    '✅ 清除成功！<br><br>已清除以下数据：<br>- 对话历史<br>- 窗口状态<br><br>刷新页面后生效';
+                document.querySelector('.status').textContent = '✅';
+
+                setTimeout(() => {
+                    window.close();
+                }, 3000);
+            } catch (e) {
+                document.getElementById('message').innerHTML =
+                    '❌ 清除失败：' + e.message;
+                document.querySelector('.status').textContent = '❌';
+            }
+        }
+    </script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+</html>
+
+

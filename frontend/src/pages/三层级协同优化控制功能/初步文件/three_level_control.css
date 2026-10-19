@@ -1,0 +1,724 @@
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Source Han Sans CN', 'Microsoft YaHei', sans-serif;
+    background-color: #FFFFFF;
+    color: #333333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* 顶部标题区域 - 与5.1保持一致 */
+.header {
+    background-color: #2C5AA0;
+    color: white;
+    padding: 20px 40px;
+    text-align: center;
+}
+
+.main-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+/* 导航操作区 - 与5.1保持一致 */
+.nav-actions {
+    background-color: #F8F9FA;
+    padding: 12px 40px;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.nav-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-secondary {
+    background-color: #6C757D;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5A6268;
+}
+
+.btn-primary {
+    background-color: #2C5AA0;
+    color: white;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background-color: #1e3f73;
+}
+
+/* 场景选择区域 */
+.scenario-selection-section {
+    background-color: #F8F9FA;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #E0E0E0;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.scenario-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.scenario-button {
+    background-color: #FFFFFF;
+    border: 2px solid #E0E0E0;
+    border-radius: 8px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.scenario-button:hover {
+    border-color: #2C5AA0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 90, 160, 0.15);
+}
+
+.scenario-button.selected {
+    border-color: #2C5AA0;
+    background-color: #E3F2FD;
+}
+
+.scenario-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+}
+
+.scenario-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2C5AA0;
+    margin-bottom: 8px;
+}
+
+.scenario-desc {
+    font-size: 12px;
+    color: #666666;
+    line-height: 1.4;
+}
+
+/* 场景配置区域 */
+.scenario-config-section {
+    background-color: #F8F9FA;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #E0E0E0;
+    margin-bottom: 20px;
+}
+
+.config-content {
+    margin-bottom: 20px;
+}
+
+.config-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 15px;
+}
+
+.config-card {
+    background-color: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.config-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.config-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+/* 单选按钮组 */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.radio-label input[type="radio"] {
+    cursor: pointer;
+}
+
+/* 参数输入 */
+.param-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.param-item label {
+    color: #666666;
+}
+
+.param-input {
+    width: 120px;
+    padding: 6px 10px;
+    border: 1px solid #D0D0D0;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.select-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #D0D0D0;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #FFFFFF;
+}
+
+/* 滑块输入 */
+.slider-input {
+    flex: 1;
+    margin: 0 10px;
+}
+
+.slider-value {
+    min-width: 50px;
+    text-align: right;
+    font-weight: 600;
+    color: #2C5AA0;
+}
+
+/* 上传按钮 */
+.upload-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #FFFFFF;
+    border: 2px dashed #D0D0D0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.upload-btn:hover {
+    border-color: #2C5AA0;
+    background-color: #F0F8FF;
+}
+
+.file-info {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #666666;
+    text-align: center;
+    padding: 8px;
+    border-radius: 4px;
+    background-color: #F8F9FA;
+    transition: all 0.3s;
+}
+
+.file-info.success {
+    background-color: #E8F5E9;
+    border: 1px solid #28A745;
+}
+
+.file-info.error {
+    background-color: #FFEBEE;
+    border: 1px solid #dc3545;
+}
+
+/* 算法上传 */
+.algorithm-upload {
+    margin-bottom: 15px;
+}
+
+.algorithm-compare h4 {
+    font-size: 14px;
+    margin-bottom: 8px;
+    color: #333333;
+}
+
+/* 操作按钮 */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* SUMO仿真展示区域 */
+.sumo-simulation-section {
+    background-color: #F8F9FA;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #E0E0E0;
+}
+
+.sumo-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sumo-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 8px;
+}
+
+.sumo-desc {
+    font-size: 14px;
+    color: #666666;
+}
+
+.sumo-canvas {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.sumo-network-image {
+    max-width: 100%;
+    max-height: 500px;
+    border-radius: 8px;
+}
+
+/* 视频播放器样式 */
+.simulation-video {
+    max-width: 100%;
+    max-height: 600px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    background: #000;
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+}
+
+.video-placeholder {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999999;
+}
+
+.video-placeholder .placeholder-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.video-placeholder .placeholder-text {
+    font-size: 18px;
+    color: #666666;
+}
+
+/* 仿真数据展示 */
+.simulation-data {
+    margin-bottom: 20px;
+}
+
+.data-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.data-card {
+    background-color: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 6px;
+    padding: 15px;
+    text-align: center;
+}
+
+.data-label {
+    font-size: 12px;
+    color: #666666;
+    margin-bottom: 8px;
+}
+
+.data-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: #2C5AA0;
+}
+
+/* 效果对比 */
+.comparison-section {
+    background-color: #FFFFFF;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.comparison-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 20px;
+    align-items: center;
+}
+
+.comparison-card {
+    background-color: #F8F9FA;
+    border: 1px solid #E0E0E0;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.comparison-card.improved {
+    background-color: #E8F5E8;
+    border-color: #28A745;
+}
+
+.comparison-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+.metric-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.metric-item span:first-child {
+    color: #666666;
+}
+
+.metric-value {
+    font-weight: 600;
+    color: #2C5AA0;
+}
+
+.comparison-card.improved .metric-value {
+    color: #28A745;
+}
+
+.comparison-arrow {
+    font-size: 32px;
+    color: #2C5AA0;
+    text-align: center;
+}
+
+/* 仿真控制按钮 */
+.simulation-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.control-btn {
+    padding: 10px 20px;
+    background-color: #FFFFFF;
+    border: 1px solid #D0D0D0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+
+.control-btn:hover {
+    background-color: #F0F8FF;
+    border-color: #2C5AA0;
+    color: #2C5AA0;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .scenario-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .data-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .comparison-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .comparison-arrow {
+        transform: rotate(90deg);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .header {
+        padding: 15px 20px;
+    }
+    
+    .main-title {
+        font-size: 20px;
+    }
+    
+    .subtitle {
+        font-size: 12px;
+    }
+    
+    .scenario-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .config-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .data-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .simulation-controls {
+        flex-wrap: wrap;
+    }
+}
+
+/* 结果图片展示区域 */
+.result-images-section {
+    background-color: #F8F9FA;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #E0E0E0;
+    margin-top: 20px;
+}
+
+.result-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.result-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333333;
+    margin-bottom: 8px;
+}
+
+.result-desc {
+    font-size: 14px;
+    color: #666666;
+}
+
+.result-images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 20px;
+}
+
+.result-image-card {
+    background-color: #FFFFFF;
+    border: 1px solid #E0E0E0;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+}
+
+.result-image-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.result-image-card img:hover {
+    transform: scale(1.02);
+}
+
+.result-image-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333333;
+    margin-top: 12px;
+    margin-bottom: 8px;
+}
+
+.result-image-desc {
+    font-size: 12px;
+    color: #666666;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    padding: 10px;
+    background-color: #F8F9FA;
+    border-left: 3px solid #2C5AA0;
+    border-radius: 4px;
+}
+
+.download-image-btn {
+    width: 100%;
+    padding: 8px 12px;
+    background-color: #2C5AA0;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s;
+}
+
+.download-image-btn:hover {
+    background-color: #1e3f73;
+}
+
+/* 配置文件列表 */
+.config-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.config-file-btn {
+    padding: 10px 15px;
+    background-color: #FFFFFF;
+    border: 2px solid #E0E0E0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+    font-size: 13px;
+    color: #333333;
+}
+
+.config-file-btn:hover {
+    border-color: #2C5AA0;
+    background-color: #F0F8FF;
+}
+
+.config-file-btn.selected {
+    border-color: #2C5AA0;
+    background-color: #E3F2FD;
+    font-weight: 600;
+}
+
+.selected-config {
+    padding: 8px 12px;
+    background-color: #E8F5E9;
+    border-left: 3px solid #28A745;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #28A745;
+    font-weight: 500;
+}
+
+.selected-config.empty {
+    background-color: #F5F5F5;
+    border-left-color: #999999;
+    color: #999999;
+}
+
+/* 加载动画 */
+.loading {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #2C5AA0;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 动画效果 */
+.scenario-button,
+.config-card,
+.control-btn {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.sumo-simulation-section,
+.result-images-section {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,322 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多源数据融合功能 - 综合交通实验平台</title>
+    <link rel="stylesheet" href="data_fusion.css">
+    <style>
+        /* 额外样式 */
+        .info-text {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .charts-viewer {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .chart-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .chart-item h4 {
+            margin: 0 0 10px 0;
+            color: #2C5AA0;
+            font-size: 1.1em;
+        }
+        
+        .chart-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .chart-item img:hover {
+            transform: scale(1.02);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+        }
+        
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部标题区域 -->
+    <header class="header">
+        <h1 class="main-title">多源数据融合功能</h1>
+        <p class="subtitle">贝叶斯融合算法 - YOLO检测与点云熵数据融合</p>
+    </header>
+
+    <!-- 导航操作区 -->
+    <nav class="nav-actions">
+        <div class="nav-content">
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="backBtn">返回</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 左侧配置面板 -->
+        <aside class="config-panel">
+            <!-- 融合算法说明 -->
+            <div class="config-section">
+                <h3>融合算法说明</h3>
+                <div class="algorithm-description">
+                    <p><strong>贝叶斯融合算法</strong></p>
+                    <p class="info-text">融合YOLO目标检测置信度和点云熵值，通过贝叶斯决策理论计算融合概率</p>
+                    <p class="info-text">公式：P(目标|YOLO,点云) = (P_yolo × P_pc × Prior) / [(P_yolo × P_pc × Prior) + ((1-P_yolo) × (1-P_pc) × (1-Prior))]</p>
+                </div>
+            </div>
+
+            <!-- 数据源说明 -->
+            <div class="config-section">
+                <h3>数据源说明</h3>
+                <div class="data-sources">
+                    <div class="source-item">
+                        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                            <span style="color: #2C5AA0; font-weight: bold;">✓</span>
+                            <span style="margin-left: 10px; font-weight: bold;">YOLO检测结果</span>
+                        </div>
+                        <p class="info-text">包含目标类别、置信度、边界框信息</p>
+                        <p class="info-text">验证集：75帧 | 测试集：75帧</p>
+                    </div>
+                    <div class="source-item">
+                        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                            <span style="color: #28a745; font-weight: bold;">✓</span>
+                            <span style="margin-left: 10px; font-weight: bold;">点云熵数据</span>
+                        </div>
+                        <p class="info-text">包含点云熵值（不确定性度量）和目标数量</p>
+                        <p class="info-text">验证集：75帧 | 测试集：75帧</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 目标类别说明 -->
+            <div class="config-section">
+                <h3>目标类别说明</h3>
+                <div class="target-classes">
+                    <div class="class-item">
+                        <div style="font-weight: bold; color: #2C5AA0;">🚗 Car (汽车)</div>
+                        <p class="info-text">融合概率均值：0.31 (最佳)</p>
+                    </div>
+                    <div class="class-item">
+                        <div style="font-weight: bold; color: #2C5AA0;">🚴 Cyclist (骑行者)</div>
+                        <p class="info-text">融合概率均值：0.31 (最佳)</p>
+                    </div>
+                    <div class="class-item">
+                        <div style="font-weight: bold; color: #666;">🚶 Pedestrian (行人)</div>
+                        <p class="info-text">融合概率均值：0.23 (良好)</p>
+                    </div>
+                    <div class="class-item">
+                        <div style="font-weight: bold; color: #999;">🚌 Bus (公交车)</div>
+                        <p class="info-text">融合概率均值：0.16 (一般)</p>
+                    </div>
+                    <div class="class-item">
+                        <div style="font-weight: bold; color: #999;">🚚 Truck (卡车)</div>
+                        <p class="info-text">融合概率均值：0.008 (较差)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 融合参数说明 -->
+            <div class="config-section">
+                <h3>融合参数说明</h3>
+                <div class="config-item">
+                    <p><strong>先验概率：</strong>0.1</p>
+                    <p class="info-text">目标存在的基础概率</p>
+                </div>
+                <div class="config-item">
+                    <p><strong>熵转换参数λ：</strong>0.1</p>
+                    <p class="info-text">控制熵值对融合结果的影响程度</p>
+                </div>
+                <div class="config-item">
+                    <p><strong>数据集：</strong>KITTI数据集</p>
+                    <p class="info-text">验证集75帧 + 测试集75帧</p>
+                </div>
+            </div>
+
+            <!-- 操作控制区 -->
+            <div class="config-section">
+                <h3>操作控制</h3>
+                <div class="control-buttons">
+                    <button class="btn btn-primary" id="importDataBtn">
+                        📥 导入数据源
+                    </button>
+                    <button class="btn btn-success" id="startFusionBtn">
+                        🔄 开始融合计算
+                    </button>
+                    <button class="btn btn-info" id="generateChartsBtn">
+                        📊 生成可视化图表
+                    </button>
+                    <button class="btn btn-warning" id="showChartsBtn" style="display: none;">
+                        🖼️ 展示图表
+                    </button>
+                    <button class="btn btn-secondary" id="exportReportBtn">
+                        📄 导出实验报告
+                    </button>
+                </div>
+                <div class="status-display">
+                    <span class="status-label">系统状态：</span>
+                    <span class="status-value" id="fusionStatus">就绪</span>
+                </div>
+                <div class="progress-display">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="fusionProgressBar"></div>
+                    </div>
+                    <span class="progress-text" id="progressText">0%</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 右侧展示区域 -->
+        <section class="display-area">
+            <!-- 数据概览区 -->
+            <div class="data-section">
+                <h3>数据概览</h3>
+                <div class="data-container">
+                    <div class="data-status-row">
+                        <div class="status-card">
+                            <div class="status-icon">🖼️</div>
+                            <div class="status-content">
+                                <div class="status-label">YOLO检测数据</div>
+                                <div class="status-value" id="yoloDataStatus">已加载</div>
+                                <div class="status-count">验证集：75帧 | 测试集：75帧</div>
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-icon">☁️</div>
+                            <div class="status-content">
+                                <div class="status-label">点云熵数据</div>
+                                <div class="status-value" id="pointCloudStatus">已加载</div>
+                                <div class="status-count">验证集：75帧 | 测试集：75帧</div>
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-icon">🔄</div>
+                            <div class="status-content">
+                                <div class="status-label">融合结果</div>
+                                <div class="status-value" id="fusionDataStatus">未生成</div>
+                                <div class="status-count" id="fusionDataCount">0帧</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 融合结果展示区 -->
+            <div class="data-section">
+                <h3>融合结果展示</h3>
+                <div class="data-container">
+                    <div class="fusion-results-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                        <!-- YOLO检测结果 -->
+                        <div class="result-card">
+                            <div class="result-header" style="background: #2C5AA0; color: white; padding: 10px; border-radius: 10px 10px 0 0; margin: -15px -15px 15px -15px;">
+                                <span class="result-title" style="font-weight: bold;">YOLO检测结果</span>
+                                <span class="result-count" id="yoloResultCount" style="float: right; background: white; color: #2C5AA0; padding: 2px 10px; border-radius: 10px;">0</span>
+                            </div>
+                            <div class="result-content" id="yoloResults" style="max-height: 300px; overflow-y: auto;">
+                                <div class="placeholder-content" style="text-align: center; padding: 50px 20px; color: #999;">
+                                    <div style="font-size: 3em;">🔍</div>
+                                    <p>等待加载YOLO检测数据</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 点云熵结果 -->
+                        <div class="result-card">
+                            <div class="result-header" style="background: #28a745; color: white; padding: 10px; border-radius: 10px 10px 0 0; margin: -15px -15px 15px -15px;">
+                                <span class="result-title" style="font-weight: bold;">点云熵结果</span>
+                                <span class="result-count" id="entropyResultCount" style="float: right; background: white; color: #28a745; padding: 2px 10px; border-radius: 10px;">0</span>
+                            </div>
+                            <div class="result-content" id="entropyResults" style="max-height: 300px; overflow-y: auto;">
+                                <div class="placeholder-content" style="text-align: center; padding: 50px 20px; color: #999;">
+                                    <div style="font-size: 3em;">📊</div>
+                                    <p>等待加载点云熵数据</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 贝叶斯融合结果 -->
+                        <div class="result-card">
+                            <div class="result-header" style="background: #dc3545; color: white; padding: 10px; border-radius: 10px 10px 0 0; margin: -15px -15px 15px -15px;">
+                                <span class="result-title" style="font-weight: bold;">贝叶斯融合结果</span>
+                                <span class="result-count" id="fusionResultCount" style="float: right; background: white; color: #dc3545; padding: 2px 10px; border-radius: 10px;">0</span>
+                            </div>
+                            <div class="result-content" id="fusionResults" style="max-height: 300px; overflow-y: auto;">
+                                <div class="placeholder-content" style="text-align: center; padding: 50px 20px; color: #999;">
+                                    <div style="font-size: 3em;">🔄</div>
+                                    <p>等待生成融合结果</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图表展示区 -->
+            <div class="data-section" id="chartsSection" style="display: none;">
+                <h3>可视化图表</h3>
+                <div class="charts-viewer" id="chartsViewer">
+                    <!-- 图表将动态加载 -->
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- 图片查看模态框 -->
+    <div id="imageModal" class="modal">
+        <span class="close-modal">&times;</span>
+        <img class="modal-content" id="modalImage">
+    </div>
+
+    <script src="data_fusion_new.js"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+
+</html>
+
+

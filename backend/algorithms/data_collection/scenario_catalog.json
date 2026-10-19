@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "scenarios": [
+    {
+      "id": "low",
+      "name": "城市低流量",
+      "description": "城市路口车辆相对稀疏，适合观察低流量场景下的车辆检测与跟踪。",
+      "filename": "城市低流量.mp4",
+      "durationSeconds": 51,
+      "source": "用户提供视频：豪品素材-繁忙城市交通快节奏车流空镜 (85).mp4",
+      "license": "用户提供素材；仅用于本地平台测试。"
+    },
+    {
+      "id": "high",
+      "name": "城市高流量",
+      "description": "城市快速路车流连续，适合观察高流量场景下的车辆检测与跟踪。",
+      "filename": "城市高流量.mp4",
+      "durationSeconds": 121,
+      "source": "用户提供视频：车流119.mp4",
+      "license": "用户提供素材；仅用于本地平台测试。"
+    },
+    {
+      "id": "accident",
+      "name": "严重拥堵",
+      "description": "城市快速路车辆排队明显，适合观察严重拥堵场景下的车辆检测过程。",
+      "filename": "严重拥堵.mp4",
+      "durationSeconds": 40,
+      "source": "用户提供视频：车流123.mp4",
+      "license": "用户提供素材；仅用于本地平台测试。"
+    }
+  ]
+}

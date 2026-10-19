@@ -1,0 +1,61 @@
+{
+  "task_id": "traffic_flow_prediction_lag5",
+  "task_name": "交通流短时预测学生自研算法任务",
+  "created_by": "student_algorithm_pack.py",
+  "source_data": "Traffic flow data.csv",
+  "target": "target_total_flow",
+  "prediction_column": "prediction_total_flow",
+  "id_column": "sample_id",
+  "time_step": 5,
+  "train_ratio": 0.8,
+  "train_size": 2300,
+  "test_size": 575,
+  "feature_columns": [
+    "sample_id",
+    "datetime",
+    "hour",
+    "minute",
+    "day_of_week",
+    "speed",
+    "quality_index",
+    "day_type_id",
+    "flow_lag_5",
+    "flow_lag_4",
+    "flow_lag_3",
+    "flow_lag_2",
+    "flow_lag_1"
+  ],
+  "submission_columns": [
+    "sample_id",
+    "prediction_total_flow"
+  ],
+  "baseline": {
+    "name": "decision_tree_lag5",
+    "model": "DecisionTreeRegressor(max_depth=10, random_state=42)",
+    "feature_columns": [
+      "flow_lag_5",
+      "flow_lag_4",
+      "flow_lag_3",
+      "flow_lag_2",
+      "flow_lag_1"
+    ],
+    "metrics": {
+      "mae": 79.6619,
+      "rmse": 118.4984,
+      "mape": 10.7515,
+      "r2": 0.937576
+    }
+  },
+  "evaluation": {
+    "primary_metric": "rmse",
+    "smaller_is_better": [
+      "mae",
+      "rmse",
+      "mape"
+    ],
+    "larger_is_better": [
+      "r2"
+    ]
+  },
+  "suite_task_id": "traffic_prediction"
+}

@@ -1,0 +1,27 @@
+{
+  "algorithm": "Webster",
+  "scenario": "单点交叉口信号优化",
+  "objective": "最小化延误",
+  "parameters": {
+    "cycle_length": 120,
+    "green_ratio": 0.6,
+    "yellow_time": 3,
+    "all_red_time": 2,
+    "min_green": 20,
+    "max_green": 80
+  },
+  "traffic_flow": {
+    "main_road": 1200,
+    "branch_road": 650
+  },
+  "intersection": {
+    "id": "J1",
+    "phases": 4,
+    "approaches": [
+      "北",
+      "南",
+      "东",
+      "西"
+    ]
+  }
+}

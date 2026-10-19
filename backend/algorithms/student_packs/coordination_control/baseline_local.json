@@ -1,0 +1,402 @@
+[
+  {
+    "step": 10,
+    "total_vehicles": 1,
+    "cav_count": 0,
+    "avg_speed": 14.401056394825318,
+    "waiting_count": 0,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 20,
+    "total_vehicles": 3,
+    "cav_count": 2,
+    "avg_speed": 11.469240632586805,
+    "waiting_count": 0,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 30,
+    "total_vehicles": 4,
+    "cav_count": 3,
+    "avg_speed": 6.572524831665512,
+    "waiting_count": 0,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 40,
+    "total_vehicles": 5,
+    "cav_count": 3,
+    "avg_speed": 6.132838665891592,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 50,
+    "total_vehicles": 6,
+    "cav_count": 3,
+    "avg_speed": 8.535352902972582,
+    "waiting_count": 0,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 60,
+    "total_vehicles": 7,
+    "cav_count": 3,
+    "avg_speed": 10.541078068374745,
+    "waiting_count": 0,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 70,
+    "total_vehicles": 8,
+    "cav_count": 4,
+    "avg_speed": 6.724121122174717,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 80,
+    "total_vehicles": 8,
+    "cav_count": 5,
+    "avg_speed": 6.661006967777801,
+    "waiting_count": 2,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 90,
+    "total_vehicles": 8,
+    "cav_count": 6,
+    "avg_speed": 4.814729716927529,
+    "waiting_count": 3,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 100,
+    "total_vehicles": 8,
+    "cav_count": 6,
+    "avg_speed": 7.7785873045231915,
+    "waiting_count": 0,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 110,
+    "total_vehicles": 10,
+    "cav_count": 8,
+    "avg_speed": 7.348425381795259,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 120,
+    "total_vehicles": 10,
+    "cav_count": 9,
+    "avg_speed": 5.059708100000001,
+    "waiting_count": 3,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 130,
+    "total_vehicles": 10,
+    "cav_count": 8,
+    "avg_speed": 4.614698623752891,
+    "waiting_count": 4,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 140,
+    "total_vehicles": 10,
+    "cav_count": 8,
+    "avg_speed": 7.3201750207577465,
+    "waiting_count": 0,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 150,
+    "total_vehicles": 11,
+    "cav_count": 9,
+    "avg_speed": 7.66470346739414,
+    "waiting_count": 0,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 160,
+    "total_vehicles": 11,
+    "cav_count": 10,
+    "avg_speed": 5.834246815564114,
+    "waiting_count": 2,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 170,
+    "total_vehicles": 11,
+    "cav_count": 9,
+    "avg_speed": 6.497557431404778,
+    "waiting_count": 2,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 180,
+    "total_vehicles": 11,
+    "cav_count": 9,
+    "avg_speed": 5.06163186606141,
+    "waiting_count": 2,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 190,
+    "total_vehicles": 12,
+    "cav_count": 9,
+    "avg_speed": 7.72744651705036,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 200,
+    "total_vehicles": 12,
+    "cav_count": 9,
+    "avg_speed": 7.319716102608233,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 210,
+    "total_vehicles": 13,
+    "cav_count": 10,
+    "avg_speed": 7.733812872433556,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 220,
+    "total_vehicles": 13,
+    "cav_count": 9,
+    "avg_speed": 6.230303205939502,
+    "waiting_count": 3,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 230,
+    "total_vehicles": 12,
+    "cav_count": 8,
+    "avg_speed": 7.128174191189799,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 240,
+    "total_vehicles": 13,
+    "cav_count": 9,
+    "avg_speed": 5.908738542210219,
+    "waiting_count": 3,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 250,
+    "total_vehicles": 14,
+    "cav_count": 10,
+    "avg_speed": 6.318496764589154,
+    "waiting_count": 3,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 260,
+    "total_vehicles": 14,
+    "cav_count": 9,
+    "avg_speed": 5.25387103714826,
+    "waiting_count": 6,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 270,
+    "total_vehicles": 12,
+    "cav_count": 7,
+    "avg_speed": 4.542804906893262,
+    "waiting_count": 6,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 280,
+    "total_vehicles": 12,
+    "cav_count": 6,
+    "avg_speed": 8.27363525945159,
+    "waiting_count": 0,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 290,
+    "total_vehicles": 12,
+    "cav_count": 6,
+    "avg_speed": 8.35273484080835,
+    "waiting_count": 2,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 300,
+    "total_vehicles": 13,
+    "cav_count": 6,
+    "avg_speed": 5.456374433954819,
+    "waiting_count": 5,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 310,
+    "total_vehicles": 14,
+    "cav_count": 7,
+    "avg_speed": 3.4293511755083763,
+    "waiting_count": 9,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 320,
+    "total_vehicles": 15,
+    "cav_count": 8,
+    "avg_speed": 7.033985438282409,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 330,
+    "total_vehicles": 16,
+    "cav_count": 8,
+    "avg_speed": 8.437167821630743,
+    "waiting_count": 3,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 340,
+    "total_vehicles": 16,
+    "cav_count": 8,
+    "avg_speed": 7.4598060977106275,
+    "waiting_count": 4,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 350,
+    "total_vehicles": 14,
+    "cav_count": 6,
+    "avg_speed": 5.236313899976957,
+    "waiting_count": 5,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 360,
+    "total_vehicles": 15,
+    "cav_count": 7,
+    "avg_speed": 5.950308553719765,
+    "waiting_count": 6,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 370,
+    "total_vehicles": 13,
+    "cav_count": 7,
+    "avg_speed": 8.935571641808584,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 380,
+    "total_vehicles": 12,
+    "cav_count": 7,
+    "avg_speed": 8.7049143339294,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 390,
+    "total_vehicles": 13,
+    "cav_count": 8,
+    "avg_speed": 6.661389072036915,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 400,
+    "total_vehicles": 13,
+    "cav_count": 9,
+    "avg_speed": 3.076923076923078,
+    "waiting_count": 7,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 410,
+    "total_vehicles": 14,
+    "cav_count": 10,
+    "avg_speed": 5.838531432878883,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 420,
+    "total_vehicles": 15,
+    "cav_count": 11,
+    "avg_speed": 7.988193949715006,
+    "waiting_count": 2,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 430,
+    "total_vehicles": 13,
+    "cav_count": 11,
+    "avg_speed": 6.441046556146233,
+    "waiting_count": 3,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 440,
+    "total_vehicles": 11,
+    "cav_count": 9,
+    "avg_speed": 4.605253298488738,
+    "waiting_count": 4,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 450,
+    "total_vehicles": 11,
+    "cav_count": 9,
+    "avg_speed": 4.3051556080041475,
+    "waiting_count": 5,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 460,
+    "total_vehicles": 11,
+    "cav_count": 10,
+    "avg_speed": 7.060956215641196,
+    "waiting_count": 0,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 470,
+    "total_vehicles": 12,
+    "cav_count": 12,
+    "avg_speed": 6.2305686666666675,
+    "waiting_count": 1,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 480,
+    "total_vehicles": 13,
+    "cav_count": 12,
+    "avg_speed": 6.155309069050858,
+    "waiting_count": 2,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 490,
+    "total_vehicles": 11,
+    "cav_count": 9,
+    "avg_speed": 6.113116940972028,
+    "waiting_count": 3,
+    "coordination_mode": "local"
+  },
+  {
+    "step": 500,
+    "total_vehicles": 11,
+    "cav_count": 8,
+    "avg_speed": 8.631286192755006,
+    "waiting_count": 0,
+    "coordination_mode": "local"
+  }
+]

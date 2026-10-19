@@ -1,0 +1,407 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 面向车路云一体化的综合交通实验平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; padding: 0; }
+        .login-page {
+            width: 100vw; height: 100vh;
+            background-image: url('/src/pages/%E7%99%BB%E5%BD%95%E7%95%8C%E9%9D%A2/%E5%B0%81%E9%9D%A2%E5%9B%BE%E7%89%87.jpg');
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            position: relative;
+            font-family: 'Source Han Sans CN', 'Microsoft YaHei', sans-serif;
+        }
+        .login-page::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(44,90,160,0.8), rgba(0,0,0,0.6)); z-index: 1;
+        }
+        .login-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 20px;
+        }
+        .main-title {
+            font-size: 36px; font-weight: 700; color: #FFF;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5), 0 4px 8px rgba(0,0,0,0.3);
+            margin-bottom: 15px; animation: slideDown 0.8s ease-out;
+        }
+        .sub-title { font-size: 16px; color: rgba(255,255,255,0.9); margin-bottom: 50px; animation: slideDown 0.8s ease-out 0.2s both; }
+        .login-card {
+            background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-radius: 16px;
+            padding: 50px; width: 100%; max-width: 450px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); animation: slideUp 0.8s ease-out 0.4s both;
+        }
+        .card-header h2 { font-size: 24px; color: #2C5AA0; text-align: center; margin-bottom: 30px; }
+        .form-group { margin-bottom: 25px; }
+        .input-container {
+            display: flex; align-items: center; background: #F8F9FA;
+            border: 2px solid transparent; border-radius: 12px; height: 50px; transition: all 0.3s ease;
+        }
+        .input-container:focus-within { border-color: #2C5AA0; box-shadow: 0 0 0 3px rgba(44,90,160,0.1); }
+        .input-icon { padding: 0 15px; font-size: 20px; color: #666; }
+        .input-container:focus-within .input-icon { color: #2C5AA0; }
+        .input-container input, .input-container select {
+            flex: 1; height: 100%; padding: 0 15px; border: none; background: transparent;
+            font-size: 14px; outline: none; font-family: inherit;
+        }
+        .input-container input::placeholder { color: #999; }
+        .login-button {
+            width: 100%; height: 50px; background: linear-gradient(135deg, #2C5AA0, #4A90E2);
+            color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600;
+            cursor: pointer; margin-top: 10px; transition: all 0.3s ease;
+        }
+        .login-button:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(44,90,160,0.4); }
+        .login-button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .input-container.error { border-color: #DC3545; animation: shake 0.5s ease-in-out; }
+        @keyframes slideDown { from { opacity:0; transform:translateY(-50px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes slideUp { from { opacity:0; transform:translateY(50px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+        @media (max-width:768px) { .main-title{font-size:32px} .login-card{padding:40px 30px;margin:0 15px} }
+        @media (max-width:480px) { .main-title{font-size:28px} .login-card{padding:35px 25px} .input-container{height:45px} .login-button{height:45px;font-size:15px} }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-container">
+            <h1 class="main-title">面向车路云一体化的综合交通实验平台</h1>
+            <p class="sub-title">智能交通 · 虚实结合 · 科研创新</p>
+            <div class="login-card">
+                <div class="card-header"><h2 id="formTitle">系统登录</h2></div>
+
+                <!-- 登录表单 -->
+                <form id="loginForm">
+                    <div class="form-group"><div class="input-container">
+                        <i class="input-icon">👤</i>
+                        <input type="text" id="username" name="username" value="student" placeholder="请输入用户名" autocomplete="username" required>
+                    </div></div>
+                    <div class="form-group"><div class="input-container">
+                        <i class="input-icon">🔒</i>
+                        <input type="password" id="password" name="password" value="123456" placeholder="请输入密码" autocomplete="current-password" required>
+                    </div></div>
+                    <div class="form-group"><div class="input-container">
+                        <i class="input-icon">👥</i>
+                        <select id="role" name="role">
+                            <option value="student" selected>学生</option>
+                            <option value="teacher">教师</option>
+                            <option value="admin">管理员</option>
+                        </select>
+                    </div></div>
+                    <button type="submit" class="login-button"><span class="button-text">登录系统</span></button>
+                </form>
+
+                <!-- 注册表单 -->
+                <form id="registerForm" style="display:none;">
+                    <div class="form-group"><div class="input-container">
+                        <i class="input-icon">🏫</i>
+                        <select id="regOrg">
+                            <option value="">请选择学校（机构）</option>
+                        </select>
+                    </div></div>
+                    <div class="form-group"><div class="input-container">
+                        <i class="input-icon">班</i>
+                        <select id="regClass" disabled>
+                            <option value="">请先选择学校</option>
+                        </select>
+                    </div></div>
+                    <div class="form-group"><div class="input-container">
+                        <i class="input-icon">名</i>
+                        <input type="text" id="regRealName" placeholder="请输入真实姓名（必填）" required>
+                    </div></div>
+                    <div class="form-group"><div class="input-container">
+                        <i class="input-icon">密</i>
+                        <input type="password" id="regPassword" placeholder="请设置密码（至少6位）" required>
+                    </div></div>
+                    <div class="form-group"><div class="input-container">
+                        <i class="input-icon">验</i>
+                        <input type="password" id="regPasswordConfirm" placeholder="请再次确认密码" required>
+                    </div></div>
+                    <p id="regHint" style="font-size:13px;color:#888;margin:-10px 0 15px 5px;">用户名将由系统自动分配</p>
+                    <button type="submit" class="login-button" style="background:linear-gradient(135deg,#28a745,#5cb85c)"><span class="button-text">注册账号</span></button>
+                </form>
+
+                <div style="margin-top:18px;text-align:center;font-size:14px;">
+                    <span id="toggleLink" style="color:#2C5AA0;cursor:pointer;text-decoration:underline;">还没有账号？点击注册</span>
+                </div>
+
+                <div id="backendStatus" style="margin-top:15px;text-align:center;font-size:13px;color:#999;">
+                    <span id="statusDot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ccc;margin-right:6px;vertical-align:middle;"></span>
+                    <span id="statusText">正在检测后端服务...</span>
+                </div>
+
+                <!-- 云端平台连接状态（仅在注册时显示） -->
+                <div id="cloudStatus" style="display:none;margin-top:10px;text-align:center;font-size:13px;color:#999;">
+                    <span id="cloudStatusDot" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#ccc;margin-right:6px;vertical-align:middle;"></span>
+                    <span id="cloudStatusText">正在检测云端平台...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../utils/cloud-status-checker.js"></script>
+    <script>
+        /* 后端状态检测 */
+        (function(){
+            var dot = document.getElementById('statusDot');
+            var txt = document.getElementById('statusText');
+            function check(){
+                fetch('/api/v1/health').then(function(r){return r.json()}).then(function(){
+                    dot.style.background='#28a745'; txt.textContent='后端服务已连接'; txt.style.color='#28a745';
+                }).catch(function(){
+                    dot.style.background='#dc3545'; txt.style.color='#dc3545';
+                    txt.textContent='后端服务暂不可用，请检查服务器运行状态';
+                    setTimeout(check,5000);
+                });
+            }
+            check();
+        })();
+
+        /* 登录/注册切换 */
+        (function(){
+            var loginForm = document.getElementById('loginForm');
+            var registerForm = document.getElementById('registerForm');
+            var toggleLink = document.getElementById('toggleLink');
+            var formTitle = document.getElementById('formTitle');
+            var cloudStatus = document.getElementById('cloudStatus');
+            var isLogin = true;
+            var cloudChecker = null;
+
+            toggleLink.addEventListener('click', function(){
+                isLogin = !isLogin;
+                loginForm.style.display = isLogin ? '' : 'none';
+                registerForm.style.display = isLogin ? 'none' : '';
+                formTitle.textContent = isLogin ? '系统登录' : '用户注册';
+                toggleLink.textContent = isLogin ? '还没有账号？点击注册' : '已有账号？返回登录';
+
+                // 切换到注册页面时显示云端状态并开始检测
+                if (!isLogin) {
+                    cloudStatus.style.display = '';
+                    if (!cloudChecker) {
+                        cloudChecker = window.CloudStatusChecker.createCloudStatusChecker({
+                            dotElement: document.getElementById('cloudStatusDot'),
+                            textElement: document.getElementById('cloudStatusText'),
+                            autoStart: true
+                        });
+                    } else {
+                        cloudChecker.start();
+                    }
+                } else {
+                    // 切换回登录页面时隐藏云端状态并停止检测
+                    cloudStatus.style.display = 'none';
+                    if (cloudChecker) {
+                        cloudChecker.stop();
+                    }
+                }
+
+                // 清除状态提示
+                var sDot = document.getElementById('statusDot');
+                var sTxt = document.getElementById('statusText');
+                sDot.style.background='#ccc'; sTxt.style.color='#999'; sTxt.textContent='';
+            });
+        })();
+
+        /* 登录逻辑 */
+        (function(){
+            // 到达登录页 = 重新登录，清除旧状态
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('username');
+            localStorage.removeItem('token');
+            localStorage.removeItem('loginTime');
+
+            var form = document.getElementById('loginForm');
+            var btn = form.querySelector('.login-button');
+            var btnText = btn.querySelector('.button-text');
+            var sDot = document.getElementById('statusDot');
+            var sTxt = document.getElementById('statusText');
+
+            form.addEventListener('submit', function(e){
+                e.preventDefault();
+                var u = document.getElementById('username').value.trim();
+                var p = document.getElementById('password').value.trim();
+                var r = document.getElementById('role').value;
+                if(!u||!p){ msg('请输入用户名和密码','error'); return; }
+                btn.disabled=true; btnText.textContent='登录中...';
+
+                fetch('/api/v1/auth/login/json',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({username:u,password:p})
+                }).then(function(resp){
+                    if(!resp.ok) return resp.json().catch(function(){return null}).then(function(e){
+                        throw new Error(e&&e.detail&&e.detail.message||'用户名或密码错误');
+                    });
+                    return resp.json();
+                }).then(function(data){
+                    var tk=data.access_token;
+                    return fetch('/api/v1/auth/me',{headers:{'Authorization':'Bearer '+tk}}).then(function(mr){
+                        if(!mr.ok) throw new Error('获取用户信息失败');
+                        return mr.json().then(function(user){return{token:tk,user:user}});
+                    });
+                }).then(function(res){
+                    var role=res.user.role;
+                    if(r&&r!==role) throw new Error('所选角色与账号角色不匹配');
+                    localStorage.setItem('username',res.user.username);
+                    localStorage.setItem('userRole',role);
+                    localStorage.setItem('token',res.token);
+                    localStorage.setItem('loginTime',new Date().toISOString());
+                    msg('登录成功！正在跳转...','ok');
+                    setTimeout(function(){
+                        if(role==='teacher') window.location.href='/teacher.html';
+                        else if(role==='admin') window.location.href='/admin.html';
+                        else window.location.href='/student.html';
+                    },500);
+                }).catch(function(err){
+                    msg(err.message||'登录失败','error');
+                    btn.disabled=false; btnText.textContent='登录系统';
+                });
+            });
+
+            function msg(m,t){
+                if(sTxt&&sDot){
+                    sTxt.textContent=m;
+                    sDot.style.background=t==='error'?'#dc3545':'#28a745';
+                    sTxt.style.color=t==='error'?'#dc3545':'#28a745';
+                }
+            }
+        })();
+
+        /* 注册逻辑 */
+        (function(){
+            var form = document.getElementById('registerForm');
+            var btn = form.querySelector('.login-button');
+            var btnText = btn.querySelector('.button-text');
+            var sDot = document.getElementById('statusDot');
+            var sTxt = document.getElementById('statusText');
+            var orgSel = document.getElementById('regOrg');
+            var clsSel = document.getElementById('regClass');
+
+            // 切换到注册页时加载机构列表（已在上面的切换逻辑中处理）
+            var toggleLink = document.getElementById('toggleLink');
+            var originalClickHandler = toggleLink.onclick;
+            toggleLink.addEventListener('click', function(){
+                setTimeout(function(){
+                    if(orgSel.options.length <= 1) loadOrgs();
+                }, 100);
+            });
+
+            function readJsonOrThrow(resp, fallback){
+                return resp.json().catch(function(){ return null; }).then(function(data){
+                    if(!resp.ok){
+                        var detail = data && data.detail;
+                        var message = detail && (detail.message || detail.detail) || detail || fallback;
+                        throw new Error(message);
+                    }
+                    return data;
+                });
+            }
+
+            function loadOrgs(){
+                orgSel.innerHTML = '<option value="">学校加载中...</option>';
+                clsSel.innerHTML = '<option value="">请先选择学校</option>';
+                clsSel.disabled = true;
+                fetch('/api/v1/auth/public/orgs')
+                    .then(function(r){ return readJsonOrThrow(r, '无法获取学校列表'); })
+                    .then(function(list){
+                    if(!Array.isArray(list)) throw new Error('学校列表格式异常');
+                    orgSel.innerHTML = '<option value="">请选择学校（机构）</option>';
+                    list.forEach(function(o){
+                        var opt = document.createElement('option');
+                        opt.value = o.id; opt.textContent = o.name;
+                        orgSel.appendChild(opt);
+                    });
+                    if(list.length === 0){
+                        orgSel.innerHTML = '<option value="">暂无可选学校，请联系管理员</option>';
+                    }
+                }).catch(function(err){
+                    orgSel.innerHTML = '<option value="">无法获取学校列表</option>';
+                    msg(err.message || '无法获取学校列表', 'error');
+                });
+            }
+
+            // 选择机构后加载班级
+            orgSel.addEventListener('change', function(){
+                var orgId = orgSel.value;
+                clsSel.innerHTML = '<option value="">加载中...</option>';
+                clsSel.disabled = true;
+                if(!orgId){ clsSel.innerHTML='<option value="">请先选择学校</option>'; return; }
+                fetch('/api/v1/auth/public/classes?org_id='+encodeURIComponent(orgId))
+                    .then(function(r){ return readJsonOrThrow(r, '无法获取班级列表'); })
+                    .then(function(list){
+                    if(!Array.isArray(list)) throw new Error('班级列表格式异常');
+                    clsSel.innerHTML = '<option value="">请选择班级</option>';
+                    list.forEach(function(c){
+                        var opt = document.createElement('option');
+                        opt.value = c.id; opt.textContent = c.name;
+                        clsSel.appendChild(opt);
+                    });
+                    clsSel.disabled = false;
+                    if(list.length === 0){
+                        clsSel.innerHTML = '<option value="">该学校暂无班级</option>';
+                    }
+                }).catch(function(err){
+                    clsSel.innerHTML = '<option value="">无法获取班级列表</option>';
+                    msg(err.message || '无法获取班级列表', 'error');
+                });
+            });
+
+            form.addEventListener('submit', function(e){
+                e.preventDefault();
+                var orgId = orgSel.value;
+                var classId = clsSel.value;
+                var rn = document.getElementById('regRealName').value.trim();
+                var p = document.getElementById('regPassword').value;
+                var pc = document.getElementById('regPasswordConfirm').value;
+
+                if(!orgId){ msg('请选择学校','error'); return; }
+                if(!classId){ msg('请选择班级','error'); return; }
+                if(!rn){ msg('请输入真实姓名','error'); return; }
+                if(p.length<6){ msg('密码至少6位','error'); return; }
+                if(p!==pc){ msg('两次输入的密码不一致','error'); return; }
+
+                btn.disabled=true; btnText.textContent='注册中...';
+
+                fetch('/api/v1/auth/register',{
+                    method:'POST',
+                    headers:{'Content-Type':'application/json'},
+                    body:JSON.stringify({org_id:parseInt(orgId), class_id:parseInt(classId), real_name:rn, password:p})
+                }).then(function(resp){
+                    if(!resp.ok) return resp.json().catch(function(){return null}).then(function(e){
+                        var detail = (e&&e.detail) ? (e.detail.message||e.detail) : '注册失败';
+                        throw new Error(detail);
+                    });
+                    return resp.json();
+                }).then(function(data){
+                    var tk = data.access_token;
+                    var user = data.user;
+                    localStorage.setItem('username', user.username);
+                    localStorage.setItem('userRole', user.role);
+                    localStorage.setItem('token', tk);
+                    localStorage.setItem('loginTime', new Date().toISOString());
+                    msg('注册成功！您的用户名是：' + user.username + '，正在跳转...','ok');
+                    setTimeout(function(){
+                        window.location.href='/student.html';
+                    },2000);
+                }).catch(function(err){
+                    msg(err.message||'注册失败','error');
+                    btn.disabled=false; btnText.textContent='注册账号';
+                });
+            });
+
+            function msg(m,t){
+                if(sTxt&&sDot){
+                    sTxt.textContent=m;
+                    sDot.style.background=t==='error'?'#dc3545':'#28a745';
+                    sTxt.style.color=t==='error'?'#dc3545':'#28a745';
+                }
+            }
+        })();
+    </script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+</html>
+
+
+
+

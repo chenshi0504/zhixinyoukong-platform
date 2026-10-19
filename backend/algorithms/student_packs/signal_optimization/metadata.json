@@ -1,0 +1,21 @@
+{
+  "task_id": "signal_optimization",
+  "module_id": "signal_optimization",
+  "task_name": "单点交叉口信号配时自研算法",
+  "input_files": [
+    "scenario_config.json"
+  ],
+  "submission_columns": [
+    "cycle",
+    "phase_id",
+    "green_time"
+  ],
+  "baseline_file": "baseline_solution.csv",
+  "primary_metric": "green_time_mae",
+  "constraints": {
+    "cycle_min": 40,
+    "cycle_max": 180,
+    "green_min": 10,
+    "green_max": 80
+  }
+}

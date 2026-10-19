@@ -1,0 +1,49 @@
+{
+  "scenario": "自研算法测试",
+  "algorithm_info": {
+    "name": "Custom_Algorithm_v1",
+    "type": "三层级协同优化",
+    "author": "学生姓名",
+    "version": "1.0",
+    "description": "基于平台算法改进的自研算法"
+  },
+  "baseline_algorithms": {
+    "upper": "MPC-TuRBO",
+    "middle": "KSP+MSA",
+    "lower": "MPC-TuRBO"
+  },
+  "test_parameters": {
+    "iterations": 50,
+    "convergence_threshold": 0.01,
+    "time_limit": 300,
+    "performance_metrics": [
+      "total_travel_time",
+      "average_delay",
+      "throughput",
+      "convergence_speed"
+    ]
+  },
+  "comparison_criteria": {
+    "accuracy_improvement": "目标值",
+    "computation_time": "目标值",
+    "convergence_rate": "目标值"
+  },
+  "test_scenarios": [
+    {
+      "name": "低流量",
+      "demand_level": 0.6
+    },
+    {
+      "name": "中流量",
+      "demand_level": 0.8
+    },
+    {
+      "name": "高流量",
+      "demand_level": 1.0
+    },
+    {
+      "name": "过饱和",
+      "demand_level": 1.2
+    }
+  ]
+}

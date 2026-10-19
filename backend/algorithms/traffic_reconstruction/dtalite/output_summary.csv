@@ -1,0 +1,329 @@
+DTALite:
+A Fast Open Source DTA Engine
+Software Version =,1.1.0
+Release Date=,Jun 25 2016
+Simulation Date =,year: 2026,month:10,day:17,hour: 9,min:48
+----------------------test1----------------------
+Signal Control Representation =,Cycle Length + Link-based Effective Green Time
+Traffic Flow Model =,Point Queue Model
+Routing method=,OD demand estimation
+ 
+
+
+# of Nodes=,120
+# of Link Types=,12
+# of Links=,180
+--Parameters for link effective green time mode --=,
+# of Links with Effective Green Time=,0
+Avg Effective Green Time (sec)=,0
+Avg Signalized Lane Capacity (vph)=,0
+Avg Cycle length (sec)=,0
+---- =,
+# of Prohibited Movements=,0
+# of Pretimed Signals=,0
+# of Actuated Signals=,0
+# of Zones=,1139
+# of Activity Locations=,24
+# of Vehicle Types=,5
+# of Demand Types=,4
+ODME time period=, 0:00->  0:00
+# of sensor count records for ODME=,414
+# of sensor speed records for ODME=,0
+# of Sensor Records=,2160
+Demand Load Mode=,demand meta databaseReading demand file,input_demand.csv,cumulative # of agents=,3093,
+
+
+Demand multiplier in input_scenario_settings.csv file=,1
+# of Vehicles to be simulated=,3093
+# of Intra-zone Vehicles (not be simulated)=,0
+Starting Time of Demand Loading (min)=,360
+Ending Time of Demand Loading (min)=,480
+Output Emission data=,NO
+
+--Link Type Statistics--
+link_type,link_type_name,link_type_code,number_of_links,avg_lane_capacity,avg_number_of_lanes,avg_speed_limit,avg_link_length,avg_K_jam,total_link_length,
+1,Freeway,f,180,1500,1.46111,47.3556,0.118004,218.889,21.2408,
+2,Highway/Expressway,h,0,0,0,0,0,0,0,
+3,Principal arterial,a,0,0,0,0,0,0,0,
+4,Major arterial,a,0,0,0,0,0,0,0,
+5,Minor arterial,a,0,0,0,0,0,0,0,
+7,Local,a,0,0,0,0,0,0,0,
+8,Frontage road,a,0,0,0,0,0,0,0,
+9,Ramp,r,0,0,0,0,0,0,0,
+10,Zonal connector,c,0,0,0,0,0,0,0,
+11,Collector,a,0,0,0,0,0,0,0,
+100,Transit link,t,0,0,0,0,0,0,0,
+200,Walking link,w,0,0,0,0,0,0,0,
+# of demand type code based toll records=0
+Assignment method=,Zone-based routing
+Iteration #,CPU Running Time,Per Iteration CPU Running Time,# of agents,Avg Travel Time (min),Avg Waiting Time at Origin (min),Avg Trip Time Index=(Mean TT/Free-flow TT),Avg Distance,Avg Speed,Avg CO (g),% considering to switch,% switched,% completing trips,network clearance time (in min),Avg User Equilibirum (UE) gap (min),Relative UE gap (%),ODME: number of data points,ODME: Absolute link count error,ODME: % link count error,ODME: slope =observed/estimated link count,ODME: r_squared link count,travel_time_ 6:00,travel_time_ 6:15,travel_time_ 6:30,travel_time_ 6:45,travel_time_ 7:00,travel_time_ 7:15,travel_time_ 7:30,travel_time_ 7:45,Avg UE gap_ 6:00,Avg UE gap_ 6:15,Avg UE gap_ 6:30,Avg UE gap_ 6:45,Avg UE gap_ 7:00,Avg UE gap_ 7:15,Avg UE gap_ 7:30,Avg UE gap_ 7:45,Relative UE gap_ 6:00,Relative UE gap_ 6:15,Relative UE gap_ 6:30,Relative UE gap_ 6:45,Relative UE gap_ 7:00,Relative UE gap_ 7:15,Relative UE gap_ 7:30,Relative UE gap_ 7:45,
+1,00:00:10,00:00:10,3093,1.56366,0,1.02499,1.36836,52.5062,1606.04,100,100,100,780, , , , , , , ,1.55751,1.58142,1.54102,1.57527,1.57424,1.55048,1.56297,1.56852, , , , , , , , , , , , , , , , ,
+2,00:00:19,00:00:09,3093,1.56343,0,1.02483,1.36678,52.4532,1605.95,49.9838,49.9838,100,780,0.000286234,0.014546, , , , , ,1.5578,1.58168,1.54005,1.57473,1.57374,1.55072,1.56247,1.56852,0.000132417,0.000661511,0,0.000113768,0.000133519,0.000156777,0.00105796,0,0.00564871,0.0269382,0,0.00487611,0.00589564,0.0066892,0.073821,0,
+3,00:00:28,00:00:09,3093,1.56337,0,1.02478,1.36644,52.4419,1605.92,33.301,33.301,100,780,0.000218472,0.0127676, , , , , ,1.55723,1.58168,1.53932,1.57527,1.57424,1.55048,1.56247,1.56852,0.00159845,0,0,6.10503e-05,3.49656e-05,0.000208141,0,0,0.11302,0,0,0.00262085,0.00149352,0.00890384,0,0,
+4,00:00:37,00:00:09,3093,1.56343,0,1.02483,1.36616,52.4293,1605.95,25.0889,25.0889,100,780,8.78529e-05,0.00365182, , , , , ,1.55723,1.58193,1.53932,1.575,1.57424,1.55096,1.56247,1.56852,0,3.68071e-05,0,0.000220927,0,0.000437394,0,0,0,0.00145551,0,0.00943668,0,0.0179791,0,0,
+5,00:00:46,00:00:09,3093,1.56337,0,1.02478,1.36612,52.4297,1605.92,20.1746,20.1746,100,780,9.20124e-05,0.00387635, , , , , ,1.55723,1.58193,1.53932,1.57446,1.57424,1.55096,1.56247,1.56852,0,0.000449046,0,0.000103951,0,0.000101833,6.68436e-05,0,0,0.0189895,0,0.00446253,0,0.00437566,0.00257853,0,
+6,00:00:55,00:00:09,3093,1.56343,0,1.02483,1.36603,52.4242,1605.95,16.7152,16.7152,100,780,0.000199348,0.00788308, , , , , ,1.5578,1.58168,1.53932,1.57473,1.57424,1.55096,1.56247,1.56852,0,0.00153825,0,0,0,0,0,0,0,0.063333,0,0,0,0,0,0,
+7,00:01:04,00:00:09,3093,1.5634,0,1.0248,1.36601,52.4246,1605.94,14.3873,14.3873,100,780,2.9363e-05,0.00124704, , , , , ,1.5578,1.58142,1.53932,1.57473,1.57424,1.55096,1.56247,1.56852,0.00021482,3.57749e-05,0,0,0,0,0,0,0.0091758,0.00147398,0,0,0,0,0,0,
+8,00:01:13,00:00:09,3093,1.5634,0,1.0248,1.36606,52.4265,1605.94,12.5768,12.5768,100,780,5.22701e-05,0.00214015, , , , , ,1.5578,1.58142,1.53932,1.57473,1.57449,1.55072,1.56247,1.56852,0,0,0,0,0,0.00039102,0,0,0,0,0,0,0,0.01601,0,0,
+9,00:01:22,00:00:09,3093,1.56327,0,1.02471,1.36602,52.4292,1605.89,11.3482,11.3482,100,780,0.00109412,0.0418956, , , , , ,1.5578,1.58142,1.53859,1.57473,1.57424,1.55072,1.56247,1.56852,0,0,0.00544067,0.00045213,0.00235095,0,0,0,0,0,0.227659,0.0193123,0.0981889,0,0,0,
+10,00:01:31,00:00:09,3093,1.56327,0,1.02471,1.36606,52.4309,1605.89,10.0226,10.0226,100,780,0,0, , , , , ,1.5578,1.58142,1.53859,1.57473,1.57424,1.55072,1.56247,1.56852,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+Output file =,output_ODTDMOE
+
+
+--Time Dependent Network MOE--,60 min interval
+time_stamp_in_min,time_clock,cumulative_in_flow_count,cumulative_out_flow_count,number_vehicles_in_network,number_vehicles_entering_network,total_vehicle_mile_traveled,avg_trip_time (departure_time_based),avg_trip_time_index = trip time/FFTT,avg_distance,avg_speed,
+360, 6:00,3,0,3,3,20803.8,1.52026,1.02551,1.36598,53.911,
+420, 7:00,1562,1522,40,1559,21458.9,1.51809,1.02412,1.36681,54.0206,
+480, 8:00,3093,3092,1,1531,0,0,0,0,0,
+
+--Time Dependent Network MOE--,30 min interval
+time_stamp_in_min,time_clock,cumulative_in_flow_count,cumulative_out_flow_count,number_vehicles_in_network,number_vehicles_entering_network,total_vehicle_mile_traveled,avg_trip_time (departure_time_based),avg_trip_time_index = trip time/FFTT,avg_distance,avg_speed,
+360, 6:00,3,0,3,3,10155.5,1.52804,1.02457,1.37422,53.96,
+390, 6:30,769,735,34,766,10648.3,1.51292,1.02642,1.35821,53.8643,
+420, 7:00,1562,1522,40,793,11115.9,1.51799,1.02465,1.36559,53.9762,
+450, 7:30,2370,2330,40,808,10343,1.51821,1.02355,1.36812,54.0684,
+480, 8:00,3093,3092,1,723,0,0,0,0,0,
+
+--Time Dependent Network MOE--,15 min interval
+time_stamp_in_min,time_clock,cumulative_in_flow_count,cumulative_out_flow_count,number_vehicles_in_network,number_vehicles_entering_network,total_vehicle_mile_traveled,avg_trip_time (departure_time_based),avg_trip_time_index = trip time/FFTT,avg_distance,avg_speed,
+360, 6:00,3,0,3,3,4717.64,1.51545,1.02427,1.36348,53.9832,
+375, 6:15,373,335,38,370,5437.82,1.53912,1.02482,1.38367,53.9398,
+390, 6:30,769,735,34,396,5532.21,1.49766,1.02797,1.34277,53.7948,
+405, 6:45,1178,1139,39,409,5116.13,1.52983,1.02474,1.3753,53.9396,
+420, 7:00,1562,1522,40,384,5449.38,1.5325,1.02616,1.37611,53.8768,
+435, 7:15,1956,1913,43,394,5666.51,1.50424,1.02319,1.35563,54.0722,
+450, 7:30,2370,2330,40,414,5427.69,1.51694,1.02342,1.36718,54.0762,
+465, 7:45,2766,2726,40,396,4915.29,1.51961,1.0237,1.36916,54.0598,
+480, 8:00,3093,3092,1,327,0,0,0,0,0,
+
+--Time Dependent Network MOE--,5 min interval
+time_stamp_in_min,time_clock,cumulative_in_flow_count,cumulative_out_flow_count,number_vehicles_in_network,number_vehicles_entering_network,total_vehicle_mile_traveled,avg_trip_time (departure_time_based),avg_trip_time_index = trip time/FFTT,avg_distance,avg_speed,
+360, 6:00,3,0,3,3,1128.1,1.52761,1.02226,1.37573,54.0345,
+365, 6:05,108,69,39,105,1754.61,1.55756,1.0224,1.40369,54.0724,
+370, 6:10,255,192,63,147,1834.94,1.4704,1.0273,1.3201,53.8668,
+375, 6:15,373,335,38,118,1752.8,1.56217,1.02434,1.40224,53.8573,
+380, 6:20,497,464,33,124,2015.18,1.50633,1.02655,1.35247,53.8716,
+385, 6:25,655,610,45,158,1669.84,1.55598,1.02325,1.40323,54.1097,
+390, 6:30,769,735,34,114,1915.17,1.47992,1.03216,1.3208,53.5489,
+395, 6:35,909,876,33,140,1655.44,1.55153,1.0269,1.39113,53.7971,
+400, 6:40,1029,996,33,120,1961.61,1.47172,1.02478,1.32541,54.035,
+405, 6:45,1178,1139,39,149,1723.14,1.58916,1.02774,1.42408,53.7673,
+410, 6:50,1298,1257,41,120,1887.45,1.46002,1.02512,1.31073,53.865,
+415, 6:55,1444,1399,45,146,1505.54,1.55667,1.02083,1.40704,54.2328,
+420, 7:00,1562,1522,40,118,1981.06,1.58286,1.03014,1.41504,53.6387,
+425, 7:05,1710,1645,65,148,1858.14,1.45726,1.02688,1.30855,53.8773,
+430, 7:10,1830,1794,36,120,1610.18,1.56439,1.02042,1.41244,54.1721,
+435, 7:15,1956,1913,43,126,1997.09,1.48153,1.0259,1.33139,53.9197,
+440, 7:20,2097,2062,35,141,1928.01,1.58673,1.0226,1.42816,54.0038,
+445, 7:25,2229,2186,43,132,1741.41,1.44612,1.02074,1.30933,54.3246,
+450, 7:30,2370,2330,40,141,2006.89,1.57169,1.02483,1.4133,53.9534,
+455, 7:35,2495,2464,31,125,1791.32,1.45653,1.02126,1.31715,54.2582,
+460, 7:40,2639,2604,35,144,1629.48,1.52066,1.02405,1.36931,54.0283,
+465, 7:45,2766,2726,40,127,1923.75,1.48526,1.02634,1.33594,53.9676,
+470, 7:50,2913,2871,42,147,1904.98,1.5768,1.02276,1.42163,54.0955,
+475, 7:55,3036,2994,42,123,1086.56,1.48605,1.0207,1.34143,54.161,
+480, 8:00,3093,3092,1,57,0,0,0,0,0,
+Unit of output:
+travel time=,min
+travel Cost=,dollar
+distance=,miles
+speed=,mph
+energy=,1000 joule
+CO2=,gram
+
+
+--MOE Group 1--
+ , , , , , , , , , , , , , , , , , , , ,
+,#_of_vehicles,avg_distance,avg_travel_time,avg_speed,avg_toll_cost,avg_energy_K_joule,avg_CO2_gram,avg_NOX_gram,avg_CO_gram,avg_HC_gram,avg_PM_gram,avg_PM2_5_gram,avg_energy_K_joule_per_mile,avg_CO2_gram_per_mile,avg_NOX_gram_per_mile,avg_CO_gram_per_mile,avg_HC_gram_per_mile,avg_PM_gram_per_mile,avg_PM2_5_gram_per_mile,avg_MilesPerGallon,
+network,3093,1.36606,1.51903,53.9581,0,0,0,0,1605.87,0,0,0,0,0,0,1175.55,0,0,0,0,
+
+
+--MOE Group 2--
+ , , , , , , , , , , , , , , , , , , , ,
+,#_of_vehicles,avg_distance,avg_travel_time,avg_speed,avg_toll_cost,avg_energy_K_joule,avg_CO2_gram,avg_NOX_gram,avg_CO_gram,avg_HC_gram,avg_PM_gram,avg_PM2_5_gram,avg_energy_K_joule_per_mile,avg_CO2_gram_per_mile,avg_NOX_gram_per_mile,avg_CO_gram_per_mile,avg_HC_gram_per_mile,avg_PM_gram_per_mile,avg_PM2_5_gram_per_mile,avg_MilesPerGallon,
+sov,3093,1.36606,1.51903,53.9581,0,0,0,0,1605.87,0,0,0,0,0,0,1175.55,0,0,0,0,
+hov,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+truck,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+intermodal,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+
+
+--MOE Group 3--
+ , , , , , , , , , , , , , , , , , , , ,
+,#_of_vehicles,avg_distance,avg_travel_time,avg_speed,avg_toll_cost,avg_energy_K_joule,avg_CO2_gram,avg_NOX_gram,avg_CO_gram,avg_HC_gram,avg_PM_gram,avg_PM2_5_gram,avg_energy_K_joule_per_mile,avg_CO2_gram_per_mile,avg_NOX_gram_per_mile,avg_CO_gram_per_mile,avg_HC_gram_per_mile,avg_PM_gram_per_mile,avg_PM2_5_gram_per_mile,avg_MilesPerGallon,
+passenger_car,3093,1.36606,1.51903,53.9581,0,0,0,0,1605.87,0,0,0,0,0,0,1175.55,0,0,0,0,
+passenger_truck,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+light_commercial,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+single_unit_long_truck,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+combination_long_truck,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+
+
+--MOE Group 4--
+ , , , , , , , , , , , , , , , , , , , ,
+,#_of_vehicles,avg_distance,avg_travel_time,avg_speed,avg_toll_cost,avg_energy_K_joule,avg_CO2_gram,avg_NOX_gram,avg_CO_gram,avg_HC_gram,avg_PM_gram,avg_PM2_5_gram,avg_energy_K_joule_per_mile,avg_CO2_gram_per_mile,avg_NOX_gram_per_mile,avg_CO_gram_per_mile,avg_HC_gram_per_mile,avg_PM_gram_per_mile,avg_PM2_5_gram_per_mile,avg_MilesPerGallon,
+OD1,3093,1.36606,1.51903,53.9581,0,0,0,0,1605.87,0,0,0,0,0,0,1175.55,0,0,0,0,
+OD2,3093,1.36606,1.51903,53.9581,0,0,0,0,1605.87,0,0,0,0,0,0,1175.55,0,0,0,0,
+
+
+--MOE Group 5--
+ , , , , , , , , , , , , , , , , , , , ,
+,#_of_vehicles,avg_distance,avg_travel_time,avg_speed,avg_toll_cost,avg_energy_K_joule,avg_CO2_gram,avg_NOX_gram,avg_CO_gram,avg_HC_gram,avg_PM_gram,avg_PM2_5_gram,avg_energy_K_joule_per_mile,avg_CO2_gram_per_mile,avg_NOX_gram_per_mile,avg_CO_gram_per_mile,avg_HC_gram_per_mile,avg_PM_gram_per_mile,avg_PM2_5_gram_per_mile,avg_MilesPerGallon,
+link_48_41_ NB freeway,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+link_39_44_NB freeway,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+
+
+--MOE Group 6--
+ , , , , , , , , , , , , , , , , , , , ,
+,#_of_vehicles,avg_distance,avg_travel_time,avg_speed,avg_toll_cost,avg_energy_K_joule,avg_CO2_gram,avg_NOX_gram,avg_CO_gram,avg_HC_gram,avg_PM_gram,avg_PM2_5_gram,avg_energy_K_joule_per_mile,avg_CO2_gram_per_mile,avg_NOX_gram_per_mile,avg_CO_gram_per_mile,avg_HC_gram_per_mile,avg_PM_gram_per_mile,avg_PM2_5_gram_per_mile,avg_MilesPerGallon,
+'Path1_Major freeway route,3093,1.36606,1.51903,53.9581,0,0,0,0,1605.87,0,0,0,0,0,0,1175.55,0,0,0,0,
+
+
+--MOE Group 7--
+Detailed Data:,output_NetworkTDMOE.csv
+time_stamp_in_min,cumulative_in_flow_count,cumulative_out_flow_count,number_of_vehicles_in_network,flow_in_a_min,avg_trip_time_in_min
+360,3,0,3,30,1.52642,
+361,16,2,14,130,1.4828,
+362,36,9,27,200,1.51417,
+363,60,25,35,240,1.45058,
+364,82,48,34,220,1.65051,
+365,108,69,39,260,1.49712,
+366,133,92,41,250,1.57014,
+367,154,119,35,210,1.6549,
+368,177,139,38,230,1.57503,
+369,207,164,43,300,1.51794,
+370,255,192,63,480,1.29947,
+371,274,228,46,190,1.56436,
+372,301,267,34,270,1.5254,
+373,323,280,43,220,1.58698,
+374,346,311,35,230,1.57343,
+375,373,335,38,270,1.54914,
+376,399,358,41,260,1.56085,
+377,421,385,36,220,1.54159,
+378,454,412,42,330,1.65259,
+379,471,427,44,170,1.43598,
+380,497,464,33,260,1.64893,
+381,548,484,64,510,1.34539,
+382,584,524,60,360,1.495,
+383,597,565,32,130,1.66787,
+384,620,590,30,230,1.62841,
+385,655,610,45,350,1.48335,
+386,674,636,38,190,1.72987,
+387,696,661,35,220,1.62618,
+388,724,680,44,280,1.50253,
+389,739,708,31,150,1.502,
+390,769,735,34,300,1.67766,
+391,794,756,38,250,1.447,
+392,843,782,61,490,1.33347,
+393,862,819,43,190,1.61917,
+394,884,848,36,220,1.45361,
+395,909,876,33,250,1.53747,
+396,936,897,39,270,1.6399,
+397,965,920,45,290,1.4828,
+398,989,944,45,240,1.59333,
+399,1003,968,35,140,1.47689,
+400,1029,996,33,260,1.6215,
+401,1055,1018,37,260,1.44727,
+402,1082,1041,41,270,1.61089,
+403,1127,1063,64,450,1.30347,
+404,1151,1113,38,240,1.49487,
+405,1178,1139,39,270,1.50996,
+406,1201,1165,36,230,1.79096,
+407,1220,1188,32,190,1.37699,
+408,1251,1211,40,310,1.61119,
+409,1272,1235,37,210,1.62943,
+410,1298,1257,41,260,1.56717,
+411,1328,1282,46,300,1.44048,
+412,1352,1312,40,240,1.66831,
+413,1369,1335,34,170,1.4172,
+414,1416,1357,59,470,1.32234,
+415,1444,1399,45,280,1.61619,
+416,1471,1426,45,270,1.58838,
+417,1493,1452,41,220,1.40109,
+418,1517,1479,38,240,1.65024,
+419,1523,1505,18,60,1.33241,
+420,1562,1522,40,390,1.60476,
+421,1585,1549,36,230,1.61863,
+422,1608,1573,35,230,1.42833,
+423,1634,1597,37,260,1.59141,
+424,1663,1619,44,290,1.63992,
+425,1710,1645,65,470,1.29077,
+426,1730,1692,38,200,1.54191,
+427,1756,1719,37,260,1.67133,
+428,1783,1738,45,270,1.4192,
+429,1805,1771,34,220,1.52967,
+430,1830,1794,36,250,1.67608,
+431,1850,1815,35,200,1.45981,
+432,1879,1843,36,290,1.51508,
+433,1901,1865,36,220,1.7704,
+434,1919,1887,32,180,1.35312,
+435,1956,1913,43,370,1.55343,
+436,2001,1939,62,450,1.30319,
+437,2027,1984,43,260,1.59087,
+438,2054,2011,43,270,1.49292,
+439,2069,2036,33,150,1.62913,
+440,2097,2062,35,280,1.60673,
+441,2122,2080,42,250,1.59393,
+442,2150,2111,39,280,1.52495,
+443,2177,2134,43,270,1.64232,
+444,2204,2163,41,270,1.56781,
+445,2229,2186,43,250,1.48966,
+446,2250,2213,37,210,1.62242,
+447,2298,2241,57,480,1.28958,
+448,2325,2284,41,270,1.4723,
+449,2337,2309,28,120,1.61418,
+450,2370,2330,40,330,1.61243,
+451,2400,2356,44,300,1.49055,
+452,2422,2386,36,220,1.65306,
+453,2445,2405,40,230,1.73871,
+454,2479,2428,51,340,1.43812,
+455,2495,2464,31,160,1.48111,
+456,2518,2488,30,230,1.70147,
+457,2550,2506,44,320,1.44379,
+458,2598,2537,61,480,1.28445,
+459,2615,2584,31,170,1.6119,
+460,2639,2604,35,240,1.51287,
+461,2670,2626,44,310,1.58698,
+462,2693,2656,37,230,1.56713,
+463,2717,2675,42,240,1.50653,
+464,2734,2704,30,170,1.36776,
+465,2766,2726,40,320,1.66473,
+466,2786,2746,40,200,1.52869,
+467,2814,2775,39,280,1.54652,
+468,2833,2801,32,190,1.60027,
+469,2878,2826,52,450,1.25168,
+470,2913,2871,42,350,1.56909,
+471,2937,2893,44,240,1.58076,
+472,2959,2922,37,220,1.6606,
+473,2986,2941,45,270,1.53104,
+474,3012,2972,40,260,1.56011,
+475,3036,2994,42,240,1.57582,
+476,3059,3018,41,230,1.47008,
+477,3079,3044,35,200,1.48953,
+478,3092,3069,23,130,1.41593,
+479,3093,3088,5,10,0.540527,
+480,3093,3092,1,0,0,
+481,3093,3093,0,0,0,
+
+
+--MOE Group 8--
+Detailed Data:,output_LinkMOE.csv
+from_node_id,to_node_id,type_code,link_type,link_length,start_time_in_min,end_time_in_min,total_link_volume,lane_capacity_in_vhc_per_hour,link_capacity_in_vhc_per_hour,volume_over_capacity_ratio,avg_waiting_time_on_loading_buffer_(min), speed_limit,speed,free-flow_travel_time,travel_time,percentage_of_speed_limit, level_of_service, sensor_data_flag, sensor_link_volume, simulated_link_volume, measurement_error, abs_measurement_error_percentage, simulated_AADT, TotalEnergy_(J / hr), CO2_(g / hr), NOX_(g / hr), CO_(g / hr), HC_(g / hr, PM_(g / hr), PM_2_5(g / hr),sov_volume, hov_volume, truck_volume, intermodal_volume,passenger car,passenger truck,light commercial truck,single unit short-haul truck,combination long-haul truck,geometry, from_node_id,to_node_id,vol_h1,vol_h2,vol_h3,vol_h4,vol_h5,vol_h6,vol_h7,vol_h8,vol_h9,vol_h10,vol_h11,vol_h12,vol_h13,vol_h14,vol_h15,vol_h16,vol_h17,vol_h18,vol_h19,vol_h20,vol_h21,vol_h22,vol_h23,vol_h24,speed_h1,speed_h2,speed_h3,speed_h4,speed_h5,speed_h6,speed_h7,speed_h8,speed_h9,speed_h10,speed_h11,speed_h12,speed_h13,speed_h14,speed_h15,speed_h16,speed_h17,speed_h18,speed_h19,speed_h20,speed_h21,speed_h22,speed_h23,speed_h24,vol_d1,vol_d2,vol_d3,vol_d4,vol_d5,vol_d6,vol_d7,vol_d8,vol_d9,vol_d10,spd_d1,spd_d2,spd_d3,spd_d4,spd_d5,spd_d6,spd_d7,spd_d8,spd_d9,spd_d10,
+
+
+--MOE Group 9--
+Detailed Data:,output_ODMOE.csv
+from_zone_id,to_zone_id,number_of_agents,number_of_agents_completing_trips,trip_time_in_min,distance
+103,769,50,50,1.7260,1.5410
+364,241,87,87,1.7908,1.5848
+364,973,64,64,1.7578,1.6171
+364,1044,63,63,1.6968,1.5249
+565,241,54,54,1.7093,1.5668
+565,973,63,63,1.6936,1.5991
+565,1044,64,64,1.6359,1.5069
+770,232,55,55,1.4855,1.3378
+770,241,75,75,1.2560,1.0786
+770,297,88,88,1.1795,1.0218
+770,446,78,78,1.9090,1.7266
+770,565,88,88,1.1023,0.9421
+770,769,101,101,2.3059,2.0994
+974,973,58,58,2.4017,2.2071
+977,973,221,221,0.5127,0.4379

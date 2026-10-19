@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上层-交通信号优化功能</title>
+    <link rel="stylesheet" href="signal_optimization.css">
+    <link rel="stylesheet" href="../../components/chat-log-widget.css">
+</head>
+
+<body>
+    <!-- 顶部标题区域 -->
+    <header class="header">
+        <h1 class="main-title">上层-交通信号优化功能</h1>
+        <p class="subtitle">交通信号优化算法，调整参数并观察优化效果</p>
+    </header>
+
+    <!-- 导航操作区 -->
+    <nav class="nav-actions">
+        <div class="nav-content">
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="backBtn">返回</button>
+                <span class="server-status" id="serverStatus">服务器: 检查中...</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="container">
+        <main class="main-container">
+            <!-- 左侧控制面板 -->
+            <aside class="left-panel">
+                <!-- 算法讲解区 -->
+                <section class="algorithm-intro">
+                    <h3>算法讲解</h3>
+                    <div class="algorithm-description">
+                        <p><strong>交通信号配时优化算法</strong></p>
+                        <p style="margin-top: 8px; font-size: 0.9em; color: #555; line-height: 1.6;">
+                            基于多种优化策略的交通信号配时方法，通过调整信号周期、绿信比等参数，最小化交叉口车均延误，提升通行效率。
+                        </p>
+                        <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                            <strong>核心步骤：</strong><br>
+                            1. 加载路网拓扑与交通流量数据<br>
+                            2. 选择优化算法并配置参数<br>
+                            3. 运行仿真迭代优化信号配时<br>
+                            4. 输出最优方案与性能评估指标
+                        </p>
+                        <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                            <strong>优化算法：</strong><br>
+                            • TuRBO：信任域贝叶斯优化，快速收敛<br>
+                            • BO：标准贝叶斯优化，全局参数搜索<br>
+                            • DQN：深度Q网络强化学习（需预训练）<br>
+                            • PPO：近端策略优化（需预训练）<br>
+                            • GA：遗传算法 · PSO：粒子群优化
+                        </p>
+                        <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                            <strong>优化目标：</strong>最小化车均延误 · 最大化通行能力
+                        </p>
+                    </div>
+                </section>
+
+                <!-- 优化算法选择 -->
+                <section class="optimization-mode">
+                    <h3>优化算法选择</h3>
+                    <div class="form-group">
+                        <label for="algorithmSelect">选择信号优化算法：</label>
+                        <select id="algorithmSelect" class="algorithm-select">
+                            <option value="2">TuRBO (信任域贝叶斯优化)</option>
+                            <option value="6">BO (标准贝叶斯优化)</option>
+                            <option value="4">DQN (深度Q网络) [需预热]</option>
+                            <option value="5">PPO (近端策略优化) [需预热]</option>
+                            <option value="7">GA (遗传算法)</option>
+                            <option value="8">PSO (粒子群优化)</option>
+                        </select>
+                    </div>
+                    <div class="algorithm-description" id="algorithmDesc">
+                        <p><strong>TuRBO</strong>：信任域贝叶斯优化，通过局部高斯过程建模在信任域内高效搜索最优信号配时参数，快速收敛。</p>
+                    </div>
+                </section>
+
+                <!-- 仿真参数配置区 -->
+                <section class="traffic-params">
+                    <h3>仿真参数</h3>
+                    <div class="form-group">
+                        <label for="flowLevel">流量等级：</label>
+                        <select id="flowLevel" class="algorithm-select">
+                            <option value="2">流量1 (低流量)</option>
+                            <option value="4" selected>流量2 (中流量)</option>
+                            <option value="6">流量3 (高流量)</option>
+                        </select>
+                    </div>
+                </section>
+
+                <!-- SUMO仿真配置区 -->
+                <section class="config-file-section">
+                    <h3>SUMO仿真配置</h3>
+                    <div class="config-file-list" id="configFileList">
+                        <button class="config-file-btn" data-file="siouxfalls.net.xml">
+                            🗺️ 路网文件 (siouxfalls.net.xml)
+                        </button>
+                        <button class="config-file-btn" data-file="siouxfalls.sumocfg">
+                            ⚙️ SUMO配置 (siouxfalls.sumocfg)
+                        </button>
+                        <button class="config-file-btn" data-file="signal_config">
+                            🚦 信号配置 (signal_config/)
+                        </button>
+                        <button class="config-file-btn" data-file="od_data">
+                            📊 OD矩阵 (SiouxFalls_od.csv)
+                        </button>
+                    </div>
+                </section>
+                
+
+
+                <!-- 操作控制区 -->
+                <section class="control-panel">
+                    <button id="startSimulation" class="btn btn-primary">开始仿真</button>
+                    <button id="resetParams" class="btn btn-secondary">重置参数</button>
+                    <div class="status-display">
+                        <span id="currentStatus">状态: 就绪</span>
+                    </div>
+                </section>
+
+                <!-- 自主算法设计区 -->
+                <section class="custom-algorithm-section">
+                    <h3>🧪 算法设计实验</h3>
+                    <div class="custom-algo-desc">
+                        <p>选择算法模板可修改关键参数后运行仿真；选择"自定义算法"可自由编写完整算法逻辑。修改后请先点击"确认代码"再运行。</p>
+                    </div>
+                    <!-- 模板选择 -->
+                    <div style="margin-bottom: 10px;">
+                        <label for="templateSelect" style="display: block; font-size: 0.85em; font-weight: 600; color: #333; margin-bottom: 4px;">选择算法模板：</label>
+                        <select id="templateSelect" style="width: 100%; padding: 6px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85em; background: white;">
+                            <option value="webster">Webster公式配时</option>
+                            <option value="ga_simple">简易遗传算法</option>
+                            <option value="greedy">贪心优化</option>
+                            <option value="custom">自定义算法</option>
+                        </select>
+                    </div>
+                    <!-- 代码编辑器 -->
+                    <div class="code-editor-wrapper" id="codeEditorWrapper">
+                        <div class="code-editor-header">
+                            <span>📝 Python 代码</span>
+                            <div style="display: flex; gap: 6px;">
+                                <button class="btn-code-action" id="resetTemplateBtn">恢复模板</button>
+                                <button class="btn-code-action" id="expandCodeBtn">⛶ 放大</button>
+                            </div>
+                        </div>
+                        <div class="code-editor-body">
+                            <pre class="code-highlight" id="codeHighlight" aria-hidden="true"><code id="codeHighlightCode"></code></pre>
+                            <textarea id="codeEditor" class="code-editor" spellcheck="false" rows="14"></textarea>
+                        </div>
+                        <div class="code-hint">
+                            <span>💡 提示：修改算法参数后点击运行，结果将在右侧展示</span>
+                        </div>
+                    </div>
+                    <!-- 运行按钮 -->
+                    <div style="margin-top: 10px; display: flex; gap: 8px;">
+                        <button class="btn btn-primary" id="confirmCodeBtn" style="flex: 1; background: #27ae60;">✅ 确认代码</button>
+                        <button class="btn btn-primary" id="submitCustomAlgo" style="flex: 1;" disabled>▶ 运行自定义算法</button>
+                    </div>
+                    <div id="customAlgoStatus" style="margin-top: 8px; font-size: 0.85em; color: #666; text-align: center;"></div>
+                </section>
+            </aside>
+
+            <!-- 右侧分析区域 -->
+            <section class="right-panel">
+                <!-- 算法状态显示 -->
+                <div class="algorithm-status">
+                    <span>当前算法: <span id="currentAlgorithm">TuRBO</span></span>
+                    <span class="update-time">更新时间: <span id="updateTime">--:--:--</span></span>
+                </div>
+
+                <!-- 结果图表区 -->
+                <section class="result-view-section">
+                    <h3>结果图表</h3>
+                    <div class="result-images" id="resultImages">
+                        <p style="color:#999; text-align:center; padding:40px 20px;">运行仿真后将在此显示输出图表和数据文件</p>
+                    </div>
+                </section>
+
+                <!-- 仿真结果摘要 -->
+                <section class="result-view-section">
+                    <h3>仿真结果</h3>
+                    <div id="resultSummary" class="result-summary-placeholder">
+                        <p style="color:#999; text-align:center; padding:20px;">暂无结果，请先运行仿真</p>
+                    </div>
+                </section>
+
+                <!-- 导出实验报告 -->
+                <section class="result-view-section">
+                    <h3>实验报告</h3>
+                    <div class="result-buttons">
+                        <button class="btn btn-primary" id="exportResultsBtn">
+                            <span class="btn-icon">📊</span>
+                            导出结果CSV
+                        </button>
+                        <button class="btn btn-primary" id="exportReportBtn">
+                            <span class="btn-icon">📄</span>
+                            导出实验报告
+                        </button>
+                    </div>
+                </section>
+            </section>
+        </main>
+    </div>
+
+    <!-- 全屏代码编辑遮罩 -->
+    <div class="code-fullscreen-overlay" id="codeFullscreenOverlay"></div>
+
+    <script src="signal_optimization.js"></script>
+    <script src="../../components/chat-log-widget.js"></script>
+    <!-- AI实验助手 -->
+    <link rel="stylesheet" href="/src/components/ai-assistant.css?v=deepseek-professional-20260620">
+    <script src="/src/components/ai-assistant.js?v=deepseek-professional-20260620"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+    <!-- 局域网访问同样可以运行：后端在运行平台的本机弹出 CMD 窗口启动 SUMO 仿真，
+         执行状态与结果由页面轮询 /api/signal-optimization/status 等接口获得。 -->
+</body>
+
+</html>
+
+

@@ -1,0 +1,21 @@
+{
+  "submission": "backend\\algorithms\\traffic_prediction\\student_pack\\baseline_predictions.csv",
+  "sample_count": 575,
+  "student_metrics": {
+    "mae": 79.6619,
+    "rmse": 118.4984,
+    "mape": 10.7515,
+    "r2": 0.937576
+  },
+  "baseline_metrics": {
+    "mae": 79.6619,
+    "rmse": 118.4984,
+    "mape": 10.7515,
+    "r2": 0.937576
+  },
+  "comparison": {
+    "rmse_delta": 0.0,
+    "rmse_improvement_percent": 0.0,
+    "beats_baseline_by_rmse": false
+  }
+}

@@ -1,0 +1,333 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三层级协同优化控制功能</title>
+    <link rel="stylesheet" href="three_level_control.css">
+</head>
+
+<body>
+    <!-- 顶部标题区域 -->
+    <header class="header">
+        <h1 class="main-title">三层级协同优化控制功能</h1>
+        <p class="subtitle">信号-路径-速度协同优化，从单一到协同，从基础到政策融合</p>
+    </header>
+
+    <!-- 导航操作区 -->
+    <nav class="nav-actions">
+        <div class="nav-content">
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="backBtn">返回</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 场景选择区域 -->
+        <section class="scenario-selection-section">
+            <h2 class="section-title">操作场景选择</h2>
+            <div class="scenario-buttons">
+                <button class="scenario-button" data-scenario="two-level">
+                    <div class="scenario-icon">🔗</div>
+                    <div class="scenario-label">场景1：两两协同优化</div>
+                    <div class="scenario-desc">信号+路径、路径+车速、信号+车速组合优化</div>
+                </button>
+
+                <button class="scenario-button" data-scenario="three-level">
+                    <div class="scenario-icon">⚙️</div>
+                    <div class="scenario-label">场景2：三层级全协同</div>
+                    <div class="scenario-desc">单点/网状交叉口三层级协同优化</div>
+                </button>
+
+                <button class="scenario-button" data-scenario="custom-algorithm">
+                    <div class="scenario-icon">🧪</div>
+                    <div class="scenario-label">场景3：自研算法测试</div>
+                    <div class="scenario-desc">基于平台算法设计并测试自研算法</div>
+                </button>
+
+                <button class="scenario-button" data-scenario="policy-fusion">
+                    <div class="scenario-icon">📋</div>
+                    <div class="scenario-label">场景4：政策融合场景</div>
+                    <div class="scenario-desc">ATIS+道路拥挤收费政策叠加</div>
+                </button>
+            </div>
+        </section>
+
+        <!-- 场景配置区域 -->
+        <section class="scenario-config-section" id="scenarioConfig" style="display: none;">
+            <h2 class="section-title" id="configTitle">场景配置</h2>
+
+            <!-- 两两协同配置 -->
+            <div class="config-content" id="twoLevelConfig" style="display: none;">
+                <div class="config-row">
+                    <div class="config-card">
+                        <h3 class="config-card-title">协同模式选择</h3>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="twoLevel" value="signal-path" checked>
+                                <span>信号+路径协同</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="twoLevel" value="path-speed">
+                                <span>路径+车速协同</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="twoLevel" value="signal-speed">
+                                <span>信号+车速协同</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3 class="config-card-title">配置文件选择</h3>
+                        <div class="config-file-list">
+                            <button class="config-file-btn" data-file="场景2_信号路径协同.json">
+                                📄 场景2_信号路径协同.json
+                            </button>
+                            <button class="config-file-btn" data-file="场景2_路径车速协同.json">
+                                📄 场景2_路径车速协同.json
+                            </button>
+                            <button class="config-file-btn" data-file="场景2_信号车速协同.json">
+                                📄 场景2_信号车速协同.json
+                            </button>
+                        </div>
+                        <div class="selected-config" id="twoLevelSelectedConfig">未选择配置文件</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 三层级全协同配置 -->
+            <div class="config-content" id="threeLevelConfig" style="display: none;">
+                <div class="config-row">
+                    <div class="config-card">
+                        <h3 class="config-card-title">路网类型</h3>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="networkType" value="single" checked>
+                                <span>单点交叉口</span>
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="networkType" value="network">
+                                <span>网状交叉口</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3 class="config-card-title">路网配置文件</h3>
+                        <div class="config-file-list">
+                            <button class="config-file-btn" data-file="场景3_单点交叉口.json">
+                                📄 场景3_单点交叉口.json
+                            </button>
+                            <button class="config-file-btn" data-file="场景3_网状交叉口.json">
+                                📄 场景3_网状交叉口.json
+                            </button>
+                        </div>
+                        <div class="selected-config" id="threeLevelSelectedConfig">未选择配置文件</div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3 class="config-card-title">OD数据文件</h3>
+                        <div class="config-file-list">
+                            <button class="config-file-btn" data-file="场景3_OD矩阵.csv">
+                                📄 场景3_OD矩阵.csv
+                            </button>
+                        </div>
+                        <div class="selected-config" id="odSelectedConfig">未选择OD文件</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 自研算法配置 -->
+            <div class="config-content" id="customAlgorithmConfig" style="display: none;">
+                <div class="config-row">
+                    <div class="config-card">
+                        <h3 class="config-card-title">算法代码上传</h3>
+                        <input type="file" id="algorithmFile" accept=".py,.m,.cpp" style="display: none;">
+                        <button class="upload-btn" onclick="document.getElementById('algorithmFile').click()">
+                            📤 上传自研算法代码
+                        </button>
+                        <div class="file-info" id="algorithmFileInfo">支持.py, .m, .cpp格式</div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3 class="config-card-title">算法配置文件</h3>
+                        <div class="config-file-list">
+                            <button class="config-file-btn" data-file="场景4_自研算法配置.json">
+                                📄 场景4_自研算法配置.json
+                            </button>
+                            <button class="config-file-btn" data-file="场景4_性能对比模板.json">
+                                📄 场景4_性能对比模板.json
+                            </button>
+                        </div>
+                        <div class="selected-config" id="customAlgSelectedConfig">未选择配置文件</div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3 class="config-card-title">对比基准算法</h3>
+                        <select class="select-input">
+                            <option value="mpc">MPC-TuRBO</option>
+                            <option value="ksp">KSP+MSA</option>
+                            <option value="ga">遗传算法</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 政策融合配置 -->
+            <div class="config-content" id="policyFusionConfig" style="display: none;">
+                <div class="config-row">
+                    <div class="config-card">
+                        <h3 class="config-card-title">ATIS信息推送</h3>
+                        <div class="param-item">
+                            <label>推送频率（秒）：</label>
+                            <input type="number" value="30" min="10" max="300" class="param-input">
+                        </div>
+                        <div class="param-item">
+                            <label>信息覆盖率（%）：</label>
+                            <input type="range" value="80" min="0" max="100" class="slider-input">
+                            <span class="slider-value">80%</span>
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3 class="config-card-title">道路拥挤收费</h3>
+                        <div class="param-item">
+                            <label>基础费率（元/km）：</label>
+                            <input type="number" value="2" step="0.5" class="param-input">
+                        </div>
+                        <div class="param-item">
+                            <label>拥堵系数：</label>
+                            <input type="number" value="1.5" step="0.1" class="param-input">
+                        </div>
+                    </div>
+
+                    <div class="config-card">
+                        <h3 class="config-card-title">政策配置文件</h3>
+                        <div class="config-file-list">
+                            <button class="config-file-btn" data-file="场景5_政策融合配置.json">
+                                📄 场景5_政策融合配置.json
+                            </button>
+                        </div>
+                        <div class="selected-config" id="policySelectedConfig">未选择配置文件</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="startSimBtn">开始仿真</button>
+                <button class="btn btn-secondary" id="resetBtn">重置配置</button>
+            </div>
+        </section>
+
+        <!-- SUMO仿真展示区域 -->
+        <section class="sumo-simulation-section" id="sumoSection" style="display: none;">
+            <div class="sumo-header">
+                <h2 class="sumo-title">SUMO天津路网协同仿真</h2>
+                <p class="sumo-desc">实时展示三层级协同优化效果</p>
+            </div>
+
+            <div class="sumo-canvas" id="sumoCanvas">
+                <video id="simulationVideo" class="simulation-video" controls autoplay loop style="display: none;">
+                    <source src="../../../vedio/三层级协同仿真界面展示视频.mp4" type="video/mp4">
+                    您的浏览器不支持视频播放。
+                </video>
+                <div class="video-placeholder" id="videoPlaceholder">
+                    <div class="placeholder-icon">🎬</div>
+                    <div class="placeholder-text">点击"开始仿真"播放协同优化视频</div>
+                </div>
+            </div>
+
+            <!-- 仿真数据展示 -->
+            <div class="simulation-data">
+                <div class="data-grid">
+                    <div class="data-card">
+                        <div class="data-label">仿真状态</div>
+                        <div class="data-value" id="simStatus">运行中</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-label">优化进度</div>
+                        <div class="data-value" id="progress">0%</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-label">协同效益</div>
+                        <div class="data-value" id="benefit">--</div>
+                    </div>
+                    <div class="data-card">
+                        <div class="data-label">当前迭代</div>
+                        <div class="data-value" id="iteration">0/50</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 效果对比 -->
+            <div class="comparison-section">
+                <h3 class="comparison-title">优化效果对比</h3>
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <div class="comparison-label">优化前</div>
+                        <div class="metric-item">
+                            <span>平均出行时间：</span>
+                            <span class="metric-value">25.3分钟</span>
+                        </div>
+                        <div class="metric-item">
+                            <span>平均延误：</span>
+                            <span class="metric-value">8.7分钟</span>
+                        </div>
+                        <div class="metric-item">
+                            <span>通行量：</span>
+                            <span class="metric-value">1850车次/小时</span>
+                        </div>
+                    </div>
+
+                    <div class="comparison-arrow">→</div>
+
+                    <div class="comparison-card improved">
+                        <div class="comparison-label">优化后</div>
+                        <div class="metric-item">
+                            <span>平均出行时间：</span>
+                            <span class="metric-value" id="optimizedTime">--</span>
+                        </div>
+                        <div class="metric-item">
+                            <span>平均延误：</span>
+                            <span class="metric-value" id="optimizedDelay">--</span>
+                        </div>
+                        <div class="metric-item">
+                            <span>通行量：</span>
+                            <span class="metric-value" id="optimizedThroughput">--</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 控制按钮 -->
+            <div class="simulation-controls">
+                <button class="control-btn" id="pauseBtn">⏸️ 暂停</button>
+                <button class="control-btn" id="resumeBtn" style="display: none;">▶️ 继续</button>
+                <button class="control-btn" id="stopBtn">⏹️ 停止</button>
+                <button class="control-btn" id="showResultsBtn">📈 查看结果图</button>
+                <button class="control-btn" id="downloadReportBtn">📥 下载报告</button>
+            </div>
+        </section>
+
+        <!-- 结果图片展示区域 -->
+        <section class="result-images-section" id="resultImagesSection" style="display: none;">
+            <div class="result-header">
+                <h2 class="result-title">优化结果可视化</h2>
+                <p class="result-desc">查看详细的优化效果对比图表</p>
+            </div>
+
+            <div class="result-images-grid" id="resultImagesGrid">
+                <!-- 结果图片将动态加载 -->
+            </div>
+        </section>
+    </div>
+
+    <script src="three_level_control.js"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+
+</html>
+

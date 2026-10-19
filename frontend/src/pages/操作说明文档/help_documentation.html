@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>操作说明文档 - 面向车路云一体化的综合交通实验平台</title>
+    <link rel="stylesheet" href="help_documentation.css">
+</head>
+<body>
+    <header class="header">
+        <h1 class="main-title">操作说明文档</h1>
+        <p class="subtitle">面向车路云一体化的综合交通实验平台 - 使用指南与常见问题</p>
+    </header>
+    <nav class="nav-actions">
+        <div class="nav-content">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="搜索帮助内容...">
+                <button class="search-btn" id="searchBtn">搜索</button>
+            </div>
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="backBtn">返回</button>
+            </div>
+        </div>
+    </nav>
+    <main class="main-content">
+        <aside class="sidebar">
+            <nav class="doc-nav">
+                <h3>文档分类</h3>
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#platform-overview" class="nav-link active" data-category="platform-overview">平台概述</a></li>
+                    <li class="nav-item"><a href="#resources" class="nav-link" data-category="resources">资料下载</a></li>
+                    <li class="nav-item"><a href="#teacher-guide" class="nav-link" data-category="teacher">教师使用指南</a></li>
+                    <li class="nav-item"><a href="#student-guide" class="nav-link" data-category="student">学生使用指南</a></li>
+                    <li class="nav-item"><a href="#experiment-modules" class="nav-link" data-category="experiment-modules">实验模块说明</a></li>
+                    <li class="nav-item"><a href="#faq" class="nav-link" data-category="faq">常见问题</a></li>
+                    <li class="nav-item"><a href="#support" class="nav-link" data-category="support">技术支持</a></li>
+                </ul>
+            </nav>
+            <div class="quick-nav">
+                <h4>快速导航</h4>
+                <ul class="quick-links" id="quickLinks"></ul>
+            </div>
+        </aside>
+        <section class="content-area">
+            <!-- 平台概述 -->
+            <div class="doc-section active" id="platform-overview">
+                <h2>平台概述</h2>
+                <div class="doc-card">
+                    <h3 id="overview-intro">平台简介</h3>
+                    <div class="doc-content">
+                        <p>"智信优控：面向车路云一体化的综合交通实验平台"是一个集教学管理、实验操作、数据分析于一体的综合性教学实验平台。平台以"数据-仿真-控制-验证"为主线，按照"数据采集-融合-重构-预测-优化-控制-验证"的完整链条进行构建，为师生提供虚实结合的仿真实验环境。</p>
+                        <h4>五大核心功能模块</h4>
+                        <ul>
+                            <li>多源数据采集与融合模块 - 支持视频、雷达、线圈等多种数据源的实时采集，集成YOLOv8+DeepSort车辆检测跟踪算法，基于贝叶斯融合算法进行多源数据融合</li>
+                            <li>交通流重构与预测模块 - 基于DTALite动态交通分配平台实现交通流重构，集成线性回归、随机森林、LSTM、GRU等多种预测算法</li>
+                            <li>三层级协同优化控制模块 - 上层信号优化（Webster/HCM/BO/TuRBO/MPC-TuRBO）、中层路径诱导（Dijkstra/A*/Floyd）、下层车速控制（PID/MPC/ACC）</li>
+                            <li>虚实结合仿真模块 - 基于CARLA仿真平台构建三维交通场景，基于SUMO仿真引擎进行算法测试验证，支持硬件在环测试</li>
+                            <li>实验教学管理模块 - 教学任务发布、学生信息管理、实验报告在线评阅、操作说明文档</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="overview-roles">用户角色说明</h3>
+                    <div class="doc-content">
+                        <h4>教师（teacher）</h4>
+                        <p>教师登录后进入"教师工作台"，可以管理教学任务、查看学生信息、批阅实验报告，同时可以使用所有实验模块进行教学演示。</p>
+                        <h4>学生（student）</h4>
+                        <p>学生登录后进入"实验中心"，可以使用全部实验模块完成实验操作，查看操作说明文档。学生信息管理和实验报告管理仅限教师和管理员使用。</p>
+                        <h4>管理员（admin）</h4>
+                        <p>管理员登录后进入"系统管理中心"，拥有全平台管理权限，包括用户管理、任务管理、报告管理、API文档查看等。</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="overview-startup">平台启动与登录</h3>
+                    <div class="doc-content">
+                        <h4>访问方式</h4>
+                        <p>教师和学生通过浏览器访问 <code>http://服务器IP:8000</code> 使用平台。后端和算法任务在服务器后台运行，网页会自动显示运行状态和结果。</p>
+                        <h4>默认账号</h4>
+                        <ul>
+                            <li>学生账号：<code>student</code>，密码：<code>123456</code></li>
+                            <li>教师账号：<code>teacher</code>，密码：<code>123456</code></li>
+                            <li>管理员账号：<code>admin</code>，密码：<code>123456</code></li>
+                            <li>默认教学组织：大连理工大学；默认班级：交通工程2024级1班。</li>
+                        </ul>
+                        <h4>登录步骤</h4>
+                        <ol>
+                            <li>打开平台登录页面（启动后自动打开，或访问 <code>http://服务器IP:8000</code>）</li>
+                            <li>输入用户名和密码</li>
+                            <li>角色下拉框可选填（不填则系统自动识别）</li>
+                            <li>点击"登录系统"按钮</li>
+                            <li>登录成功后自动跳转到对应角色的首页</li>
+                        </ol>
+                        <h4>登录页面状态指示</h4>
+                        <p>登录页面底部有后端服务状态指示灯：绿色圆点表示服务正常可以登录，红色圆点表示服务器后端服务不可用，请检查服务器运行状态。</p>
+                    </div>
+                </div>
+            </div>
+            <!-- 资料下载 -->
+            <div class="doc-section" id="resources">
+                <h2>资料下载</h2>
+                <div class="doc-card">
+                    <h3 id="resources-homepage">首页可下载资料</h3>
+                    <div class="doc-content">
+                        <p>以下资料与平台首页“资料下载”保持一致，均由服务器白名单接口提供，可在浏览器中自主下载。</p>
+                        <div class="resource-download-grid">
+                            <article class="resource-download-item">
+                                <div class="resource-tag-row">
+                                    <span>PDF</span>
+                                    <span class="resource-version">v2.0</span>
+                                </div>
+                                <h4>平台教材</h4>
+                                <p>覆盖平台组成、实验模块、教学流程和实验方法，是课程学习的主教材。</p>
+                                <a class="resource-download-btn" href="/resources/textbook-v2-pdf">下载 v2.0 教材</a>
+                            </article>
+                            <article class="resource-download-item">
+                                <div class="resource-tag-row">
+                                    <span>PDF</span>
+                                    <span class="resource-version">v1.0</span>
+                                </div>
+                                <h4>平台使用说明书</h4>
+                                <p>说明平台结构、角色权限、实验中心、教师工作台和云端管理平台的基本操作。</p>
+                                <a class="resource-download-btn" href="/resources/platform-manual-pdf">下载 v1.0 说明书</a>
+                            </article>
+                            <article class="resource-download-item">
+                                <div class="resource-tag-row">
+                                    <span>PDF</span>
+                                    <span class="resource-version">v1.0</span>
+                                </div>
+                                <h4>安装与部署手册</h4>
+                                <p>包含服务器部署、本地运行、服务启动、端口检查和常见环境配置。</p>
+                                <a class="resource-download-btn" href="/resources/install-manual-pdf">下载 v1.0 安装手册</a>
+                            </article>
+                            <article class="resource-download-item">
+                                <div class="resource-tag-row">
+                                    <span>PDF</span>
+                                    <span class="resource-version">2026</span>
+                                </div>
+                                <h4>产品宣传手册</h4>
+                                <p>用于对外介绍平台定位、实验能力、教学应用和建设价值。</p>
+                                <a class="resource-download-btn" href="/resources/product-brochure-pdf">下载宣传手册</a>
+                            </article>
+                            <article class="resource-download-item">
+                                <div class="resource-tag-row">
+                                    <span>PDF</span>
+                                    <span class="resource-version">v1.0</span>
+                                </div>
+                                <h4>课程配套教材</h4>
+                                <p>配合课程教学和实验任务使用，便于教师分发、学生课前预习。</p>
+                                <a class="resource-download-btn" href="/resources/supporting-textbook-pdf">下载配套教材</a>
+                            </article>
+                            <article class="resource-download-item">
+                                <div class="resource-tag-row">
+                                    <span>PDF</span>
+                                    <span class="resource-version">v1.0</span>
+                                </div>
+                                <h4>配套资源说明</h4>
+                                <p>说明交付资料、实验资源、数据文件和部署文件的组织方式。</p>
+                                <a class="resource-download-btn" href="/resources/supporting-resources-pdf">下载资源说明</a>
+                            </article>
+                            <article class="resource-download-item">
+                                <div class="resource-tag-row">
+                                    <span>PDF</span>
+                                    <span class="resource-version">2026-05</span>
+                                </div>
+                                <h4>仿真工具与环境配置说明</h4>
+                                <p>列出 SUMO、CARLA、DTALite/NEXTA、Python 和 Node 等环境配置要求。</p>
+                                <a class="resource-download-btn" href="/resources/simulation-environment-guide-pdf">下载环境说明</a>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="resources-usage">下载与使用说明</h3>
+                    <div class="doc-content">
+                        <ol>
+                            <li>登录平台后进入“操作说明文档”，在左侧选择“资料下载”。</li>
+                            <li>根据课程需要点击对应资料的下载按钮，浏览器会直接下载 PDF 文件。</li>
+                            <li>教师发布任务时建议同步附上平台教材、实验说明或环境配置说明；学生提交实验前应先阅读对应模块资料。</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <!-- 教师使用指南 -->
+            <div class="doc-section" id="teacher-guide">
+                <h2>教师使用指南</h2>
+                <div class="doc-card">
+                    <h3 id="teacher-overview">教师工作台概览</h3>
+                    <div class="doc-content">
+                        <p>教师登录后进入"教师工作台"，可以访问平台全部功能模块。工作台采用卡片式布局，点击模块卡片可展开子功能列表。</p>
+                        <h4>教师可用功能</h4>
+                        <ul>
+                            <li>多源数据采集与融合模块 - 数据采集、数据融合</li>
+                            <li>交通流重构与预测模块 - 交通流重构、交通流预测</li>
+                            <li>三层级协同优化控制模块 - 信号优化、路径诱导、车速控制、协同控制</li>
+                            <li>虚实结合仿真模块 - 场景构建、智能车辆控制、算法测试</li>
+                            <li>实验管理模块 - 教学任务管理、学生信息管理、实验报告管理、操作说明文档</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="teacher-task">教学任务管理</h3>
+                    <div class="doc-content">
+                        <p>教学任务管理功能为教师提供实验任务的创建、发布和管理功能，支持任务附件上传、截止时间设置、提交情况统计等。</p>
+                        <h4>创建与发布任务</h4>
+                        <ol>
+                            <li>在主界面点击"实验管理模块"卡片，选择"实验任务管理"</li>
+                            <li>点击"创建任务"按钮</li>
+                            <li>填写任务信息：标题、所属模块、描述、截止时间</li>
+                            <li>上传任务附件（实验指导书、数据文件等）</li>
+                            <li>点击"发布任务"完成发布</li>
+                        </ol>
+                        <h4>管理已发布任务</h4>
+                        <ul>
+                            <li>在任务列表中查看所有已发布任务的状态</li>
+                            <li>点击"查看提交"查看学生提交情况和统计数据</li>
+                            <li>可对任务进行编辑、删除等操作</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="teacher-student">学生信息管理</h3>
+                    <div class="doc-content">
+                        <p>学生信息管理功能提供学生信息的增删改查功能，支持单个添加和批量导入。仅限教师和管理员使用。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在"实验管理模块"中选择"用户信息管理"</li>
+                            <li>在学生列表中查看所有学生信息</li>
+                            <li>点击"添加学生"可单个添加</li>
+                            <li>点击"批量导入"可从Excel文件批量导入</li>
+                            <li>点击学生姓名查看详细信息</li>
+                            <li>点击"导出"将学生信息导出为Excel文件</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="teacher-report">实验报告管理</h3>
+                    <div class="doc-content">
+                        <p>实验报告管理功能为教师提供报告评阅和成绩统计功能。仅限教师和管理员使用。</p>
+                        <h4>评阅流程</h4>
+                        <ol>
+                            <li>在"实验管理模块"中选择"实验报告管理"</li>
+                            <li>在待评阅列表中查看学生提交的报告</li>
+                            <li>点击报告标题查看报告内容</li>
+                            <li>添加批注、评分、评语</li>
+                            <li>点击"提交评阅"完成评阅</li>
+                            <li>点击"统计分析"查看班级成绩统计</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <!-- 学生使用指南 -->
+            <div class="doc-section" id="student-guide">
+                <h2>学生使用指南</h2>
+                <div class="doc-card">
+                    <h3 id="student-overview">实验中心概览</h3>
+                    <div class="doc-content">
+                        <p>学生登录后进入"实验中心"，可以使用平台全部实验模块完成实验操作，并查看操作说明文档。</p>
+                        <h4>学生可用功能</h4>
+                        <ul>
+                            <li>多源数据采集与融合模块 - 数据采集、数据融合</li>
+                            <li>交通流重构与预测模块 - 交通流重构、交通流预测</li>
+                            <li>三层级协同优化控制模块 - 信号优化、路径诱导、车速控制、协同控制</li>
+                            <li>虚实结合仿真模块 - 场景构建、智能车辆控制、算法测试</li>
+                            <li>操作说明文档 - 查看本帮助文档</li>
+                        </ul>
+                        <h4>权限说明</h4>
+                        <p>学生可以访问五大实验模块的全部功能。学生信息管理和实验报告管理仅限教师和管理员使用。</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="student-experiment">实验操作流程</h3>
+                    <div class="doc-content">
+                        <h4>基本实验流程</h4>
+                        <ol>
+                            <li>登录系统，进入实验中心</li>
+                            <li>点击对应的实验模块卡片，展开子功能列表</li>
+                            <li>选择具体实验功能，进入实验操作界面</li>
+                            <li>按照界面提示上传数据、设置参数</li>
+                            <li>点击"开始"按钮执行算法</li>
+                            <li>查看实验结果，导出数据或生成报告</li>
+                        </ol>
+                        <h4>实验注意事项</h4>
+                        <ul>
+                            <li>实验前请仔细阅读下方"实验模块说明"中的详细操作指南</li>
+                            <li>上传数据文件前请确认格式正确（参考各模块数据要求）</li>
+                            <li>实验过程中请勿关闭浏览器或刷新页面</li>
+                            <li>实验结果可导出为CSV或DOCX格式保存</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 实验模块说明 -->
+            <div class="doc-section" id="experiment-modules">
+                <h2>实验模块说明</h2>
+                <div class="doc-card">
+                    <h3 id="mod-data-collection">多源数据采集功能</h3>
+                    <div class="doc-content">
+                        <p>多源数据采集功能用于从视频、雷达、线圈等多种数据源采集交通流数据。该功能基于YOLOv8+DeepSort算法实现车辆检测与跟踪，能够实时提取车辆位置、速度、车型等信息，为后续的数据融合和交通分析提供基础数据支撑。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在主界面点击"多源数据采集与融合模块"卡片展开子功能列表</li>
+                            <li>选择"多源数据采集功能"，进入数据采集界面</li>
+                            <li>在数据源配置区域选择数据源类型（视频/雷达/线圈），配置数据源参数</li>
+                            <li>点击"开始采集"按钮，系统基于YOLOv8+DeepSort算法进行车辆检测跟踪</li>
+                            <li>在数据展示区域实时查看采集到的交通流数据</li>
+                            <li>点击"停止采集"结束采集，点击"导出数据"将数据导出为CSV文件</li>
+                        </ol>
+                        <h4>数据要求</h4>
+                        <ul>
+                            <li>视频格式：以.mp4为主，兼容.avi、.mov、.mkv等格式</li>
+                            <li>分辨率：建议不低于720P（1280x720），推荐1080P</li>
+                            <li>帧率：建议不低于25fps，以保证车辆跟踪的连续性</li>
+                            <li>拍摄角度：建议采用俯视或斜俯视角度，避免车辆遮挡</li>
+                        </ul>
+                        <h4>输出说明</h4>
+                        <p>系统从视频中自动提取车辆轨迹信息，按15分钟间隔统计各类车辆流量（小汽车、公交车、卡车），输出包含时间间隔、各车型数量和总流量的统计表。算法统计误差大部分在15%以内。</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="mod-data-fusion">多源数据融合功能</h3>
+                    <div class="doc-content">
+                        <p>多源数据融合功能采用贝叶斯融合算法，将来自不同数据源（视频检测结果与点云数据）的交通数据进行时空对齐和信息融合，提高数据的准确性和完整性。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在"多源数据采集与融合模块"中选择"多源数据融合功能"</li>
+                            <li>选择需要融合的数据源（可多选），上传各数据源的数据文件</li>
+                            <li>设置融合参数（时间窗口、空间阈值、置信度权重）</li>
+                            <li>点击"开始融合"执行贝叶斯融合算法</li>
+                            <li>在结果展示区域查看融合结果，包括信息熵、融合精度、数据完整性等指标</li>
+                            <li>点击"导出结果"将融合数据导出</li>
+                        </ol>
+                        <h4>输入数据格式</h4>
+                        <ul>
+                            <li>YOLO检测结果（JSON）：包含class_name（类别）、mean_conf（置信度）、var_conf（方差）、count（数量）、mean_bbox（边界框）</li>
+                            <li>点云熵数据（JSON）：包含entropy（熵值，越低越确定）、count（目标数量）</li>
+                        </ul>
+                        <h4>融合输出</h4>
+                        <p>贝叶斯融合后输出JSON文件，包含yolo_mean_conf（YOLO置信度）、pc_entropy（点云熵值）、fused_prob（融合概率）。融合概率综合了视频和点云两种数据源的信息，提供更可靠的目标检测结果。</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="mod-traffic-reconstruction">交通流重构功能</h3>
+                    <div class="doc-content">
+                        <p>交通流重构功能基于DTALite动态交通分配模型，利用有限的观测数据估计完整的OD（起讫点）矩阵。通过迭代优化算法使重构的交通流与实际观测数据相匹配，为交通规划和管理提供决策支持。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在主界面点击"交通流重构与预测模块"卡片展开子功能列表</li>
+                            <li>选择"交通流重构功能"，进入交通流重构界面</li>
+                            <li>上传路网文件（.net.xml）和观测数据文件（.csv）</li>
+                            <li>设置重构参数（时间段、迭代次数、收敛阈值）</li>
+                            <li>点击"开始重构"执行基于DTALite的OD矩阵估计算法</li>
+                            <li>查看重构结果：OD矩阵热力图、路段流量对比、误差分析</li>
+                            <li>点击"导出OD矩阵"或"生成报告"保存结果</li>
+                        </ol>
+                        <h4>输入数据</h4>
+                        <ul>
+                            <li>路段数据（input_link.csv）：路段编号、起终点节点、长度、车道数、限速、通行能力</li>
+                            <li>节点数据（input_node.csv）：节点编号、坐标、节点类型</li>
+                            <li>观测数据（sensor_count.csv）：路段编号、观测流量、时间段</li>
+                        </ul>
+                        <h4>输出结果</h4>
+                        <p>输出OD矩阵（output_ODMOE.csv），包含起终点小区编号、出行量、出行时间和出行距离。同时生成路段流量时序变化图和误差分布直方图。</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="mod-traffic-prediction">交通流预测功能</h3>
+                    <div class="doc-content">
+                        <p>交通流预测功能提供多种预测模型，包括线性回归、随机森林、LSTM和GRU等深度学习模型。用户可根据数据特点选择合适的模型，实现短期和中期交通流量预测。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在"交通流重构与预测模块"中选择"交通流预测功能"</li>
+                            <li>上传历史交通流数据文件（CSV格式）</li>
+                            <li>选择预测模型（线性回归/随机森林/LSTM/GRU）</li>
+                            <li>设置预测参数（历史时长、预测时长、预测间隔）</li>
+                            <li>点击"开始预测"执行预测算法</li>
+                            <li>查看预测曲线图和误差指标（MAE、RMSE、MAPE）</li>
+                        </ol>
+                        <h4>可选预测模型</h4>
+                        <ul>
+                            <li>线性回归 - 适用于线性趋势明显的数据，计算速度快</li>
+                            <li>随机森林 - 适用于非线性关系的数据，泛化能力好</li>
+                            <li>LSTM（长短期记忆网络） - 适用于时序数据，能捕捉长期依赖关系</li>
+                            <li>GRU（门控循环单元） - 与LSTM类似但结构更简洁，训练速度更快</li>
+                        </ul>
+                        <h4>数据要求</h4>
+                        <p>历史交通流数据采用CSV格式，采集间隔为15分钟，建议至少包含一周以上的历史数据。数据字段包括日期、时间、日期类型、总流量、各车型流量和平均速度。</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="mod-signal-optimization">交通信号优化功能（上层控制）</h3>
+                    <div class="doc-content">
+                        <p>交通信号优化功能是三层级协同优化控制的上层控制，提供多种信号配时优化算法，通过优化交叉口信号配时方案减少车辆延误，提高路网通行效率。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在主界面点击"三层级协同优化控制模块"卡片展开子功能列表</li>
+                            <li>选择"上层-交通信号优化功能"，进入信号优化界面</li>
+                            <li>选择优化算法（Webster/HCM/BO/TuRBO/GA/MPC-TuRBO）</li>
+                            <li>上传路网文件、车流文件和初始配时文件</li>
+                            <li>设置优化参数（优化目标、优化维度、迭代次数、批处理大小）</li>
+                            <li>点击"开始优化"执行信号优化算法</li>
+                            <li>优化过程中实时查看优化进度和目标函数值变化曲线</li>
+                            <li>优化完成后查看TuRBO迭代时间、SUMO运行总时间、目标函数值及配时方案文件路径</li>
+                            <li>点击"导出配时方案"保存结果，或点击"应用到仿真"进行验证</li>
+                        </ol>
+                        <h4>可选优化算法</h4>
+                        <ul>
+                            <li>Webster算法 - 经典信号配时方法，基于饱和流率和交通量计算最佳周期和绿信比</li>
+                            <li>HCM算法 - 基于美国《道路通行能力手册》的信号配时方法</li>
+                            <li>贝叶斯优化（BO） - 基于高斯过程代理模型的黑盒优化算法</li>
+                            <li>TuRBO - 信赖域贝叶斯优化算法，适用于高维优化问题</li>
+                            <li>遗传算法（GA） - 基于自然选择的进化优化算法</li>
+                            <li>MPC-TuRBO - 结合模型预测控制与TuRBO的协同优化算法，可实现滚动优化</li>
+                        </ul>
+                        <h4>输入数据</h4>
+                        <ul>
+                            <li>路网数据（大网络路网.xlsx）：起终点、车道数、通行能力、速度、长度、自由流时间</li>
+                            <li>OD需求数据（大路网需求.xlsx）：OD矩阵形式的出行需求</li>
+                            <li>决策变量（决策变量.xlsx）：交叉口编号、相位编号、绿灯时长上下界</li>
+                            <li>相位配置（相位.xlsx）：交叉口相位数量、黄灯时长、全红时长</li>
+                            <li>转向比（转向比.xlsx）：各进口道左转和直行比例</li>
+                            <li>先验数据（先验.csv，可选）：历史优化结果，用于加速TuRBO收敛</li>
+                        </ul>
+                        <h4>优化效果</h4>
+                        <p>以实际路网测试为例，MPC-TuRBO优化后车均延误从96.84秒降至83.46秒，优化效果达13.82%。</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="mod-path-guidance">路径诱导功能（中层控制）</h3>
+                    <div class="doc-content">
+                        <p>路径诱导功能是三层级协同优化控制的中层控制，提供多种路径规划算法。根据实时交通状态为车辆规划最优行驶路径，实现交通流的合理分配，缓解局部拥堵。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在"三层级协同优化控制模块"中选择"中层-路径诱导功能"</li>
+                            <li>上传路网文件和实时交通状态文件</li>
+                            <li>在地图上选择起点和终点</li>
+                            <li>选择优化目标（最短时间/最短距离/最少拥堵）</li>
+                            <li>选择路径算法（Dijkstra/A*/Floyd/动态规划）</li>
+                            <li>点击"规划路径"执行路径规划算法</li>
+                            <li>在地图上查看最优路径和备选路径，显示路径信息（总距离、预计时间、途经路段）</li>
+                            <li>点击"导出路径"保存路径信息，或点击"发送诱导信息"将指令发送给车辆</li>
+                        </ol>
+                        <h4>可选路径算法</h4>
+                        <ul>
+                            <li>Dijkstra算法 - 经典最短路径算法，保证找到全局最优解</li>
+                            <li>A*算法 - 启发式搜索算法，搜索效率高于Dijkstra</li>
+                            <li>Floyd算法 - 多源最短路径算法，适用于计算所有节点对之间的最短路径</li>
+                            <li>动态规划 - 适用于多阶段决策的路径优化问题</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="mod-speed-control">车速控制功能（下层控制）</h3>
+                    <div class="doc-content">
+                        <p>车速控制功能是三层级协同优化控制的下层控制，提供PID、MPC和ACC自适应巡航控制等算法。通过精确控制车辆速度实现平稳行驶和节能驾驶，配合信号优化和路径诱导实现协同控制。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在"三层级协同优化控制模块"中选择"下层-车速控制功能"</li>
+                            <li>选择控制算法（PID/MPC/ACC自适应巡航控制）</li>
+                            <li>设置控制参数（目标速度、控制周期、PID参数、约束条件）</li>
+                            <li>选择控制车辆（单车/车队）</li>
+                            <li>点击"开始控制"执行车速控制算法</li>
+                            <li>在实时监控区域查看速度曲线、控制输入、跟踪误差统计</li>
+                            <li>点击"停止控制"结束控制，点击"导出数据"保存控制数据</li>
+                        </ol>
+                        <h4>可选控制算法</h4>
+                        <ul>
+                            <li>PID控制 - 经典比例-积分-微分控制器，参数调节简单，响应速度快</li>
+                            <li>MPC控制（模型预测控制） - 基于车辆动力学模型的预测控制，考虑未来多步优化</li>
+                            <li>ACC自适应巡航控制 - 根据前车状态自动调节车速，保持安全跟车距离</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="mod-three-level">三层级协同优化控制功能</h3>
+                    <div class="doc-content">
+                        <p>三层级协同优化控制功能实现上层信号优化、中层路径诱导、下层车速控制的协同联动。基于MPC-TuRBO算法，通过层级间的信息交互和协同决策，实现全局最优的交通控制效果。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在"三层级协同优化控制模块"中选择"三层级协同优化控制功能"</li>
+                            <li>分别配置上层（信号优化）、中层（路径诱导）、下层（车速控制）的算法和参数</li>
+                            <li>设置协同参数（信息交互周期、协同权重、全局优化目标）</li>
+                            <li>上传路网文件和交通需求文件</li>
+                            <li>点击"开始协同控制"执行基于MPC-TuRBO的三层级协同优化算法</li>
+                            <li>在实时监控区域分别查看三层控制效果：上层显示信号配时方案和优化效果；中层显示路径诱导方案和路径分布；下层显示车速控制效果和车辆轨迹；全局显示整体交通性能指标</li>
+                            <li>在协同效果分析区域查看协同前后对比、层级贡献分析、协同效率评估</li>
+                            <li>点击"生成报告"生成详细的协同控制分析报告</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="mod-carla-scene">虚实结合仿真场景构建功能</h3>
+                    <div class="doc-content">
+                        <p>虚实结合仿真场景构建功能基于CARLA仿真平台，支持创建多样化的交通仿真场景。用户可配置道路网络、交通流、天气条件、传感器等参数，构建逼真的虚拟交通环境。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在主界面点击"面向车路协同的虚实结合仿真模块"卡片展开子功能列表</li>
+                            <li>选择"虚实结合仿真场景构建功能"，进入场景构建界面</li>
+                            <li>基于CARLA仿真平台选择场景类型（预设场景/自定义场景）</li>
+                            <li>配置场景参数：道路网络、交通流、天气条件（晴天/雨天/雾天）、传感器配置（摄像头/激光雷达/毫米波雷达）</li>
+                            <li>添加交通参与者（车辆、行人、交通设施）</li>
+                            <li>点击"预览场景"在3D视图中查看场景效果</li>
+                            <li>调整视角和参数直至满意</li>
+                            <li>点击"保存场景"保存配置，点击"启动仿真"开始运行CARLA仿真场景</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="mod-smart-vehicle">车规级智能车辆开发与控制功能</h3>
+                    <div class="doc-content">
+                        <p>车规级智能车辆开发与控制功能支持智能车辆的开发、调试和控制。提供车辆动力学模型配置、传感器配置、控制算法选择等功能，并保留与真实智能小车对接的接口，支持硬件在环测试。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在"面向车路协同的虚实结合仿真模块"中选择"车规级智能车辆开发与控制功能"</li>
+                            <li>选择车辆模型，配置车辆参数（动力学参数、传感器配置、控制参数）</li>
+                            <li>设置控制模式（手动/自动/混合），设置起点和终点</li>
+                            <li>点击"连接车辆"建立与仿真车辆（或真实智能小车）的通信连接</li>
+                            <li>连接成功后点击"开始仿真"，车辆按照设定的控制算法行驶</li>
+                            <li>在实时监控区域查看：动态俯视图（车辆位置和轨迹）、车辆状态信息（速度、加速度、方向）、雷达扫描建图、通信质量（信号强度、延迟、丢包率）</li>
+                            <li>点击"生成报告"生成实验报告</li>
+                        </ol>
+                        <h4>硬件在环测试</h4>
+                        <p>该功能保留与真实智能小车对接的接口，支持硬件在环测试。可实现智能小车的地图场景自主扫描与构建、寻迹与避障等功能验证。</p>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="mod-sumo-test">虚实结合仿真场景算法测试功能</h3>
+                    <div class="doc-content">
+                        <p>虚实结合仿真场景算法测试功能基于SUMO微观交通仿真平台，支持对信号优化、路径诱导、车速控制等算法进行仿真测试和性能评估。</p>
+                        <h4>操作步骤</h4>
+                        <ol>
+                            <li>在"面向车路协同的虚实结合仿真模块"中选择"虚实结合仿真场景算法测试功能"</li>
+                            <li>选择仿真场景（预设场景/自定义场景）</li>
+                            <li>上传仿真配置文件：路网文件（.net.xml）、车流文件（.rou.xml）、网络配置文件（.sumocfg）</li>
+                            <li>设置仿真参数（仿真时长、时间步长、随机种子）</li>
+                            <li>选择测试算法（信号优化/路径诱导/车速控制）</li>
+                            <li>点击"开始仿真"启动SUMO仿真</li>
+                            <li>仿真过程中实时查看仿真进度、实时指标、车辆动画</li>
+                            <li>仿真完成后查看时间序列图、行程分析图、统计数据（平均延误、平均速度、通过车辆数等）</li>
+                            <li>点击"分析结果"生成详细分析图表，点击"下载报告"下载DOCX格式的仿真报告</li>
+                        </ol>
+                        <h4>SUMO仿真数据文件</h4>
+                        <ul>
+                            <li>路网文件（.net.xml） - 定义道路网络结构（必需）</li>
+                            <li>车流文件（.rou.xml） - 定义车辆出行需求（必需）</li>
+                            <li>配置文件（.sumocfg） - 定义仿真参数（必需）</li>
+                            <li>附加文件（.add.xml） - 定义检测器等附加设施（可选）</li>
+                            <li>OD需求（.od/.xlsx） - 定义OD矩阵（可选）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 常见问题 -->
+            <div class="doc-section" id="faq">
+                <h2>常见问题</h2>
+                <div class="faq-item">
+                    <h3 class="faq-question">平台无法启动怎么办？</h3>
+                    <div class="faq-answer" style="display:none;">
+                        <p>请按以下步骤排查：</p>
+                        <ol>
+                            <li>确认已安装Python 3.8+环境</li>
+                            <li>确认已安装所有依赖包（运行 <code>pip install -r requirements.txt</code>）</li>
+                            <li>检查端口8000是否被占用</li>
+                            <li>确认服务器端主平台服务正在运行</li>
+                            <li>查看服务器日志或联系管理员</li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">登录后页面显示空白或报错？</h3>
+                    <div class="faq-answer" style="display:none;">
+                        <ul>
+                            <li>清除浏览器缓存后重新登录</li>
+                            <li>确认后端服务正在运行（登录页底部状态指示灯为绿色）</li>
+                            <li>使用Chrome 90+或Edge 90+浏览器</li>
+                            <li>检查浏览器控制台（F12）是否有错误信息</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">上传数据文件失败？</h3>
+                    <div class="faq-answer" style="display:none;">
+                        <ul>
+                            <li>确认文件格式正确（CSV、JSON、XML等，参考各模块数据要求）</li>
+                            <li>确认文件大小未超过限制</li>
+                            <li>确认文件编码为UTF-8</li>
+                            <li>检查文件内容是否包含必需的字段和列</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">算法运行时间过长？</h3>
+                    <div class="faq-answer" style="display:none;">
+                        <p>部分算法计算量较大，建议：</p>
+                        <ul>
+                            <li>先使用小规模数据进行测试</li>
+                            <li>适当减少迭代次数或仿真时长</li>
+                            <li>确保计算机满足最低配置要求（Intel i5+，8GB内存）</li>
+                            <li>关闭其他占用资源的程序</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">学生看不到某些功能模块？</h3>
+                    <div class="faq-answer" style="display:none;">
+                        <p>这是正常的权限设置。学生可以访问五大实验模块的全部功能，但以下功能仅限教师和管理员使用：</p>
+                        <ul>
+                            <li>学生信息管理（用户信息管理）</li>
+                            <li>实验报告管理</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">SUMO或CARLA仿真无法启动？</h3>
+                    <div class="faq-answer" style="display:none;">
+                        <ul>
+                            <li>SUMO：需安装SUMO 1.12.0+，并配置SUMO_HOME环境变量</li>
+                            <li>CARLA：需安装CARLA 0.9.13+（可选），并确保GPU驱动正常</li>
+                            <li>确认仿真配置文件格式正确且路径无中文字符</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <h3 class="faq-question">如何导出实验结果？</h3>
+                    <div class="faq-answer" style="display:none;">
+                        <ul>
+                            <li>数据类结果：点击"导出数据"按钮，导出为CSV格式</li>
+                            <li>分析报告：点击"生成报告"或"下载报告"，导出为DOCX格式</li>
+                            <li>优化方案：点击"导出配时方案"或"导出路径"保存结果</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 技术支持 -->
+            <div class="doc-section" id="support">
+                <h2>技术支持</h2>
+                <div class="doc-card">
+                    <h3 id="support-info">联系方式</h3>
+                    <div class="doc-content">
+                        <h4>开发团队</h4>
+                        <p>大连理工大学 - 智信优控团队</p>
+                        <h4>技术支持</h4>
+                        <ul>
+                            <li>如遇到平台使用问题，请先查阅本操作说明文档和常见问题</li>
+                            <li>如问题未解决，请联系课程教师或实验室管理员</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="doc-card">
+                    <h3 id="support-env">运行环境要求</h3>
+                    <div class="doc-content">
+                        <h4>硬件要求</h4>
+                        <ul>
+                            <li>CPU：Intel Core i5 或 AMD Ryzen 5 以上</li>
+                            <li>内存：8GB以上（推荐16GB）</li>
+                            <li>硬盘：50GB以上空间（推荐SSD）</li>
+                            <li>屏幕分辨率：1920x1080以上</li>
+                        </ul>
+                        <h4>软件要求</h4>
+                        <ul>
+                            <li>操作系统：Windows 10/11、Linux（Ubuntu 20.04+）或 macOS 11+</li>
+                            <li>浏览器：Chrome 90+、Firefox 88+、Edge 90+或Safari 14+</li>
+                            <li>Python 3.8+</li>
+                            <li>SUMO 1.12.0+（仿真测试功能需要）</li>
+                            <li>CARLA 0.9.13+（场景构建功能需要，可选）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <div class="toolbar">
+        <button class="tool-btn" id="backToTopBtn" style="display:none;" title="返回顶部">TOP</button>
+        <button class="tool-btn" id="printBtn" title="打印文档">打印</button>
+    </div>
+    <script src="help_documentation.js"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+</html>
+
+
+
+
+

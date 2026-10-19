@@ -1,0 +1,19 @@
+{
+  "task_id": "vehicle_speed_control",
+  "module_id": "vehicle_speed_control",
+  "task_name": "车速控制算法结果对比",
+  "input_files": [
+    "scenario.json"
+  ],
+  "submission_columns": [
+    "algorithm",
+    "average_delay",
+    "avg_speed",
+    "speed_std",
+    "avg_accel",
+    "throughput"
+  ],
+  "baseline_file": "baseline_metrics.csv",
+  "primary_metric": "delay_delta",
+  "note": "学生可在外部环境运行控制算法后提交同格式指标；平台侧统一比较指标。"
+}

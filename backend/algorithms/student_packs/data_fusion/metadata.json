@@ -1,0 +1,18 @@
+{
+  "task_id": "data_fusion",
+  "module_id": "data_fusion",
+  "task_name": "多源感知结果融合自研算法",
+  "input_files": [
+    "train_features.csv",
+    "test_features.csv"
+  ],
+  "submission_columns": [
+    "frame_id",
+    "class_name",
+    "prediction_fused_prob"
+  ],
+  "baseline_file": "baseline_predictions.csv",
+  "reference_note": "无人工标注真值时，以平台贝叶斯融合结果作为可重复参考基线。",
+  "train_size": 375,
+  "test_size": 375
+}

@@ -1,0 +1,86 @@
+{
+  "mapCode": "DLUT-SEM-CAMPUS",
+  "layerCode": "sem-lidar-pointcloud",
+  "image": "/map/sem-pointcloud-layer.png",
+  "bounds": {
+    "minLat": 38.88271454558923,
+    "minLon": 121.51804829050388,
+    "maxLat": 38.88565165536337,
+    "maxLon": 121.52199071372212
+  },
+  "source": "data/map/navigation_pointcloud_map_latest.ply",
+  "sourceFormat": "PLY binary_little_endian 1.0",
+  "sourceHeader": [
+    "ply",
+    "format binary_little_endian 1.0",
+    "comment PCL generated",
+    "element vertex 5725512",
+    "property float x",
+    "property float y",
+    "property float z",
+    "property float intensity",
+    "element camera 1",
+    "property float view_px",
+    "property float view_py",
+    "property float view_pz",
+    "property float x_axisx",
+    "property float x_axisy",
+    "property float x_axisz",
+    "property float y_axisx",
+    "property float y_axisy",
+    "property float y_axisz",
+    "property float z_axisx",
+    "property float z_axisy",
+    "property float z_axisz",
+    "property float focal",
+    "property float scalex",
+    "property float scaley",
+    "property float centerx",
+    "property float centery",
+    "property int viewportx",
+    "property int viewporty",
+    "property float k1",
+    "property float k2",
+    "end_header"
+  ],
+  "sourceVertexCount": 5725512,
+  "finiteVertexCount": 5725512,
+  "rasterizedVertexCount": 5725512,
+  "imageWidth": 5474,
+  "imageHeight": 5217,
+  "pixelsPerMeter": 16.0,
+  "rendering": {
+    "mode": "elevation",
+    "elevationValue": "per-pixel maximum z",
+    "elevationClipPercentiles": [
+      2,
+      98
+    ],
+    "elevationClipMeters": [
+      -1.054092288017273,
+      16.197528839111328
+    ],
+    "alphaValue": "log point density",
+    "intensityValue": "subtle brightness modulation"
+  },
+  "transform": {
+    "method": "local_xy_to_wgs84_initial_registration",
+    "anchorLat": 38.8841831004763,
+    "anchorLon": 121.520019502113,
+    "anchorSource": "DLUT official SEM building point converted GCJ-02 to WGS84",
+    "localAnchorX": 41.23796463012695,
+    "localAnchorY": -40.61397933959961,
+    "rotationDeg": 0.0,
+    "scale": 1.0,
+    "axisAssumption": "PLY x=east, PLY y=north",
+    "confidence": "initial visual test; refine with measured ground control points"
+  },
+  "localBounds": {
+    "minX": -126.79903411865234,
+    "maxX": 209.27496337890625,
+    "minY": -200.64306640625,
+    "maxY": 119.41510772705078,
+    "minZ": -3.438741683959961,
+    "maxZ": 49.24723815917969
+  }
+}

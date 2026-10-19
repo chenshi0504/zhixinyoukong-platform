@@ -1,0 +1,29 @@
+{
+  "algorithm": "PID",
+  "scenario": "PID车速控制",
+  "objective": "跟踪目标车速",
+  "parameters": {
+    "kp": 0.8,
+    "ki": 0.2,
+    "kd": 0.1,
+    "target_speed": 50,
+    "speed_tolerance": 2,
+    "optimization_weight": 0.5,
+    "response_time": 200,
+    "safety_threshold": 0.8
+  },
+  "vehicle": {
+    "type": "sedan",
+    "length": 4.5,
+    "max_speed": 120
+  },
+  "road_segment": {
+    "length": 2000,
+    "speed_limits": [
+      30,
+      50,
+      60,
+      40
+    ]
+  }
+}

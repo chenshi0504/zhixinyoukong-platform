@@ -1,0 +1,53 @@
+{
+  "scenario": "三层级全协同-单点交叉口",
+  "network_type": "single_intersection",
+  "algorithms": {
+    "upper": "MPC-TuRBO",
+    "middle": "KSP+MSA",
+    "lower": "MPC-TuRBO"
+  },
+  "coordination": {
+    "mode": "fully_integrated",
+    "update_sequence": [
+      "upper",
+      "middle",
+      "lower"
+    ],
+    "iteration_interval": 60,
+    "convergence_criterion": 0.005
+  },
+  "objective_function": "minimize_total_travel_time",
+  "parameters": {
+    "signal": {
+      "cycle_length": 120,
+      "min_green": 20,
+      "max_green": 80
+    },
+    "path": {
+      "k_paths": 5,
+      "msa_iterations": 30
+    },
+    "speed": {
+      "prediction_horizon": 10,
+      "speed_range": [
+        20,
+        60
+      ]
+    }
+  },
+  "intersection": {
+    "id": "Main_Intersection",
+    "approaches": 4,
+    "lanes_per_approach": [
+      3,
+      3,
+      3,
+      3
+    ],
+    "turning_movements": [
+      "left",
+      "through",
+      "right"
+    ]
+  }
+}

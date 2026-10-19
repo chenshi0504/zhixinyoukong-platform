@@ -1,0 +1,32 @@
+# VIC-Sim configuration for hil_town05 scenario.
+# Extends OpenCDA YAML conventions with a vic_sim: top-level node.
+# Load with OmegaConf: OmegaConf.load(this_file)
+
+defaults:
+  - base: runtime   # inherit from configs/base/runtime.yaml (OmegaConf merge)
+
+simulation:
+  carla:
+    enabled: true
+    host: localhost
+    port: 2000
+    map: Town05
+  sumo:
+    enabled: true
+    host: 127.0.0.1
+    port: 8813
+    config_path: scenarios/hil_town05/hil_town05.sumocfg
+    gui: false
+    step_length: 0.05
+    client_order: 1
+
+vic_sim:
+  hil:
+    enabled: true
+    vehicle_port: 19900
+    stale_timeout: 0.5
+    max_stale_ticks: 200
+    sumo_vehicle_id: hil_ego
+  federation:
+    sumo_bridge_port: 19876
+    carla_async: true

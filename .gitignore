@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+*.so
+venv/
+.venv/
+.pytest_cache/
+.hypothesis/
+*.egg-info/
+
+# 本地配置（含 API Key，禁止提交）
+.env
+!.env.example
+config.local.env
+*.pem
+*.key
+!license/license_public.pem
+
+# 数据库与日志
+*.db
+*.sqlite3
+logs/
+*.log
+
+# 产物与输出
+dist/
+build/
+output/
+results/
+uploads/
+runtime/
+node_modules/
+.npm-cache/
+
+# 模型权重与数据集
+*.pt
+*.pth
+*.onnx
+*.weights
+*.h5
+*.pb
+*.pkl
+checkpoints/
+*.pcd
+*.bag
+*.mp4
+*.avi
+
+# 系统/IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">
+    <poly id="economics_management_building" type="building" color="150,119,68,190" fill="1" layer="1"
+          shape="-58,121 -10,128 -3,78 -17,77 -12,48 -28,46 -23,12 -49,10 -43,-24 -17,-22 -19,-45 10,-44 14,-65 38,-63 45,-80 78,-74 66,-2 45,1 41,35 20,32 16,70 31,74 22,136"/>
+    <poly id="economics_management_label" type="label" color="44,90,160,255" fill="0" layer="2"
+          shape="-18,58 28,58 28,42 -18,42"/>
+</additional>

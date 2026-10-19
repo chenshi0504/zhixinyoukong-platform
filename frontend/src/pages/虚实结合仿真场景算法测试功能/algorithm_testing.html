@@ -1,0 +1,361 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基于虚实结合仿真的算法测试功能</title>
+    <link rel="stylesheet" href="algorithm_testing.css">
+    <link rel="stylesheet" href="../../components/chat-log-widget.css">
+</head>
+
+<body>
+    <!-- 顶部标题区域 -->
+    <header class="header">
+        <h1 class="main-title">基于虚实结合仿真的算法测试功能</h1>
+        <p class="subtitle">选择算法并配置参数，观察虚实结合仿真测试结果</p>
+    </header>
+
+    <!-- 主内容区域 -->
+    <div class="container">
+        <main class="main-container">
+            <!-- 左侧算法配置区域 -->
+            <div class="left-panel">
+                <!-- 算法选择模块 -->
+                <div class="config-section">
+                    <h3 class="section-title">算法选择</h3>
+                    <div class="form-group">
+                        <label for="algorithm-type">算法类型</label>
+                        <select id="algorithm-type">
+                            <option value="baseline">基线算法 - Dijkstra最短路径</option>
+                            <option value="optimization">优化算法 - A*启发式搜索</option>
+                            <option value="advanced">高级算法 - 动态时间依赖路径规划</option>
+                            <option value="three-level">三层级协同优化算法</option>
+                            <option value="custom">自定义算法</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="test-region">测试区域选择</label>
+                        <select id="test-region">
+                            <option value="campus-core">校园核心区域</option>
+                            <option value="teaching-area">教学区</option>
+                            <option value="living-area">生活区</option>
+                            <option value="full-campus">全校园</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="test-scenario">测试场景</label>
+                        <select id="test-scenario">
+                            <option value="urban">城市路网场景</option>
+                            <option value="highway">高速公路场景</option>
+                            <option value="intersection">交叉口场景</option>
+                            <option value="mixed">混合交通场景</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 算法参数配置模块 -->
+                <div class="config-section">
+                    <h3 class="section-title">参数配置</h3>
+                    <div class="form-group">
+                        <label for="search-radius">搜索半径 (m)</label>
+                        <input type="number" id="search-radius" value="100" min="50" max="500">
+                    </div>
+                    <div class="form-group">
+                        <label for="optimization-level">优化等级</label>
+                        <input type="range" id="optimization-level" min="1" max="5" value="3">
+                        <span class="range-value" id="optimization-value">3</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="convergence-threshold">收敛阈值</label>
+                        <input type="number" id="convergence-threshold" value="0.01" min="0.001" max="0.1" step="0.001">
+                    </div>
+                </div>
+
+                <!-- 优化目标设置模块 -->
+                <div class="config-section">
+                    <h3 class="section-title">优化目标设置</h3>
+                    <div class="form-group">
+                        <label for="optimization-objective">优化目标</label>
+                        <select id="optimization-objective">
+                            <option value="min-time">最小化总通行时间</option>
+                            <option value="min-distance">最小化总行驶距离</option>
+                            <option value="min-energy">最小化能源消耗</option>
+                            <option value="balanced">综合平衡优化</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight-time">时间权重</label>
+                        <input type="range" id="weight-time" min="0" max="1" step="0.1" value="0.4">
+                        <span class="range-value" id="weight-time-value">0.4</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight-distance">距离权重</label>
+                        <input type="range" id="weight-distance" min="0" max="1" step="0.1" value="0.3">
+                        <span class="range-value" id="weight-distance-value">0.3</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight-energy">能耗权重</label>
+                        <input type="range" id="weight-energy" min="0" max="1" step="0.1" value="0.3">
+                        <span class="range-value" id="weight-energy-value">0.3</span>
+                    </div>
+                </div>
+
+                <!-- 数据源管理模块 -->
+                <div class="config-section">
+                    <h3 class="section-title">数据源管理</h3>
+                    <div class="data-source-item">
+                        <span class="data-label">路网拓扑数据</span>
+                        <span id="topology-status" class="data-status status-pending">未选择文件</span>
+                        <button class="btn-select" onclick="selectDataSource('topology')">选择</button>
+                    </div>
+                    <div class="data-source-item">
+                        <span class="data-label">交通流量数据</span>
+                        <span id="traffic-status" class="data-status status-pending">未选择文件</span>
+                        <button class="btn-select" onclick="selectDataSource('traffic')">选择</button>
+                    </div>
+                    <div class="data-source-item">
+                        <span class="data-label">OD需求矩阵</span>
+                        <span id="od-status" class="data-status status-pending">未选择文件</span>
+                        <button class="btn-select" onclick="selectDataSource('od')">选择</button>
+                    </div>
+                </div>
+
+                <!-- 仿真工具与文件模块 -->
+                <div class="config-section simulator-file-section">
+                    <h3 class="section-title">仿真工具与文件</h3>
+                    <p class="section-hint">检测和启动均发生在服务器端。学生可上传自己的仿真配置文件，服务器使用选中文件启动 SUMO-GUI、NetEdit 或 CARLA。</p>
+                    <div class="sim-tool-grid">
+                        <div class="sim-tool-item" data-tool-status="sumo-gui">
+                            <span>SUMO-GUI</span>
+                            <strong class="tool-state status-pending">检测中</strong>
+                        </div>
+                        <div class="sim-tool-item" data-tool-status="netedit">
+                            <span>NetEdit</span>
+                            <strong class="tool-state status-pending">检测中</strong>
+                        </div>
+                        <div class="sim-tool-item" data-tool-status="carla">
+                            <span>CARLA</span>
+                            <strong class="tool-state status-pending">检测中</strong>
+                        </div>
+                    </div>
+                    <div class="upload-panel">
+                        <input id="simulator-file-input" class="hidden-file-input" type="file" multiple
+                            accept=".sumocfg,.net.xml,.rou.xml,.add.xml,.poly.xml,.view.xml,.xml,.json,.xodr,.osm,.csv,.txt,.py,.zip">
+                        <button type="button" id="choose-simulator-files" class="btn-select">选择仿真文件</button>
+                        <button type="button" id="upload-simulator-files" class="btn-select" disabled>上传到服务器</button>
+                        <span id="simulator-upload-status" class="upload-status">尚未选择文件</span>
+                    </div>
+                    <div id="uploaded-simulator-files" class="uploaded-file-list">
+                        <div class="empty-upload-state">支持 .sumocfg、.net.xml、.rou.xml、.xodr、.json、.zip 等文件。</div>
+                    </div>
+                    <div class="simulator-launch-controls">
+                        <button type="button" id="refresh-simulator-status" class="btn btn-secondary">检测服务器环境</button>
+                        <button type="button" id="launch-sumo-gui" class="btn btn-primary" disabled>用选中文件启动 SUMO-GUI</button>
+                        <button type="button" id="launch-netedit" class="btn btn-primary" disabled>用选中文件启动 NetEdit</button>
+                        <button type="button" id="launch-carla" class="btn btn-primary" disabled>启动 CARLA</button>
+                    </div>
+                </div>
+
+                <!-- 算法说明模块 -->
+                <div class="config-section">
+                    <h3 class="section-title">算法说明</h3>
+                    <div class="algorithm-description">
+                        <div id="algorithm-info">
+                            <h4>Dijkstra最短路径算法</h4>
+                            <p>经典的单源最短路径算法，通过逐步扩展最短路径树来找到从起点到所有其他节点的最短路径。适用于静态路网环境下的路径规划。</p>
+                            <ul>
+                                <li>时间复杂度：O((V+E)logV)</li>
+                                <li>空间复杂度：O(V)</li>
+                                <li>适用场景：静态路网、确定性权重</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 测试控制区域 -->
+                <div class="control-section">
+                    <button id="start-test" class="btn btn-primary">开始测试</button>
+                    <button id="analysis-results-btn" class="btn btn-success">仿真结果</button>
+                    <button id="download-report-btn" class="btn btn-info">📥 导出报告</button>
+                    <button id="reset-config" class="btn btn-secondary">重置配置</button>
+                    <div class="test-status">
+                        <span class="status-label">测试状态：</span>
+                        <span id="test-status-value" class="status-value">就绪</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧仿真展示区域 -->
+            <div class="right-panel">
+                <!-- 仿真可视化区域 -->
+                <div class="simulation-display">
+                    <h3 class="section-title">仿真可视化</h3>
+                    <div class="simulation-viewport">
+                        <!-- 占位符内容 -->
+                        <div class="placeholder-content" id="placeholderContent">
+                            <div class="simulation-info">
+                                <div class="sumo-status">
+                                    <div class="status-icon">🚗</div>
+                                    <h4>SUMO仿真状态</h4>
+                                    <div class="status-details">
+                                        <p><strong>仿真引擎：</strong>SUMO (Simulation of Urban Mobility)</p>
+                                        <p><strong>场景文件：</strong>SiouxFalls网络</p>
+                                        <p><strong>配置文件：</strong><span id="active-sim-config">内置 siouxfalls_2.5.sumocfg</span></p>
+                                        <p><strong>当前状态：</strong><span id="sumo-status-text">等待启动</span></p>
+                                    </div>
+                                </div>
+                                <div class="simulation-note">
+                                    <p>点击"开始测试"会调用服务器后端服务；如已选择自定义 .sumocfg，会优先用该文件启动服务器端 SUMO-GUI。</p>
+                                    <p>仿真完成后可查看分析结果和导出报告。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- SUMO仿真界面图片 -->
+                        <img id="sumoSimulationImage" class="sumo-simulation-image" src="sumo仿真界面.png" alt="SUMO仿真界面" style="display: none;">
+                    </div>
+                </div>
+
+                <!-- 性能分析区域 -->
+                <div class="performance-analysis">
+                    <h3 class="section-title">算法性能对比</h3>
+                    <div class="performance-grid">
+                        <div class="performance-card">
+                            <div class="metric-header">
+                                <span class="metric-name">路径规划效率</span>
+                                <span class="metric-unit">ms</span>
+                            </div>
+                            <div class="metric-comparison">
+                                <div class="baseline-value">
+                                    <span class="value-label">基线算法</span>
+                                    <span class="value-number" id="baseline-efficiency">78</span>
+                                </div>
+                                <div class="current-value">
+                                    <span class="value-label">当前算法</span>
+                                    <span class="value-number" id="current-efficiency">42</span>
+                                </div>
+                                <div class="improvement" id="efficiency-improvement">+46% 提升</div>
+                            </div>
+                        </div>
+
+                        <div class="performance-card">
+                            <div class="metric-header">
+                                <span class="metric-name">路径长度优化</span>
+                                <span class="metric-unit">km</span>
+                            </div>
+                            <div class="metric-comparison">
+                                <div class="baseline-value">
+                                    <span class="value-label">基线算法</span>
+                                    <span class="value-number" id="baseline-length">12.5</span>
+                                </div>
+                                <div class="current-value">
+                                    <span class="value-label">当前算法</span>
+                                    <span class="value-number" id="current-length">10.2</span>
+                                </div>
+                                <div class="improvement" id="length-improvement">-18% 优化</div>
+                            </div>
+                        </div>
+
+                        <div class="performance-card">
+                            <div class="metric-header">
+                                <span class="metric-name">通行时间优化</span>
+                                <span class="metric-unit">min</span>
+                            </div>
+                            <div class="metric-comparison">
+                                <div class="baseline-value">
+                                    <span class="value-label">基线算法</span>
+                                    <span class="value-number" id="baseline-time">24</span>
+                                </div>
+                                <div class="current-value">
+                                    <span class="value-label">当前算法</span>
+                                    <span class="value-number" id="current-time">18</span>
+                                </div>
+                                <div class="improvement" id="time-improvement">-25% 优化</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 测试结果汇总区域 -->
+                <div class="test-results">
+                    <h3 class="section-title">测试结果汇总</h3>
+                    <div class="results-grid">
+                        <div class="result-item">
+                            <span class="result-label">测试场景</span>
+                            <span id="result-scenario" class="result-value">城市路网场景</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">算法类型</span>
+                            <span id="result-algorithm" class="result-value">Dijkstra最短路径</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">测试时长</span>
+                            <span id="result-duration" class="result-value">0 秒</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">综合评分</span>
+                            <span id="result-score" class="result-value score-excellent">85分</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 仿真结果图片展示区域 -->
+                <div class="simulation-results-display">
+                    <div class="results-display-header">
+                        <h3 class="section-title">仿真结果分析</h3>
+                        <button id="export-report-btn" class="btn btn-export" onclick="exportSimulationReport()">
+                            📥 导出报告
+                        </button>
+                    </div>
+                    
+                    <div class="results-images-container">
+                        <!-- 时间序列分析图 -->
+                        <div class="result-image-card">
+                            <div class="image-card-header">
+                                <span class="image-icon">📊</span>
+                                <h4>时间序列分析</h4>
+                            </div>
+                            <div class="image-card-body" id="time-series-image-container">
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">📊</div>
+                                    <p>点击"仿真结果"按钮查看图表</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 行程分析图 -->
+                        <div class="result-image-card">
+                            <div class="image-card-header">
+                                <span class="image-icon">🚗</span>
+                                <h4>行程分析</h4>
+                            </div>
+                            <div class="image-card-body" id="trip-analysis-image-container">
+                                <div class="image-placeholder">
+                                    <div class="placeholder-icon">🚗</div>
+                                    <p>点击"仿真结果"按钮查看图表</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Word文档生成库 -->
+    <script src="https://cdn.jsdelivr.net/npm/docx@7.8.2/build/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    
+    <script src="algorithm_testing.js"></script>
+    <script src="../../components/chat-log-widget.js"></script>
+    <!-- AI实验助手 -->
+    <link rel="stylesheet" href="/src/components/ai-assistant.css?v=deepseek-professional-20260620">
+    <script src="/src/components/ai-assistant.js?v=deepseek-professional-20260620"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+    <!-- 局域网访问守卫：仅本机可操作，局域网内页面全部功能禁用 -->
+    <script src="/src/components/lan-guard.js"></script>
+</body>
+
+</html>
+
+

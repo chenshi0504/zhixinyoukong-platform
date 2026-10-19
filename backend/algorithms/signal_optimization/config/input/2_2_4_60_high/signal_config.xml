@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<signal_config yellow_time="0" default_cycle="120" min_green="10" max_green="60">
+  <intersection id="3" cycle="90" num_phases="3" var_start="0" var_end="2">
+    <phase index="0" var_index="0" duration="30" min_green="10" max_green="60" edge="1_3"/>
+    <phase index="2" var_index="1" duration="30" min_green="10" max_green="60" edge="4_3"/>
+    <phase index="4" var_index="2" duration="30" min_green="10" max_green="60" edge="12_3"/>
+  </intersection>
+  <intersection id="4" cycle="90" num_phases="3" var_start="3" var_end="5">
+    <phase index="0" var_index="3" duration="30" min_green="10" max_green="60" edge="5_4"/>
+    <phase index="2" var_index="4" duration="30" min_green="10" max_green="60" edge="11_4"/>
+    <phase index="4" var_index="5" duration="30" min_green="10" max_green="60" edge="3_4"/>
+  </intersection>
+  <intersection id="5" cycle="90" num_phases="3" var_start="6" var_end="8">
+    <phase index="0" var_index="6" duration="30" min_green="10" max_green="60" edge="6_5"/>
+    <phase index="2" var_index="7" duration="30" min_green="10" max_green="60" edge="9_5"/>
+    <phase index="4" var_index="8" duration="30" min_green="10" max_green="60" edge="4_5"/>
+  </intersection>
+  <intersection id="6" cycle="90" num_phases="3" var_start="9" var_end="11">
+    <phase index="0" var_index="9" duration="30" min_green="10" max_green="60" edge="2_6"/>
+    <phase index="2" var_index="10" duration="30" min_green="10" max_green="60" edge="8_6"/>
+    <phase index="4" var_index="11" duration="30" min_green="10" max_green="60" edge="5_6"/>
+  </intersection>
+  <intersection id="8" cycle="120" num_phases="4" var_start="12" var_end="15">
+    <phase index="0" var_index="12" duration="30" min_green="10" max_green="60" edge="6_8"/>
+    <phase index="2" var_index="13" duration="30" min_green="10" max_green="60" edge="7_8"/>
+    <phase index="4" var_index="14" duration="30" min_green="10" max_green="60" edge="16_8"/>
+    <phase index="6" var_index="15" duration="30" min_green="10" max_green="60" edge="9_8"/>
+  </intersection>
+  <intersection id="9" cycle="90" num_phases="3" var_start="16" var_end="18">
+    <phase index="0" var_index="16" duration="30" min_green="10" max_green="60" edge="5_9"/>
+    <phase index="2" var_index="17" duration="30" min_green="10" max_green="60" edge="8_9"/>
+    <phase index="4" var_index="18" duration="30" min_green="10" max_green="60" edge="10_9"/>
+  </intersection>
+  <intersection id="10" cycle="150" num_phases="5" var_start="19" var_end="23">
+    <phase index="0" var_index="19" duration="30" min_green="10" max_green="60" edge="9_10"/>
+    <phase index="2" var_index="20" duration="30" min_green="10" max_green="60" edge="16_10"/>
+    <phase index="4" var_index="21" duration="30" min_green="10" max_green="60" edge="17_10"/>
+    <phase index="6" var_index="22" duration="30" min_green="10" max_green="60" edge="15_10"/>
+    <phase index="8" var_index="23" duration="30" min_green="10" max_green="60" edge="11_10"/>
+  </intersection>
+  <intersection id="11" cycle="120" num_phases="4" var_start="24" var_end="27">
+    <phase index="0" var_index="24" duration="30" min_green="10" max_green="60" edge="4_11"/>
+    <phase index="2" var_index="25" duration="30" min_green="10" max_green="60" edge="10_11"/>
+    <phase index="4" var_index="26" duration="30" min_green="10" max_green="60" edge="14_11"/>
+    <phase index="6" var_index="27" duration="30" min_green="10" max_green="60" edge="12_11"/>
+  </intersection>
+  <intersection id="12" cycle="90" num_phases="3" var_start="28" var_end="30">
+    <phase index="0" var_index="28" duration="30" min_green="10" max_green="60" edge="3_12"/>
+    <phase index="2" var_index="29" duration="30" min_green="10" max_green="60" edge="11_12"/>
+    <phase index="4" var_index="30" duration="30" min_green="10" max_green="60" edge="13_12"/>
+  </intersection>
+  <intersection id="14" cycle="90" num_phases="3" var_start="31" var_end="33">
+    <phase index="0" var_index="31" duration="30" min_green="10" max_green="60" edge="11_14"/>
+    <phase index="2" var_index="32" duration="30" min_green="10" max_green="60" edge="15_14"/>
+    <phase index="4" var_index="33" duration="30" min_green="10" max_green="60" edge="23_14"/>
+  </intersection>
+  <intersection id="15" cycle="120" num_phases="4" var_start="34" var_end="37">
+    <phase index="0" var_index="34" duration="30" min_green="10" max_green="60" edge="10_15"/>
+    <phase index="2" var_index="35" duration="30" min_green="10" max_green="60" edge="19_15"/>
+    <phase index="4" var_index="36" duration="30" min_green="10" max_green="60" edge="22_15"/>
+    <phase index="6" var_index="37" duration="30" min_green="10" max_green="60" edge="14_15"/>
+  </intersection>
+  <intersection id="16" cycle="120" num_phases="4" var_start="38" var_end="41">
+    <phase index="0" var_index="38" duration="30" min_green="10" max_green="60" edge="8_16"/>
+    <phase index="2" var_index="39" duration="30" min_green="10" max_green="60" edge="18_16"/>
+    <phase index="4" var_index="40" duration="30" min_green="10" max_green="60" edge="17_16"/>
+    <phase index="6" var_index="41" duration="30" min_green="10" max_green="60" edge="10_16"/>
+  </intersection>
+  <intersection id="17" cycle="90" num_phases="3" var_start="42" var_end="44">
+    <phase index="0" var_index="42" duration="30" min_green="10" max_green="60" edge="16_17"/>
+    <phase index="2" var_index="43" duration="30" min_green="10" max_green="60" edge="19_17"/>
+    <phase index="4" var_index="44" duration="30" min_green="10" max_green="60" edge="10_17"/>
+  </intersection>
+  <intersection id="18" cycle="90" num_phases="3" var_start="45" var_end="47">
+    <phase index="0" var_index="45" duration="30" min_green="10" max_green="60" edge="7_18"/>
+    <phase index="2" var_index="46" duration="30" min_green="10" max_green="60" edge="20_18"/>
+    <phase index="4" var_index="47" duration="30" min_green="10" max_green="60" edge="16_18"/>
+  </intersection>
+  <intersection id="19" cycle="90" num_phases="3" var_start="48" var_end="50">
+    <phase index="0" var_index="48" duration="30" min_green="10" max_green="60" edge="17_19"/>
+    <phase index="2" var_index="49" duration="30" min_green="10" max_green="60" edge="20_19"/>
+    <phase index="4" var_index="50" duration="30" min_green="10" max_green="60" edge="15_19"/>
+  </intersection>
+  <intersection id="20" cycle="120" num_phases="4" var_start="51" var_end="54">
+    <phase index="0" var_index="51" duration="30" min_green="10" max_green="60" edge="19_20"/>
+    <phase index="2" var_index="52" duration="30" min_green="10" max_green="60" edge="18_20"/>
+    <phase index="4" var_index="53" duration="30" min_green="10" max_green="60" edge="21_20"/>
+    <phase index="6" var_index="54" duration="30" min_green="10" max_green="60" edge="22_20"/>
+  </intersection>
+  <intersection id="21" cycle="90" num_phases="3" var_start="55" var_end="57">
+    <phase index="0" var_index="55" duration="30" min_green="10" max_green="60" edge="22_21"/>
+    <phase index="2" var_index="56" duration="30" min_green="10" max_green="60" edge="20_21"/>
+    <phase index="4" var_index="57" duration="30" min_green="10" max_green="60" edge="24_21"/>
+  </intersection>
+  <intersection id="22" cycle="120" num_phases="4" var_start="58" var_end="61">
+    <phase index="0" var_index="58" duration="30" min_green="10" max_green="60" edge="15_22"/>
+    <phase index="2" var_index="59" duration="30" min_green="10" max_green="60" edge="20_22"/>
+    <phase index="4" var_index="60" duration="30" min_green="10" max_green="60" edge="21_22"/>
+    <phase index="6" var_index="61" duration="30" min_green="10" max_green="60" edge="23_22"/>
+  </intersection>
+  <intersection id="23" cycle="90" num_phases="3" var_start="62" var_end="64">
+    <phase index="0" var_index="62" duration="30" min_green="10" max_green="60" edge="14_23"/>
+    <phase index="2" var_index="63" duration="30" min_green="10" max_green="60" edge="22_23"/>
+    <phase index="4" var_index="64" duration="30" min_green="10" max_green="60" edge="24_23"/>
+  </intersection>
+  <intersection id="24" cycle="90" num_phases="3" var_start="65" var_end="67">
+    <phase index="0" var_index="65" duration="30" min_green="10" max_green="60" edge="23_24"/>
+    <phase index="2" var_index="66" duration="30" min_green="10" max_green="60" edge="21_24"/>
+    <phase index="4" var_index="67" duration="30" min_green="10" max_green="60" edge="13_24"/>
+  </intersection>
+</signal_config>

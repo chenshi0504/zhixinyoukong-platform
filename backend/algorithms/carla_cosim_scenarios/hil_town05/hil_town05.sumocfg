@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <input>
+        <net-file value="hil_town05.net.xml"/>
+        <route-files value="hil_town05.rou.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="3600"/>
+    </time>
+    <traci_server>
+        <remote-port value="0"/>
+        <num-clients value="1"/>
+    </traci_server>
+    <gui_only>
+        <gui-settings-file value="real_world.view.xml"/>
+    </gui_only>
+</configuration>

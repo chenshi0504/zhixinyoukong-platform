@@ -1,0 +1,28 @@
+{
+  "scenario": "单一对象优化-中层路径轨迹",
+  "algorithm": "KSP+MSA",
+  "objective": "最小化总出行时间",
+  "parameters": {
+    "k_paths": 5,
+    "msa_iterations": 30,
+    "convergence_threshold": 0.01,
+    "step_size": 0.5
+  },
+  "od_pairs": [
+    {
+      "origin": "O1",
+      "destination": "D1",
+      "demand": 800
+    },
+    {
+      "origin": "O2",
+      "destination": "D2",
+      "demand": 650
+    },
+    {
+      "origin": "O3",
+      "destination": "D3",
+      "demand": 720
+    }
+  ]
+}
