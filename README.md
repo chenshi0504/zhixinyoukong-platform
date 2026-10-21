@@ -109,7 +109,7 @@ docker compose up -d          # Nginx:80 → API:9000 → PostgreSQL
 | 硬件在环平台说明 | `docs/hil.md` |
 | 配套教材（7 章 + 附录） | `docs/textbook/` |
 
-在线文档站：`https://<你的用户名>.github.io/<仓库名>/`（部署 Pages 后生效，见 `PUBLISH.md`）。
+在线文档站：**<https://chenshi0504.github.io/zhixinyoukong-platform/>**
 
 ## 六、部署到公网
 
