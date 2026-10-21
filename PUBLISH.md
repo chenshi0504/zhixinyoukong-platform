@@ -1,6 +1,11 @@
 # 发布到 GitHub（可执行清单）
 
-> 本目录（`release/public_v3`）已是**可直接推送**的公开版本：39.9 MB / 2156 个文件，已剔除模型权重、点云样本、数据库、私钥、上传文件、日志与运行时。
+> **当前状态（已完成）**
+> - 仓库：<https://github.com/chenshi0504/zhixinyoukong-platform>（Public，默认分支 `release/public`）
+> - 文档站：<https://chenshi0504.github.io/zhixinyoukong-platform/>（Pages 源为 `gh-pages` 分支）
+> - 本地发布版：`release/public_v3`，约 40 MB / 2000 余文件
+>
+> 本目录已是**可直接推送**的公开版本：已剔除模型权重、点云样本、数据库、私钥、上传文件、日志与运行时。
 > 推送涉及外部写操作，请在终端里执行下面命令（或在 IDE 弹窗中批准）。
 
 ---
