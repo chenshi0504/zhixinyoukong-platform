@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI实验助手测试</title>
+    <link rel="stylesheet" href="/src/components/ai-assistant.css?v=deepseek-professional-20260620">
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .info-box h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 16px;
+        }
+        .info-box p {
+            margin: 8px 0;
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #e8f5e9;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .status.error {
+            background: #ffebee;
+        }
+        .status-icon {
+            font-size: 24px;
+        }
+        .status-text {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+        }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        .test-questions {
+            margin-top: 20px;
+        }
+        .test-questions h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+        .test-question {
+            padding: 10px 14px;
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            color: #555;
+        }
+        .test-question:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🤖 AI实验助手测试</h1>
+        <p class="subtitle">智信优控平台 - AI功能验证</p>
+
+        <div class="info-box">
+            <h3>📋 功能说明</h3>
+            <p>• 点击右下角浮动按钮打开AI助手</p>
+            <p>• 仅使用 DeepSeek V4 Pro 模型</p>
+            <p>• 自动检索实验教材提供上下文</p>
+            <p>• 流式输出，实时显示回答</p>
+        </div>
+
+        <div id="statusBox" class="status">
+            <span class="status-icon">⏳</span>
+            <span class="status-text">正在检查配置...</span>
+        </div>
+
+        <button class="btn" onclick="openAssistant()">打开AI助手</button>
+
+        <div class="test-questions">
+            <h3>💡 测试问题</h3>
+            <div class="test-question" onclick="askQuestion('什么是车路协同？')">
+                什么是车路协同？
+            </div>
+            <div class="test-question" onclick="askQuestion('如何进行交通流预测？')">
+                如何进行交通流预测？
+            </div>
+            <div class="test-question" onclick="askQuestion('SUMO仿真的基本步骤是什么？')">
+                SUMO仿真的基本步骤是什么？
+            </div>
+            <div class="test-question" onclick="askQuestion('解释DTALite算法原理')">
+                解释DTALite算法原理
+            </div>
+        </div>
+    </div>
+
+    <script src="/src/components/ai-assistant.js?v=deepseek-professional-20260620"></script>
+    <script>
+        // 模拟登录token（测试用）
+        if (!localStorage.getItem('token')) {
+            // 这里应该是真实的登录流程，测试时可以手动设置
+            console.warn('未检测到登录token，AI助手可能无法正常工作');
+        }
+
+        // 检查配置状态
+        async function checkConfig() {
+            const statusBox = document.getElementById('statusBox');
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    statusBox.className = 'status error';
+                    statusBox.innerHTML = '<span class="status-icon">⚠️</span><span class="status-text">未登录，请先登录平台</span>';
+                    return;
+                }
+
+                const resp = await fetch('/api/v1/ai-assistant/config', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (resp.ok) {
+                    const data = await resp.json();
+                    const hasModel = data.available_models.some(m => m.available);
+
+                    if (hasModel) {
+                        const models = data.available_models
+                            .filter(m => m.available)
+                            .map(m => m.name)
+                            .join('、');
+                        statusBox.className = 'status';
+                        statusBox.innerHTML = `<span class="status-icon">✅</span><span class="status-text">配置正常，可用模型：${models}</span>`;
+                    } else {
+                        statusBox.className = 'status error';
+                        statusBox.innerHTML = '<span class="status-icon">⚠️</span><span class="status-text">未配置API Key，请查看配置说明</span>';
+                    }
+                } else {
+                    throw new Error('配置检查失败');
+                }
+            } catch (e) {
+                statusBox.className = 'status error';
+                statusBox.innerHTML = `<span class="status-icon">❌</span><span class="status-text">错误：${e.message}</span>`;
+            }
+        }
+
+        function openAssistant() {
+            if (window.aiAssistant) {
+                window.aiAssistant.open();
+            } else {
+                alert('AI助手未初始化，请刷新页面');
+            }
+        }
+
+        function askQuestion(question) {
+            if (window.aiAssistant) {
+                window.aiAssistant.open();
+                setTimeout(() => {
+                    const input = document.getElementById('aiInput');
+                    if (input) {
+                        input.value = question;
+                        input.focus();
+                    }
+                }, 300);
+            }
+        }
+
+        // 页面加载完成后检查配置
+        window.addEventListener('load', () => {
+            setTimeout(checkConfig, 500);
+        });
+    </script>
+</body>
+</html>
+

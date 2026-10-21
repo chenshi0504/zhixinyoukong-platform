@@ -1,0 +1,14 @@
+{
+  "Car": {
+    "entropy": 7.0972,
+    "count": 19
+  },
+  "Pedestrian": {
+    "entropy": 4.5491,
+    "count": 7
+  },
+  "Cyclist": {
+    "entropy": 1.7482,
+    "count": 1
+  }
+}

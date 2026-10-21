@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交通流重构功能 - 综合交通实验平台</title>
+    <link rel="stylesheet" href="traffic_reconstruction.css">
+    <link rel="stylesheet" href="../../components/chat-log-widget.css">
+</head>
+<body>
+    <!-- 顶部标题区域 -->
+    <header class="header">
+        <h1 class="main-title">交通流重构功能</h1>
+        <p class="subtitle">交通流数据重构算法和应用方法</p>
+    </header>
+
+    <!-- 导航操作区 -->
+    <nav class="nav-actions">
+        <div class="nav-content">
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="backBtn">返回</button>
+                <span class="server-status" id="serverStatus">服务器: 检查中...</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 左侧配置面板 -->
+        <aside class="config-panel">
+            <!-- 算法讲解区 -->
+            <div class="config-section">
+                <h3>算法讲解</h3>
+                <div class="algorithm-description">
+                    <p><strong>区域交通流重构算法</strong></p>
+                    <p style="margin-top: 8px; font-size: 0.9em; color: #555; line-height: 1.6;">
+                        基于OD矩阵反推的区域交通流重构方法，通过路段观测流量数据，利用DTALite动态交通分配引擎进行交通分配与OD反推，实现区域交通流的完整重构与仿真。
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                        <strong>核心步骤：</strong><br>
+                        1. 导入路网拓扑与观测流量数据<br>
+                        2. 基于用户均衡原理进行交通分配<br>
+                        3. 迭代优化OD矩阵估计（梯度投影法）<br>
+                        4. 输出重构后的交通流分布与评估指标
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                        <strong>核心工具：</strong><br>
+                        • DTALite：开源动态交通分配引擎，支持UE/SO分配<br>
+                        • NEXTA：路网可视化编辑器，编辑节点/路段/信号<br>
+                        • OD反推：基于观测流量反推出行需求矩阵
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                        <strong>关键参数：</strong>迭代次数 · 收敛阈值 · 聚合间隔 · 历史OD权重
+                    </p>
+                </div>
+            </div>
+
+            <!-- 路网编辑区 -->
+            <div class="config-section">
+                <h3>路网编辑</h3>
+                <div class="algorithm-description">
+                    <p style="font-size: 0.85em; color: #555; line-height: 1.6;">
+                        启动NEXTA可视化工具查看和编辑路网拓扑、节点、路段、信号配时等。编辑完成后保存，再运行DTALite.exe即可使用修改后的路网。
+                    </p>
+                </div>
+                <div class="config-item" style="margin-top: 10px;">
+                    <button class="btn step-btn btn-large" id="launchNEXTABtn" style="width: 100%; background-color: #1e7e34; border-color: #1e7e34;">
+                        <span class="btn-icon">🗺️</span>
+                        启动NEXTA路网编辑器
+                    </button>
+                </div>
+                <div class="config-item" style="margin-top: 8px;">
+                    <button class="btn step-btn btn-large" id="exportNetworkDocBtn" style="width: 100%; background-color: #117a8b; border-color: #117a8b;">
+                        <span class="btn-icon">📄</span>
+                        导出路网编辑文档
+                    </button>
+                </div>
+            </div>
+
+            <!-- 参数配置区 -->
+            <div class="config-section">
+                <h3>参数配置</h3>
+                <p style="font-size: 0.8em; color: #888; margin-bottom: 10px;">来源：DTASettings.txt + input_scenario_settings.csv</p>
+                <div class="config-item">
+                    <label for="maxIterations">最大迭代次数：</label>
+                    <input type="number" id="maxIterations" min="1" max="1000" step="1" value="10" class="param-input" style="width: 100px;">
+                </div>
+                <div class="config-item">
+                    <label for="convergencyGap">收敛阈值(%)：</label>
+                    <input type="number" id="convergencyGap" min="0.1" max="20" step="0.1" value="5.0" class="param-input" style="width: 100px;">
+                </div>
+                <div class="config-item">
+                    <label for="aggregationInterval">聚合时间间隔(min)：</label>
+                    <input type="number" id="aggregationInterval" min="1" max="60" step="1" value="15" class="param-input" style="width: 100px;">
+                </div>
+                <div class="config-item">
+                    <label for="histODWeight">历史OD权重：</label>
+                    <input type="number" id="histODWeight" min="0" max="10" step="0.1" value="1.0" class="param-input" style="width: 100px;">
+                </div>
+                <div class="config-item" style="margin-top: 15px;">
+                    <button class="btn step-btn" id="saveParamsBtn" style="width: 100%;">
+                        <span class="btn-icon">💾</span>
+                        保存
+                    </button>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- 右侧展示区域 -->
+        <section class="display-area">
+            <!-- 一键运行区 -->
+            <div class="data-section">
+                <h3>一键运行</h3>
+                <div class="quick-run-bar">
+                    <div class="quick-run-info" style="margin-bottom: 8px;">
+                        <p style="margin: 0; font-size: 0.85em; color: #555;">📌 使用默认数据文件运行DTALite.exe进行交通流重构</p>
+                    </div>
+                    <div class="control-buttons-horizontal">
+                        <button class="btn step-btn btn-large" id="importDataBtn">
+                            <span class="btn-icon">📥</span>
+                            数据一键导入
+                        </button>
+                        <button class="btn step-btn btn-large" id="runNEXTABtn">
+                            <span class="btn-icon">▶️</span>
+                            运行DTALite.exe重构
+                        </button>
+                        <button class="btn step-btn btn-large" id="exportCSVBtn">
+                            <span class="btn-icon">💾</span>
+                            导出CSV
+                        </button>
+                        <button class="btn step-btn btn-large" id="resetBtn">
+                            <span class="btn-icon">🔄</span>
+                            重置状态
+                        </button>
+                    </div>
+                    <div class="status-display" style="margin-top: 8px;">
+                        <span class="status-label">运行状态：</span>
+                        <span class="status-value" id="reconstructionStatus">就绪</span>
+                    </div>
+                    <div class="progress-display" style="display: none;" id="progressDisplay">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressBar"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OD数据状态（合并：导入 + 重构） -->
+            <div class="data-section">
+                <h3>OD数据状态</h3>
+                <div id="odStatusArea" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <!-- 导入状态卡片 -->
+                    <div id="odImportCard" style="flex: 1; min-width: 200px; padding: 16px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #dcdfe6; text-align: center;">
+                        <div style="font-size: 1.8em; margin-bottom: 6px;">📥</div>
+                        <div style="font-size: 14px; font-weight: 600; color: #666;">数据导入</div>
+                        <div id="odImportStatus" style="font-size: 13px; color: #999; margin-top: 4px;">等待导入</div>
+                    </div>
+                    <!-- 重构状态卡片 -->
+                    <div id="odReconstructCard" style="flex: 1; min-width: 200px; padding: 16px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #dcdfe6; text-align: center;">
+                        <div style="font-size: 1.8em; margin-bottom: 6px;">🔄</div>
+                        <div style="font-size: 14px; font-weight: 600; color: #666;">OD重构</div>
+                        <div id="odReconstructStatus" style="font-size: 13px; color: #999; margin-top: 4px;">等待执行</div>
+                    </div>
+                    <!-- 指标卡片 -->
+                    <div id="odMetricsCard" style="flex: 1; min-width: 200px; padding: 16px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #dcdfe6; text-align: center; display: none;">
+                        <div style="font-size: 1.8em; margin-bottom: 6px;">📊</div>
+                        <div style="font-size: 14px; font-weight: 600; color: #666;">重构指标</div>
+                        <div id="odMetricsContent" style="font-size: 13px; color: #999; margin-top: 4px;">--</div>
+                    </div>
+                </div>
+                <!-- 隐藏的数据字段，供JS使用 -->
+                <span id="fileCount" style="display:none;">0</span>
+                <span id="dataPoints" style="display:none;">--</span>
+                <span id="missingRate" style="display:none;">--</span>
+                <span id="odPairCount" style="display:none;">--</span>
+                <span id="completionRate" style="display:none;">--</span>
+                <span id="reconstructionStatus2" style="display:none;">--</span>
+                <span id="reconstructionAccuracy" style="display:none;">--</span>
+                <span id="rmseValue" style="display:none;">--</span>
+                <span id="processingTime" style="display:none;">--</span>
+                <span id="improvementRate" style="display:none;">--</span>
+            </div>
+
+            <!-- 结果输出展示区 -->
+            <div class="result-output-section">
+                <h3>结果输出</h3>
+                <div class="output-controls">
+                    <button class="btn btn-primary" id="showResultsBtn">
+                        <span class="btn-icon">📊</span>
+                        结果分析
+                    </button>
+                    <button class="btn btn-info" id="downloadReportBtn">
+                        <span class="btn-icon">📄</span>
+                        下载分析报告
+                    </button>
+                </div>
+                <div class="result-display" id="resultDisplay">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">📈</div>
+                        <p>结果展示区</p>
+                        <p class="placeholder-hint">点击"结果分析"按钮查看结果</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="traffic_reconstruction.js"></script>
+    <script src="../../components/chat-log-widget.js"></script>
+    <!-- AI实验助手 -->
+    <link rel="stylesheet" href="/src/components/ai-assistant.css?v=deepseek-professional-20260620">
+    <script src="/src/components/ai-assistant.js?v=deepseek-professional-20260620"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+    <!-- 局域网访问同样可以启动 DTALite / NEXTA：后端会在运行平台的本机弹出 CMD
+         窗口执行，执行状态与结果通过 /api/reconstruction/dtalite-status 等接口
+         反馈到当前页面。 -->
+</body>
+</html>
+
+

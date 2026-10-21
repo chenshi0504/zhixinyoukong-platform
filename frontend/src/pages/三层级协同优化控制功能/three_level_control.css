@@ -1,0 +1,122 @@
+/* 全局 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Microsoft YaHei', Arial, sans-serif; background-color: #f5f5f5; color: #333; line-height: 1.6; }
+
+/* 顶部 */
+.header { background-color: #2C5AA0; color: white; padding: 20px 40px; text-align: center; }
+.main-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+.subtitle { font-size: 14px; font-weight: 400; opacity: 0.9; }
+
+/* 导航 */
+.nav-actions { background-color: #f8f9fa; padding: 15px 40px; border-bottom: 1px solid #E0E0E0; }
+.nav-content { max-width: 1400px; margin: 0 auto; }
+.nav-buttons { display: flex; gap: 10px; }
+#backBtn { padding: 8px 20px; font-size: 14px; }
+.server-status { margin-left: auto; padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: 500; }
+
+/* 容器 */
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+/* ========== 第一行：三层级并列 ========== */
+.level-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+
+.level-card { background: white; border-radius: 10px; border: 2px solid #E0E0E0; overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; }
+.level-card.active { border-color: #2C5AA0; box-shadow: 0 4px 12px rgba(44, 90, 160, 0.15); }
+.level-card.disabled { opacity: 0.5; }
+
+.level-card-header { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: #2C5AA0; color: white; }
+.level-card.disabled .level-card-header { background: #95a5a6; }
+.level-icon { font-size: 20px; }
+.level-title { flex: 1; font-size: 15px; font-weight: 600; }
+
+/* 开关 */
+.level-toggle { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
+.level-toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255,0.3); border-radius: 24px; transition: 0.3s; }
+.toggle-slider::before { content: ''; position: absolute; height: 18px; width: 18px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+.level-toggle input:checked + .toggle-slider { background: rgba(255,255,255,0.6); }
+.level-toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+.level-card-body { padding: 16px; }
+.level-card.disabled .level-card-body { pointer-events: none; }
+
+.algo-select { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; background: white; }
+.algo-select:focus { outline: none; border-color: #2C5AA0; box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2); }
+
+.level-desc { margin-top: 10px; font-size: 13px; color: #888; line-height: 1.5; }
+
+.level-config { margin-top: 12px; }
+.config-file-path { display: block; margin-top: 4px; font-size: 12px; color: #888; padding-left: 4px; }
+.form-group { margin-bottom: 8px; }
+.form-group input[type="number"] { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; background: white; }
+.form-group input[type="number"]:focus { outline: none; border-color: #2C5AA0; box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2); }
+
+/* ========== 第二行：参数 + 配置 + 控制 ========== */
+.control-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+.accept-rate-desc { margin-top: 10px; font-size: 12px; color: #888; line-height: 1.5; padding: 6px 8px; background: #f8f9fa; border-radius: 4px; }
+
+.params-card { background: white; border-radius: 10px; padding: 20px; border: 1px solid #E0E0E0; }
+.params-card h3 { font-size: 15px; color: #2c3e50; margin-bottom: 14px; border-bottom: 2px solid #2C5AA0; padding-bottom: 5px; }
+
+.params-grid { display: flex; flex-direction: column; gap: 12px; }
+.form-group label { display: block; font-size: 13px; font-weight: 500; color: #555; margin-bottom: 4px; }
+
+.config-file-list { display: flex; flex-direction: column; gap: 8px; }
+
+.control-card { display: flex; flex-direction: column; gap: 10px; }
+
+.level-summary { padding: 8px 12px; background: #e8f4f8; border-radius: 6px; font-size: 13px; color: #2C5AA0; font-weight: 600; text-align: center; border: 1px solid #b8d4e3; }
+
+.status-display { padding: 8px 12px; background: #ecf0f1; border-radius: 4px; text-align: center; }
+#currentStatus { font-size: 14px; color: #2c3e50; }
+
+/* ========== 第三行：结果 ========== */
+.results-row { margin-bottom: 20px; }
+
+.result-card { background: white; border-radius: 10px; padding: 20px; border: 1px solid #E0E0E0; }
+.result-card h3 { font-size: 15px; color: #2C5AA0; margin-bottom: 14px; border-bottom: 2px solid #2C5AA0; padding-bottom: 5px; }
+.result-summary-placeholder { background: #f8f9fa; border-radius: 6px; min-height: 60px; }
+
+/* ========== 第四行：图表 + 导出 ========== */
+.output-row { display: flex; gap: 16px; margin-bottom: 30px; }
+
+.result-images { display: flex; flex-direction: column; gap: 20px; }
+.result-image-item { background: #F8F9FA; padding: 15px; border-radius: 8px; border: 1px solid #E0E0E0; }
+.result-img { width: 100%; height: auto; border-radius: 6px; }
+.result-img-caption { margin: 10px 0 0 0; text-align: center; font-size: 14px; color: #666; }
+
+.result-buttons-vertical { display: flex; flex-direction: column; gap: 10px; }
+
+/* ========== 按钮 ========== */
+.btn { padding: 12px 20px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.btn-primary { background-color: #2C5AA0; color: white; }
+.btn-primary:hover { background-color: #1e3d72; }
+.btn-primary:disabled { background-color: #95a5a6; cursor: not-allowed; }
+.btn-secondary { background-color: #95a5a6; color: white; }
+.btn-secondary:hover { background-color: #7f8c8d; }
+.btn-large { width: 100%; padding: 14px; font-size: 16px; }
+.btn-icon { margin-right: 5px; }
+
+/* 配置文件按钮 */
+.config-file-btn { padding: 10px 14px; background-color: #2C5AA0; border: 2px solid #2C5AA0; border-radius: 6px; cursor: pointer; transition: all 0.3s; text-align: left; font-size: 13px; color: white; font-weight: 500; width: 100%; }
+.config-file-btn:hover { background-color: #1e3d72; border-color: #1e3d72; }
+.config-file-btn.step-done { background-color: white; border-color: #2C5AA0; color: #2C5AA0; }
+
+/* 仿真步骤指示器 */
+.sim-step { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; background: #f0f0f0; transition: all 0.3s; }
+.sim-step.waiting { background: #f0f0f0; color: #999; }
+.sim-step.running { background: #e8f4f8; color: #2C5AA0; border: 1px solid #2C5AA0; }
+.sim-step.done { background: #e8f8e8; color: #27ae60; }
+.step-num { width: 26px; height: 26px; border-radius: 50%; background: #ccc; color: white; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; }
+.sim-step.running .step-num { background: #2C5AA0; }
+.sim-step.done .step-num { background: #27ae60; }
+.step-label { font-weight: 600; font-size: 14px; min-width: 70px; }
+.step-info { flex: 1; font-size: 12px; color: #888; }
+.step-status { font-size: 13px; font-weight: 500; }
+
+/* 响应式 */
+@media (max-width: 1000px) {
+    .level-row { grid-template-columns: 1fr; }
+    .control-row { grid-template-columns: 1fr; }
+    .output-row { flex-direction: column; }
+}

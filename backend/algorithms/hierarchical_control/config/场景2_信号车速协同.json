@@ -1,0 +1,25 @@
+{
+  "scenario": "两两协同优化-信号+车速",
+  "algorithms": {
+    "upper": "MPC-TuRBO",
+    "lower": "MPC-TuRBO"
+  },
+  "coordination": {
+    "mode": "hierarchical",
+    "upper_to_lower_delay": 5,
+    "lower_feedback": true
+  },
+  "parameters": {
+    "signal": {
+      "cycle_length": 120,
+      "phases": 4
+    },
+    "speed": {
+      "speed_range": [
+        20,
+        60
+      ],
+      "platoon_size": 8
+    }
+  }
+}

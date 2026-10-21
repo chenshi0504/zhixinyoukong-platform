@@ -1,0 +1,29 @@
+{
+  "test_date": "2025-10-08",
+  "baseline_performance": {
+    "MPC-TuRBO": {
+      "travel_time": 25.3,
+      "delay": 8.7,
+      "throughput": 1850,
+      "computation_time": 12.5
+    },
+    "KSP+MSA": {
+      "travel_time": 26.1,
+      "delay": 9.2,
+      "throughput": 1820,
+      "computation_time": 8.3
+    }
+  },
+  "custom_algorithm_performance": {
+    "travel_time": "待测试",
+    "delay": "待测试",
+    "throughput": "待测试",
+    "computation_time": "待测试"
+  },
+  "improvement_rate": {
+    "travel_time": "待计算",
+    "delay": "待计算",
+    "throughput": "待计算",
+    "computation_time": "待计算"
+  }
+}

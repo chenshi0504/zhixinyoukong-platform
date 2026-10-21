@@ -1,0 +1,527 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智信优控 | 面向车路云一体化的综合交通实验平台</title>
+    <style>
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+            color: #172033;
+            background: #f6f8fb;
+        }
+        a { color: inherit; text-decoration: none; }
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 20;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6vw;
+            color: #fff;
+            background: rgba(9, 22, 42, 0.78);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 800;
+        }
+        .brand-mark {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.86);
+        }
+        .hero {
+            min-height: 94vh;
+            display: flex;
+            align-items: center;
+            padding: 104px 6vw 58px;
+            color: #fff;
+            background-image:
+                linear-gradient(105deg, rgba(8, 18, 34, 0.84), rgba(20, 48, 72, 0.68)),
+                url("/src/pages/登录界面/封面图片.jpg");
+            background-size: cover;
+            background-position: center;
+        }
+        .hero-content { width: min(980px, 100%); }
+        .eyebrow {
+            display: inline-flex;
+            margin-bottom: 22px;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 999px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: 700;
+        }
+        h1 {
+            width: min(900px, 100%);
+            margin: 0;
+            font-size: 62px;
+            line-height: 1.08;
+            letter-spacing: 0;
+        }
+        .lead {
+            width: min(820px, 100%);
+            margin: 24px 0 0;
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 19px;
+            line-height: 1.85;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 34px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 46px;
+            min-width: 136px;
+            padding: 12px 22px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            font-weight: 800;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+        .btn:hover { transform: translateY(-2px); }
+        .btn-primary { background: #f2b94b; border-color: #f2b94b; color: #172033; }
+        .btn-secondary { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.28); color: #fff; }
+        .btn-light { background: #eef3f8; border-color: #d8e2ee; color: #172033; }
+        button.btn { cursor: pointer; font-family: inherit; }
+        .btn[disabled] { cursor: not-allowed; opacity: 0.56; transform: none; }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(160px, 1fr));
+            gap: 16px;
+            width: min(920px, 100%);
+            margin-top: 50px;
+        }
+        .metric {
+            padding: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        .metric strong { display: block; font-size: 29px; }
+        .metric span { display: block; margin-top: 6px; color: rgba(255, 255, 255, 0.76); font-size: 13px; }
+        .section { padding: 76px 6vw; }
+        .section-header { width: min(820px, 100%); margin-bottom: 34px; }
+        .section-kicker { margin-bottom: 10px; color: #1f7a67; font-size: 14px; font-weight: 800; }
+        h2 { margin: 0; font-size: 34px; line-height: 1.32; letter-spacing: 0; }
+        .section-header p { margin: 14px 0 0; color: #536173; line-height: 1.8; }
+        .platform-grid,
+        .module-grid,
+        .resource-grid,
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+        }
+        .panel {
+            min-height: 220px;
+            padding: 24px;
+            background: #fff;
+            border: 1px solid #e0e7ef;
+            border-radius: 8px;
+            box-shadow: 0 12px 32px rgba(19, 34, 56, 0.06);
+        }
+        .panel-number {
+            display: inline-flex;
+            margin-bottom: 18px;
+            color: #2864a8;
+            font-weight: 900;
+            font-size: 13px;
+        }
+        .panel h3 {
+            margin: 0 0 10px;
+            font-size: 20px;
+        }
+        .panel p,
+        .panel li {
+            color: #536173;
+            line-height: 1.75;
+        }
+        .panel p { margin: 0; }
+        .panel ul {
+            margin: 14px 0 0;
+            padding-left: 18px;
+        }
+        .dark-band {
+            color: #fff;
+            background: #172033;
+        }
+        .dark-band .section-kicker { color: #f2b94b; }
+        .dark-band .section-header p,
+        .dark-band .panel p,
+        .dark-band .panel li { color: rgba(255, 255, 255, 0.72); }
+        .dark-band .panel {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.14);
+            box-shadow: none;
+        }
+        .workflow {
+            display: grid;
+            grid-template-columns: 0.95fr 1.05fr;
+            gap: 32px;
+            align-items: center;
+        }
+        .workflow img {
+            width: 100%;
+            border: 1px solid rgba(23, 32, 51, 0.08);
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 20px 44px rgba(20, 36, 64, 0.16);
+        }
+        .steps { display: grid; gap: 14px; }
+        .step-item {
+            display: grid;
+            grid-template-columns: 44px 1fr;
+            gap: 16px;
+            padding: 18px;
+            background: #fff;
+            border: 1px solid #e0e7ef;
+            border-radius: 8px;
+        }
+        .step-badge {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            color: #fff;
+            background: #2864a8;
+            font-weight: 900;
+        }
+        .step-item b { display: block; margin-bottom: 6px; }
+        .step-item p { margin: 0; color: #536173; line-height: 1.7; }
+        .module-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .module-card {
+            min-height: 160px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #e0e7ef;
+            border-radius: 8px;
+        }
+        .module-card strong { display: block; margin-bottom: 10px; font-size: 17px; }
+        .module-card p { margin: 0; color: #536173; line-height: 1.65; font-size: 14px; }
+        .resource-card {
+            min-height: 196px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 22px;
+            background: #fff;
+            border: 1px solid #e0e7ef;
+            border-radius: 8px;
+            box-shadow: 0 12px 32px rgba(19, 34, 56, 0.05);
+        }
+        .resource-card span { color: #1f7a67; font-size: 13px; font-weight: 800; }
+        .resource-card h3 { margin: 10px 0 8px; font-size: 19px; }
+        .resource-card p { margin: 0 0 18px; color: #536173; line-height: 1.65; }
+        .tool-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .tool-card {
+            min-height: 214px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 22px;
+            background: #fff;
+            border: 1px solid #e0e7ef;
+            border-radius: 8px;
+            box-shadow: 0 12px 32px rgba(19, 34, 56, 0.05);
+        }
+        .tool-card span { color: #1f7a67; font-size: 13px; font-weight: 800; }
+        .tool-card h3 { margin: 10px 0 8px; font-size: 19px; }
+        .tool-card p { margin: 0 0 18px; color: #536173; line-height: 1.65; }
+        .tool-card-actions { display: grid; gap: 10px; }
+        @media (max-width: 1080px) {
+            .module-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 920px) {
+            .nav { display: none; }
+            .hero { min-height: auto; }
+            h1 { font-size: 48px; }
+            .metric-grid,
+            .platform-grid,
+            .resource-grid,
+            .tool-grid,
+            .workflow { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 560px) {
+            .topbar { padding: 0 20px; }
+            .hero,
+            .section { padding-left: 20px; padding-right: 20px; }
+            h1 { font-size: 38px; }
+            .lead { font-size: 17px; }
+            .actions { flex-direction: column; }
+            .btn { width: 100%; }
+            .module-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header class="topbar">
+        <a class="brand" href="/">
+            <span class="brand-mark">智</span>
+            <span>智信优控</span>
+        </a>
+        <nav class="nav" aria-label="页面导航">
+            <a href="#platforms">平台组成</a>
+            <a href="#modules">实验能力</a>
+            <a href="#tools">工具环境</a>
+            <a href="#resources">资料下载</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="eyebrow">本地实验 · 云端管理 · 服务器发布</div>
+            <h1>面向车路云一体化的综合交通实验平台</h1>
+            <p class="lead">
+                一个入口完成交通数据实验、仿真算法验证、课程任务管理和资料交付。学生在本地实验平台做实验，
+                教师在云端管理平台管班级与报告，服务器统一承载发布访问和算法运行。
+            </p>
+            <div class="actions">
+                <a class="btn btn-primary" href="/src/pages/登录界面/login.html">进入本地实验平台</a>
+                <a class="btn btn-primary cloud-link" href="#">进入云端管理平台</a>
+                <a class="btn btn-secondary" href="#resources">下载资料</a>
+            </div>
+            <div class="metric-grid" aria-label="平台概览">
+                <div class="metric"><strong>实验</strong><span>8+ 个交通算法与仿真模块</span></div>
+                <div class="metric"><strong>教学</strong><span>班级、任务、报告、授权管理</span></div>
+                <div class="metric"><strong>交付</strong><span>服务器统一运行与资料下载</span></div>
+            </div>
+        </div>
+    </section>
+
+    <main>
+        <section class="section" id="platforms">
+            <div class="section-header">
+                <div class="section-kicker">平台组成</div>
+                <h2>三部分，各自负责一件事</h2>
+                <p>本地平台做实验，云端平台管教学，发布平台负责跨电脑访问和服务器运行。</p>
+            </div>
+            <div class="platform-grid">
+                <article class="panel">
+                    <span class="panel-number">01 LOCAL</span>
+                    <h3>本地实验平台</h3>
+                    <p>学生完成数据、预测、优化、控制和仿真实验，提交参数后由服务器执行算法并返回结果。</p>
+                    <ul>
+                        <li>交通流重构与预测</li>
+                        <li>信号优化、路径诱导、车速控制</li>
+                        <li>数据融合、SUMO/CARLA 仿真验证</li>
+                    </ul>
+                </article>
+                <article class="panel">
+                    <span class="panel-number">02 CLOUD</span>
+                    <h3>云端管理平台</h3>
+                    <p>管理员和教师管理教学组织、账号授权、任务发布、报告批阅和运行统计。</p>
+                    <ul>
+                        <li>机构、教师、班级管理</li>
+                        <li>任务发布与提交记录</li>
+                        <li>报告查看、批阅和反馈</li>
+                    </ul>
+                </article>
+                <article class="panel">
+                    <span class="panel-number">03 RELEASE</span>
+                    <h3>发布部署平台</h3>
+                    <p>面向机房、演示和外部电脑访问，把前端页面、后端 API、算法服务和资料下载统一部署在服务器。</p>
+                    <ul>
+                        <li>通过服务器 IP 访问平台</li>
+                        <li>算法在服务器端执行</li>
+                        <li>资料按版本统一下载</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" id="workflow">
+            <div class="workflow">
+                <img src="/src/pages/虚实结合仿真场景算法测试功能/sumo仿真界面.png" alt="SUMO 仿真界面">
+                <div>
+                    <div class="section-header">
+                        <div class="section-kicker">使用流程</div>
+                        <h2>一条清晰的教学实验链路</h2>
+                        <p>教师先建任务，学生做实验，服务器跑算法，最后回到云端查看报告。</p>
+                    </div>
+                    <div class="steps">
+                        <div class="step-item">
+                            <span class="step-badge">1</span>
+                            <div><b>教师建课与发任务</b><p>在云端管理平台维护班级、学生和实验任务。</p></div>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-badge">2</span>
+                            <div><b>学生配置实验</b><p>进入本地实验平台，选择模块、数据和算法参数。</p></div>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-badge">3</span>
+                            <div><b>服务器执行算法</b><p>后端统一运行仿真和算法，页面展示图表与指标。</p></div>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-badge">4</span>
+                            <div><b>报告回收与批阅</b><p>教师查看提交记录、下载报告并给出反馈。</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section dark-band" id="modules">
+            <div class="section-header">
+                <div class="section-kicker">实验能力</div>
+                <h2>围绕车路云实验主线组织模块</h2>
+                <p>从数据采集、状态估计到协同控制和虚实仿真，支撑课堂演示与学生实验。</p>
+            </div>
+            <div class="module-grid">
+                <article class="module-card"><strong>多源数据采集与融合</strong><p>融合路侧、车辆、检测器和仿真数据，支持数据处理与可视化。</p></article>
+                <article class="module-card"><strong>交通流重构</strong><p>基于路网与检测数据完成交通状态估计和结果分析。</p></article>
+                <article class="module-card"><strong>交通流预测</strong><p>支持历史数据建模、预测结果展示和性能指标对比。</p></article>
+                <article class="module-card"><strong>三层级协同优化控制</strong><p>围绕宏观诱导、信号控制和车辆控制开展协同实验。</p></article>
+                <article class="module-card"><strong>交通信号优化</strong><p>提供交叉口配时、优化算法对比和报告导出能力。</p></article>
+                <article class="module-card"><strong>路径诱导</strong><p>支持路径选择、诱导策略和运行效果对比。</p></article>
+                <article class="module-card"><strong>车规级智能车辆开发</strong><p>对接车速控制、小车系统和车路协同控制实验内容。</p></article>
+                <article class="module-card"><strong>虚实结合仿真</strong><p>通过 SUMO/CARLA 等工具完成场景构建、算法测试和结果回放。</p></article>
+            </div>
+        </section>
+
+        <section class="section" id="resources">
+            <div class="section-header">
+                <div class="section-kicker">资料下载</div>
+                <h2>可下载资料与版本已明确标注</h2>
+                <p>以下文件均由服务器白名单接口提供，按钮对应实际 PDF 文件。</p>
+            </div>
+            <div class="resource-grid">
+                <article class="resource-card">
+                    <div>
+                        <span>PDF · v2.0</span>
+                        <h3>平台教材 v2.0</h3>
+                        <p>面向课程教学，覆盖数据、预测、协同控制、硬件小车和虚实仿真。</p>
+                    </div>
+                    <a class="btn btn-light" href="/resources/textbook-v2-pdf">下载 v2.0 教材</a>
+                </article>
+                <article class="resource-card">
+                    <div>
+                        <span>PDF · v1.0</span>
+                        <h3>平台使用说明书 v1.0</h3>
+                        <p>说明平台结构、主要功能、操作入口和演示流程。</p>
+                    </div>
+                    <a class="btn btn-light" href="/resources/platform-manual-pdf">下载 v1.0 说明书</a>
+                </article>
+                <article class="resource-card">
+                    <div>
+                        <span>PDF · v1.0</span>
+                        <h3>安装与部署手册 v1.0</h3>
+                        <p>包含环境准备、服务启动、访问地址和端口检查。</p>
+                    </div>
+                    <a class="btn btn-light" href="/resources/install-manual-pdf">下载 v1.0 安装手册</a>
+                </article>
+                <article class="resource-card">
+                    <div>
+                        <span>PDF · 打印版</span>
+                        <h3>产品宣传手册</h3>
+                        <p>用于对外介绍平台定位、实验能力和建设价值。</p>
+                    </div>
+                    <a class="btn btn-light" href="/resources/product-brochure-pdf">下载宣传手册</a>
+                </article>
+                <article class="resource-card">
+                    <div>
+                        <span>PDF · 配套资源 v1.0</span>
+                        <h3>课程配套教材</h3>
+                        <p>配合平台实验模块使用，便于课堂分发。</p>
+                    </div>
+                    <a class="btn btn-light" href="/resources/supporting-textbook-pdf">下载配套教材</a>
+                </article>
+                <article class="resource-card">
+                    <div>
+                        <span>PDF · 配套资源 v1.0</span>
+                        <h3>配套资源说明</h3>
+                        <p>说明交付资料、实验资源和部署文件的组织方式。</p>
+                    </div>
+                    <a class="btn btn-light" href="/resources/supporting-resources-pdf">下载资源说明</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="section" id="tools">
+            <div class="section-header">
+                <div class="section-kicker">工具环境</div>
+                <h2>工具入口与推荐版本</h2>
+                <p>外部工具按课程环境统一安装；环境说明 PDF 可直接下载。</p>
+            </div>
+            <div class="tool-grid">
+                <article class="tool-card">
+                    <div>
+                        <span>SUMO / NetEdit · 推荐 1.19+</span>
+                        <h3>交通仿真与路网编辑</h3>
+                        <p>用于路网、车流、检测器和信号配时编辑。</p>
+                    </div>
+                    <div class="tool-card-actions">
+                        <a class="btn btn-light" href="https://eclipse.dev/sumo/docs/Downloads.html" target="_blank" rel="noopener">打开 SUMO 下载页</a>
+                        <a class="btn btn-light" href="/src/pages/虚实结合仿真场景算法测试功能/algorithm_testing.html">进入仿真实验</a>
+                    </div>
+                </article>
+                <article class="tool-card">
+                    <div>
+                        <span>CARLA · 推荐 0.9.16</span>
+                        <h3>三维虚实结合仿真</h3>
+                        <p>用于场景构建、车辆轨迹和车路协同仿真。</p>
+                    </div>
+                    <a class="btn btn-light" href="https://github.com/carla-simulator/carla/releases" target="_blank" rel="noopener">打开 CARLA Releases</a>
+                </article>
+                <article class="tool-card">
+                    <div>
+                        <span>DTALite / NEXTA · 内置版</span>
+                        <h3>交通流重构与路网编辑</h3>
+                        <p>用于 OD 估计、交通分配和 NEXTA 路网编辑。</p>
+                    </div>
+                    <a class="btn btn-light" href="https://github.com/asu-trans-ai-lab/DTALite" target="_blank" rel="noopener">打开 DTALite GitHub</a>
+                </article>
+                <article class="tool-card">
+                    <div>
+                        <span>PDF · 2026-05</span>
+                        <h3>环境配置说明</h3>
+                        <p>列出 Python、Node、SUMO、DTALite/NEXTA 和 CARLA 配置。</p>
+                    </div>
+                    <a class="btn btn-light" href="/resources/simulation-environment-guide-pdf">下载环境说明</a>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const cloudUrl = `${window.location.protocol}//${window.location.hostname}:9100/#/login`;
+        document.querySelectorAll('.cloud-link').forEach((link) => {
+            link.href = cloudUrl;
+        });
+
+    </script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+</html>
+
+

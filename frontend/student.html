@@ -1,0 +1,2652 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实验中心 - 面向车路云一体化的综合交通实验平台</title>
+    <style>
+        /* ========== 侧边栏 + 任务相关样式 ========== */
+        .page-body { display:flex; flex:1; overflow:hidden; }
+        .sidebar {
+            width:260px; min-width:260px; background:#fff;
+            border-right:1px solid #e4e7ed; overflow-y:auto;
+            display:flex; flex-direction:column; flex-shrink:0;
+        }
+        .sidebar-section { border-bottom:1px solid #f0f0f0; }
+        .sidebar-header {
+            display:flex; justify-content:space-between; align-items:center;
+            padding:14px 16px; cursor:pointer; user-select:none;
+            font-weight:600; font-size:0.95rem; color:#2C5AA0;
+        }
+        .sidebar-header:hover { background:#f5f7fa; }
+        .sidebar-header .arrow { transition:transform 0.3s; font-size:0.75rem; }
+        .sidebar-header .arrow.open { transform:rotate(90deg); }
+        .sidebar-list { display:none; }
+        .sidebar-list.open { display:block; }
+        .student-profile-card {
+            padding: 14px 16px;
+            display: grid;
+            gap: 6px;
+            background: #f7fbff;
+            border-bottom: 1px solid #e4edf8;
+        }
+        .student-profile-card strong {
+            color: #2C5AA0;
+            font-size: 0.95rem;
+        }
+        .student-profile-card span {
+            color: #606266;
+            font-size: 0.82rem;
+            line-height: 1.45;
+        }
+        .workspace-section {
+            max-width: 1240px;
+            margin: 0 auto;
+        }
+        .workspace-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .workspace-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.4rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .task-item {
+            padding: 1rem;
+            cursor:pointer;
+            border: 1px solid #e4e7ed;
+            border-left: 4px solid transparent;
+            border-radius: 10px;
+            transition:all 0.2s;
+            display:grid;
+            gap: 0.6rem;
+            background:#fff;
+        }
+        .task-item:hover { background:#f7fbff; border-color:#b8d4f5; }
+        .task-item.active { background:#ecf5ff; border-left-color:#2C5AA0; }
+        .task-item .task-name {
+            font-size:0.98rem; color:#2C5AA0; font-weight:700;
+        }
+        .task-card-meta {
+            display:flex; gap:0.6rem; flex-wrap:wrap; color:#606266; font-size:0.82rem;
+        }
+        .task-badge {
+            font-size:0.68rem; padding:2px 6px; border-radius:10px;
+            white-space:nowrap; justify-self:start;
+        }
+        .badge-graded { background:#e1f3d8; color:#67c23a; }
+        .badge-submitted { background:#fdf6ec; color:#e6a23c; }
+        .badge-pending { background:#f4f4f5; color:#909399; }
+        .sidebar-nav {
+            padding:12px 16px; cursor:pointer; font-size:0.9rem; color:#606266;
+            display:flex; align-items:center; gap:8px; transition:all 0.2s;
+        }
+        .sidebar-nav:hover { background:#f5f7fa; color:#2C5AA0; }
+        .sidebar-nav.active { background:#ecf5ff; color:#2C5AA0; font-weight:600; }
+        .sidebar-child { padding-left:32px; font-size:0.86rem; }
+        .task-loading { padding:12px 24px; color:#999; font-size:0.85rem; }
+        .empty-state { text-align:center; padding:2rem; color:#909399; }
+        .task-requirements {
+            display:grid; gap:0.8rem; margin-bottom:1.4rem;
+        }
+        .requirement-row {
+            display:grid; grid-template-columns:120px 1fr; gap:0.8rem;
+            padding:0.8rem; border:1px solid #e4edf8; border-radius:8px; background:#fbfcfe;
+        }
+        .requirement-row strong { color:#2C5AA0; }
+        .task-download-actions { display:flex; gap:0.8rem; flex-wrap:wrap; margin:0.8rem 0 1rem; }
+        .download-pill {
+            display:inline-flex; align-items:center; justify-content:center;
+            min-height:34px; padding:0 12px; border-radius:999px; border:0; cursor:pointer;
+            background:#2C5AA0; color:#fff; text-decoration:none; font-weight:700; font-size:0.86rem;
+            font-family:inherit;
+        }
+
+        /* 任务详情面板 */
+        .task-detail-panel {
+            background:#fff; border-radius:12px; padding:2rem;
+            box-shadow:0 2px 12px rgba(0,0,0,0.08); max-width:800px; margin:0 auto;
+        }
+        .task-detail-panel h3 {
+            color:#2C5AA0; font-size:1.3rem; margin-bottom:1rem;
+            padding-bottom:0.8rem; border-bottom:2px solid #ecf5ff;
+        }
+        .task-meta { display:flex; gap:2rem; margin-bottom:1.2rem; flex-wrap:wrap; }
+        .task-meta-item { font-size:0.88rem; color:#666; }
+        .task-meta-item strong { color:#333; }
+        .task-desc {
+            background:#f8f9fa; border-radius:8px; padding:1rem;
+            margin-bottom:1.5rem; color:#555; line-height:1.8; min-height:50px;
+        }
+        .report-section { border-top:1px solid #eee; padding-top:1.2rem; margin-top:1rem; }
+        .report-section h4 { color:#333; margin-bottom:1rem; font-size:1.05rem; }
+        .upload-area {
+            border:2px dashed #c0c4cc; border-radius:8px; padding:1.5rem;
+            text-align:center; cursor:pointer; transition:all 0.3s; margin-top:0.8rem;
+        }
+        .upload-area:hover { border-color:#2C5AA0; background:#ecf5ff; }
+        .upload-area input[type=file] { display:none; }
+        .btn-primary {
+            background:linear-gradient(135deg,#2C5AA0,#4A90E2); color:#fff;
+            padding:0.5rem 1.2rem; border-radius:8px; font-size:0.9rem;
+            border:none; cursor:pointer; font-weight:500; margin-top:0.8rem;
+        }
+        .btn-primary:hover { box-shadow:0 4px 12px rgba(44,90,160,0.3); }
+        .btn-primary:disabled { opacity:0.5; cursor:not-allowed; }
+        .grade-display {
+            background:linear-gradient(135deg,#f0f9eb,#e1f3d8); border-radius:12px;
+            padding:1.5rem; text-align:center; margin-top:1rem;
+        }
+        .grade-score { font-size:2.2rem; font-weight:700; color:#67c23a; }
+        .grade-feedback {
+            margin-top:0.8rem; color:#555; font-size:0.9rem;
+            background:#fff; border-radius:8px; padding:0.8rem; text-align:left;
+        }
+        .report-file-info {
+            background:#f0f9eb; border:1px solid #e1f3d8; border-radius:8px;
+            padding:0.8rem 1rem; margin-bottom:0.8rem; font-size:0.88rem; color:#333;
+        }
+        .report-file-info.pending-review {
+            background:#fdf6ec; border-color:#faecd8;
+        }
+
+        .self-algo-panel { max-width:1200px; margin:0 auto; display:grid; gap:1.4rem; }
+        .self-task-list {
+            display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:0.8rem;
+        }
+        .self-task-card {
+            border:1px solid #dcdfe6; background:#fff; border-radius:8px;
+            padding:0.9rem; cursor:pointer; text-align:left; transition:all 0.2s;
+        }
+        .self-task-card:hover { border-color:#2C5AA0; background:#f7fbff; }
+        .self-task-card.active { border-color:#2C5AA0; background:#ecf5ff; color:#2C5AA0; }
+        .self-task-card strong { display:block; margin-bottom:0.35rem; }
+        .self-task-card span { display:block; color:#606266; font-size:0.82rem; line-height:1.45; }
+        .self-algo-card {
+            background:#fff; border-radius:12px; padding:1.5rem;
+            box-shadow:0 2px 12px rgba(0,0,0,0.08);
+        }
+        .self-algo-tabs {
+            display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+            gap:0.8rem; margin-bottom:1rem;
+        }
+        .self-algo-tab {
+            border:1px solid #dcdfe6; background:#fff; border-radius:8px;
+            padding:0.8rem; cursor:pointer; color:#333; text-align:left;
+            transition:all 0.2s; min-height:72px;
+        }
+        .self-algo-tab:hover { border-color:#2C5AA0; background:#f7fbff; }
+        .self-algo-tab.active { border-color:#2C5AA0; background:#ecf5ff; color:#2C5AA0; font-weight:600; }
+        .self-algo-tab small { display:block; color:#909399; font-weight:400; margin-top:0.25rem; line-height:1.4; }
+        .self-algo-actions { display:flex; gap:0.8rem; flex-wrap:wrap; align-items:center; }
+        .self-algo-step-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; }
+        .self-algo-step {
+            border:1px solid #e4e7ed; border-radius:10px; padding:1rem;
+            background:#fbfcfe; min-height:170px;
+        }
+        .self-algo-step.disabled { opacity:0.58; }
+        .self-algo-step h4 { color:#2C5AA0; margin-bottom:0.45rem; }
+        .self-algo-step p { color:#606266; font-size:0.86rem; margin-bottom:0.8rem; }
+        .self-algo-file {
+            margin-top:0.8rem; padding:0.55rem 0.7rem; border-radius:8px;
+            background:#f0f9eb; color:#3b7a19; font-size:0.84rem; word-break:break-all;
+        }
+        .analysis-box {
+            background:#f7fbff; border:1px solid #c6d8f0; border-radius:10px;
+            padding:1rem; color:#334; line-height:1.8; white-space:pre-wrap;
+        }
+        .self-history-card {
+            border:1px solid #ebeef5; border-radius:10px; padding:1rem;
+            display:grid; gap:0.7rem; margin-bottom:0.8rem; background:#fff;
+        }
+        .self-history-meta { display:flex; gap:1rem; flex-wrap:wrap; color:#606266; font-size:0.85rem; }
+
+        @media (max-width:768px) {
+            .page-body { flex-direction:column; }
+            .sidebar { width:100%; min-width:auto; max-height:200px; border-right:none; border-bottom:1px solid #e4e7ed; }
+        }
+
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: linear-gradient(135deg, #2C5AA0 0%, #1e3d72 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .platform-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-text {
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .self-algo-card .btn-secondary,
+        .self-history-card .btn-secondary {
+            background:#fff; color:#2C5AA0; border:1px solid #c6d8f0;
+            border-radius:6px; cursor:pointer; font-weight:500;
+            padding:0.45rem 0.75rem;
+        }
+
+        .self-algo-card .btn-secondary:hover,
+        .self-history-card .btn-secondary:hover {
+            background:#ecf5ff;
+        }
+
+        /* 主内容区 */
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .page-title {
+            text-align: center;
+            color: #2C5AA0;
+            font-size: 2.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .page-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+        }
+
+        /* 模块网格 */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            border-color: #2C5AA0;
+        }
+
+        .module-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .module-title {
+            color: #2C5AA0;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            text-align: center;
+        }
+
+        .module-description {
+            color: #666;
+            font-size: 0.95rem;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* 底部信息 */
+        .footer {
+            background: white;
+            padding: 2rem;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 3rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer-links {
+            margin-bottom: 1rem;
+        }
+
+        .footer-links a {
+            color: #2C5AA0;
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .platform-title {
+                font-size: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .module-card {
+                padding: 1.5rem;
+            }
+
+            .main-content {
+                padding: 0 1rem;
+                margin: 2rem auto;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .module-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .module-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .module-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .module-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .module-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .module-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        /* 模块展开图标 */
+        .expand-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.2rem;
+            color: #2C5AA0;
+            transition: transform 0.3s ease;
+        }
+
+        .module-card {
+            position: relative;
+        }
+
+        .expand-icon.expanded {
+            transform: rotate(180deg);
+        }
+
+        /* 子模块样式 */
+        .sub-modules {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(44, 90, 160, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid #2C5AA0;
+        }
+
+        .sub-module-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: 1px solid #e9ecef;
+        }
+
+        .sub-module-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            border-color: #2C5AA0;
+        }
+
+        .sub-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .sub-title {
+            color: #333;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .sub-modules {
+                grid-template-columns: 1fr;
+            }
+
+            .expand-icon {
+                top: 0.75rem;
+                right: 0.75rem;
+            }
+        }
+
+        .icon-refresh-btn {
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            cursor: pointer;
+            font-size: 1.15rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .icon-refresh-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.28);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+        }
+
+        .icon-refresh-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+
+        .icon-refresh-btn.spinning {
+            animation: icon-refresh-spin 0.8s linear infinite;
+        }
+
+        @keyframes icon-refresh-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .notification-toast {
+            position: fixed;
+            top: 88px;
+            right: 24px;
+            min-width: 220px;
+            max-width: 360px;
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+            opacity: 0;
+            transform: translateY(-8px);
+            transition: all 0.25s ease;
+            z-index: 10001;
+        }
+
+        .notification-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .notification-toast.success {
+            background: #67c23a;
+        }
+
+        .notification-toast.warning {
+            background: #e6a23c;
+        }
+
+        .notification-toast.error {
+            background: #f56c6c;
+        }
+
+        .notification-toast.info {
+            background: #409eff;
+        }
+
+        .experiment-backend-launcher {
+            width: calc(100% - 32px);
+            margin: 0 16px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 40px;
+            padding: 0 12px;
+            border: 1px solid #2C5AA0;
+            border-radius: 8px;
+            background: #2C5AA0;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: inherit;
+            box-shadow: 0 6px 14px rgba(44, 90, 160, 0.22);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .experiment-backend-launcher:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 32px rgba(18, 38, 72, 0.28);
+        }
+
+        .experiment-backend-launcher:disabled {
+            cursor: wait;
+            opacity: 0.82;
+            transform: none;
+        }
+
+        .experiment-backend-launcher.ready {
+            background: #2C5AA0;
+            color: white;
+        }
+
+        .experiment-backend-launcher.error {
+            background: #1f4f93;
+            color: white;
+        }
+
+        .experiment-backend-launcher .launcher-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: currentColor;
+            opacity: 0.72;
+        }
+
+        .experiment-backend-launcher.loading .launcher-dot {
+            animation: launcherPulse 0.8s ease-in-out infinite alternate;
+        }
+
+        @keyframes launcherPulse {
+            from { transform: scale(0.75); opacity: 0.45; }
+            to { transform: scale(1.15); opacity: 1; }
+        }
+
+        .experiment-entry-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 20000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 23, 42, 0.46);
+            backdrop-filter: blur(3px);
+        }
+
+        .experiment-entry-overlay.show {
+            display: flex;
+        }
+
+        .experiment-entry-panel {
+            min-width: 220px;
+            padding: 28px 34px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 24px 70px rgba(15, 35, 70, 0.26);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            color: #2C5AA0;
+            font-weight: 700;
+            font-size: 1.08rem;
+        }
+
+        .experiment-entry-spinner {
+            width: 46px;
+            height: 46px;
+            border: 4px solid rgba(44, 90, 160, 0.16);
+            border-top-color: #2C5AA0;
+            border-radius: 50%;
+            animation: experimentEntrySpin 0.85s linear infinite;
+        }
+
+        body.experiment-entry-busy {
+            cursor: wait;
+        }
+
+        @keyframes experimentEntrySpin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 720px) {
+            .experiment-backend-launcher {
+                width: auto;
+                margin: 8px 16px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="experiment-entry-overlay" id="experimentEntryOverlay" aria-hidden="true" aria-live="polite">
+        <div class="experiment-entry-panel" role="status">
+            <div class="experiment-entry-spinner" aria-hidden="true"></div>
+            <div>正在进入实验</div>
+        </div>
+    </div>
+
+    <!-- 顶部导航 -->
+    <header class="header">
+        <div class="header-content">
+            <h1 class="platform-title">面向车路云一体化的综合交通实验平台</h1>
+            <div class="user-info">
+                <span class="welcome-text">欢迎，<span id="studentName">张同学</span></span>
+                <button class="icon-refresh-btn" id="refreshStudentDataBtn" type="button" title="刷新最新任务与评分">↻</button>
+                <button class="btn btn-secondary" onclick="openPasswordDialog()">修改密码</button>
+                <button class="btn btn-secondary" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+    </header>
+
+    <div id="passwordDialog" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:12000;align-items:center;justify-content:center;padding:20px;">
+        <div style="width:min(440px,100%);background:white;border-radius:12px;padding:24px;box-shadow:0 18px 50px rgba(0,0,0,0.22);">
+            <h3 style="margin:0 0 8px;color:#2C5AA0;">提交密码修改申请</h3>
+            <p style="margin:0 0 18px;color:#606266;font-size:0.9rem;line-height:1.7;">学生密码修改需由管理员审批，通过后新密码才会生效。</p>
+            <div style="display:grid;gap:12px;">
+                <label style="display:grid;gap:6px;color:#606266;font-size:0.9rem;">原密码
+                    <input id="pwdOld" type="password" style="padding:0.65rem;border:1px solid #dcdfe6;border-radius:6px;">
+                </label>
+                <label style="display:grid;gap:6px;color:#606266;font-size:0.9rem;">新密码
+                    <input id="pwdNew" type="password" style="padding:0.65rem;border:1px solid #dcdfe6;border-radius:6px;" placeholder="至少6位">
+                </label>
+                <label style="display:grid;gap:6px;color:#606266;font-size:0.9rem;">确认密码
+                    <input id="pwdConfirm" type="password" style="padding:0.65rem;border:1px solid #dcdfe6;border-radius:6px;">
+                </label>
+                <label style="display:grid;gap:6px;color:#606266;font-size:0.9rem;">申请说明
+                    <textarea id="pwdReason" rows="3" style="padding:0.65rem;border:1px solid #dcdfe6;border-radius:6px;resize:vertical;" placeholder="可选"></textarea>
+                </label>
+            </div>
+            <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:18px;">
+                <button class="btn-secondary" type="button" onclick="closePasswordDialog()" style="padding:0.55rem 1rem;color:#2C5AA0;border:1px solid #c6d8f0;border-radius:6px;background:white;">取消</button>
+                <button class="btn-primary" id="submitPasswordBtn" type="button" onclick="submitPasswordChangeRequest()">提交申请</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页面主体：左侧栏 + 右侧内容 -->
+    <div class="page-body">
+        <!-- 左侧栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="student-profile-card">
+                    <strong id="studentProfileName">student</strong>
+                    <span>学校：<span id="studentSchool">大连理工大学</span></span>
+                    <span>班级：<span id="studentClass">交通工程2024级1班</span></span>
+                </div>
+                <div class="sidebar-nav active" id="navModules" onclick="showModules()">
+                    <span>🏠</span> <span>实验中心</span>
+                </div>
+                <button class="experiment-backend-launcher" id="experimentBackendLauncher" type="button" disabled onclick="startExperimentBackends()" title="正在确认后端启动权限">
+                    <span class="launcher-dot"></span>
+                    <span id="experimentBackendLauncherText">启动实验后端</span>
+                </button>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-nav" id="navTasks" onclick="showTasksView()">
+                    <span>📋 任务列表</span>
+                </div>
+            </div>
+            <div class="sidebar-section">
+                <div class="sidebar-nav" id="navSelfAlgorithm" onclick="showSelfAlgorithm()">
+                    <span>🧠 自研算法</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 右侧内容区 -->
+        <main class="main-content">
+
+            <!-- 视图1：实验模块（默认） -->
+            <div id="viewModules">
+                <h2 class="page-title">实验中心</h2>
+                <p class="page-subtitle">选择您要使用的模块，开始您的车路协同仿真实验</p>
+
+                <!-- 功能模块网格 -->
+                <div class="modules-grid">
+                    <!-- 1. 多源数据采集与融合模块 -->
+                    <div class="module-card" onclick="toggleModule('module1')">
+                        <div class="module-icon">📊</div>
+                        <h3 class="module-title">多源数据采集与融合模块</h3>
+                        <p class="module-description">多源数据采集技术和融合算法应用</p>
+                        <div class="expand-icon" id="expand-module1">▼</div>
+                    </div>
+                    <div class="sub-modules" id="module1" style="display: none;">
+                        <div class="sub-module-card" onclick="navigateToPage('data-collection')">
+                            <span class="sub-icon">📡</span>
+                            <span class="sub-title">多源数据采集功能</span>
+                        </div>
+                        <div class="sub-module-card" onclick="navigateToPage('data-fusion')">
+                            <span class="sub-icon">🔗</span>
+                            <span class="sub-title">多源数据融合功能</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. 交通流重构与预测模块 -->
+                    <div class="module-card" onclick="toggleModule('module2')">
+                        <div class="module-icon">🚗</div>
+                        <h3 class="module-title">交通流重构与预测模块</h3>
+                        <p class="module-description">交通流数据重构技术和预测算法</p>
+                        <div class="expand-icon" id="expand-module2">▼</div>
+                    </div>
+                    <div class="sub-modules" id="module2" style="display: none;">
+                        <div class="sub-module-card" onclick="navigateToPage('traffic-reconstruction')">
+                            <span class="sub-icon">🔧</span>
+                            <span class="sub-title">交通流重构功能</span>
+                        </div>
+                        <div class="sub-module-card" onclick="navigateToPage('traffic-prediction')">
+                            <span class="sub-icon">📈</span>
+                            <span class="sub-title">交通流预测功能</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. 三层级协同优化控制模块 -->
+                    <div class="module-card" onclick="toggleModule('module3')">
+                        <div class="module-icon">⚙️</div>
+                        <h3 class="module-title">三层级协同优化控制模块</h3>
+                        <p class="module-description">车路协同系统的多层级控制架构</p>
+                        <div class="expand-icon" id="expand-module3">▼</div>
+                    </div>
+                    <div class="sub-modules" id="module3" style="display: none;">
+                        <div class="sub-module-card" onclick="navigateToPage('signal-optimization')">
+                            <span class="sub-icon">🚦</span>
+                            <span class="sub-title">上层-交通信号优化功能</span>
+                        </div>
+                        <div class="sub-module-card" onclick="navigateToPage('path-guidance')">
+                            <span class="sub-icon">🗺️</span>
+                            <span class="sub-title">中层-路径诱导功能</span>
+                        </div>
+                        <div class="sub-module-card" onclick="navigateToPage('speed-control')">
+                            <span class="sub-icon">🎛️</span>
+                            <span class="sub-title">下层-车速控制功能</span>
+                        </div>
+                        <div class="sub-module-card" onclick="navigateToPage('cooperative-control')">
+                            <span class="sub-icon">🔄</span>
+                            <span class="sub-title">三层级协同优化控制功能</span>
+                        </div>
+                    </div>
+
+                    <!-- 4. 面向车路协同的虚实结合仿真模块 -->
+                    <div class="module-card" id="moduleCard4" onclick="toggleModule('module4')">
+                        <div class="module-icon">🎮</div>
+                        <h3 class="module-title">面向车路协同的虚实结合仿真模块</h3>
+                        <p class="module-description">车路协同的虚实结合仿真环境</p>
+                        <div class="expand-icon" id="expand-module4">▼</div>
+                    </div>
+                    <div class="sub-modules" id="module4" style="display: none;">
+                        <div class="sub-module-card" onclick="navigateToPage('carla-scenario')">
+                            <span class="sub-icon">🏗️</span>
+                            <span class="sub-title">虚实结合仿真场景构建功能</span>
+                        </div>
+                        <div class="sub-module-card" onclick="navigateToPage('smart-car-control')">
+                            <span class="sub-icon">🚙</span>
+                            <span class="sub-title">车规级智能车辆开发与控制功能</span>
+                        </div>
+                        <div class="sub-module-card" onclick="navigateToPage('algorithm-testing')">
+                            <span class="sub-icon">🧪</span>
+                            <span class="sub-title">虚实结合仿真场景算法测试功能</span>
+                        </div>
+                    </div>
+
+                    <!-- 5. 操作说明文档 -->
+                    <div class="module-card" onclick="navigateToPage('help')">
+                        <div class="module-icon">📖</div>
+                        <h3 class="module-title">操作说明文档</h3>
+                        <p class="module-description">平台使用指南、实验模块说明、常见问题解答</p>
+                    </div>
+                </div>
+            </div><!-- /viewModules -->
+
+            <!-- 视图2：任务详情（点击任务时显示） -->
+            <div id="viewTaskDetail" style="display:none;">
+                <div class="workspace-section" id="viewTasksList">
+                    <div class="workspace-toolbar">
+                        <div>
+                            <h2 class="page-title" style="text-align:left;margin-bottom:0.3rem;">任务列表</h2>
+                            <p class="page-subtitle" style="text-align:left;margin-bottom:0;">查看老师下发的任务要求、基础数据包和提交入口</p>
+                            <p style="margin-top:0.4rem;color:#606266;font-size:0.92rem;">学校：<span id="taskSchoolInfo">大连理工大学</span>；班级：<span id="taskClassInfo">交通工程2024级1班</span></p>
+                        </div>
+                        <button class="btn-primary" type="button" onclick="refreshStudentData()">刷新任务</button>
+                    </div>
+                    <div class="workspace-card">
+                        <div id="taskList">
+                            <div class="task-loading" id="taskLoading">加载中...</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="task-detail-panel" id="taskDetailPanel" style="display:none;margin-top:1.2rem;">
+                    <h3 id="taskDetailTitle">任务标题</h3>
+                    <div class="task-meta">
+                        <div class="task-meta-item"><strong>状态：</strong><span id="taskDetailStatus">-</span></div>
+                        <div class="task-meta-item"><strong>截止时间：</strong><span id="taskDetailDeadline">-</span></div>
+                        <div class="task-meta-item"><strong>发布时间：</strong><span id="taskDetailCreated">-</span></div>
+                    </div>
+                    <div class="task-desc" id="taskDetailDesc">暂无描述</div>
+
+                    <div class="report-section">
+                        <h4>实验报告</h4>
+                        <div id="reportArea"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 视图3：云端文件 -->
+            <div id="viewCloudFiles" style="display:none;">
+                <h2 class="page-title">云端文件管理</h2>
+                <p class="page-subtitle">上传实验数据、报告文档到云端平台，便于教师批改和云端存储</p>
+
+                <div style="max-width: 1200px; margin: 0 auto;">
+                    <!-- 文件上传区域 -->
+                    <div style="background: white; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+                        <h3 style="color: #2C5AA0; margin-bottom: 1.5rem;">📤 上传文件</h3>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: #606266; font-weight: 500;">文件类型</label>
+                                <select id="cloudFileType" style="width: 100%; padding: 0.6rem; border: 1px solid #dcdfe6; border-radius: 4px; font-size: 0.9rem;">
+                                    <option value="data">实验数据 (CSV, Excel)</option>
+                                    <option value="report">报告文档 (PDF, Word)</option>
+                                    <option value="config">配置文件 (XML, JSON)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: #606266; font-weight: 500;">关联任务（可选）</label>
+                                <select id="cloudFileTaskId" style="width: 100%; padding: 0.6rem; border: 1px solid #dcdfe6; border-radius: 4px; font-size: 0.9rem;">
+                                    <option value="">不关联任务（独立文件）</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: #606266; font-weight: 500;">文件描述（可选）</label>
+                            <textarea id="cloudFileDescription" rows="3" placeholder="描述文件内容和用途..." style="width: 100%; padding: 0.6rem; border: 1px solid #dcdfe6; border-radius: 4px; font-size: 0.9rem; resize: vertical;"></textarea>
+                        </div>
+
+                        <div class="upload-area" id="cloudUploadArea" onclick="document.getElementById('cloudFileInput').click()">
+                            <input type="file" id="cloudFileInput" accept=".csv,.xlsx,.xls,.pdf,.docx,.doc,.xml,.json,.txt" onchange="handleCloudFileSelect(event)">
+                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">📁</div>
+                            <div style="color: #606266; font-size: 0.95rem;">拖拽文件到此处或点击上传</div>
+                            <div style="color: #909399; font-size: 0.85rem; margin-top: 0.5rem;">支持 CSV、Excel、PDF、Word、XML、JSON 等格式，文件大小不超过 50MB</div>
+                        </div>
+
+                        <div id="cloudFilePreview" style="display: none; margin-top: 1rem; padding: 1rem; background: #f0f9eb; border: 1px solid #e1f3d8; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 500; color: #333;" id="cloudFilePreviewName"></div>
+                                    <div style="font-size: 0.85rem; color: #909399; margin-top: 0.3rem;" id="cloudFilePreviewSize"></div>
+                                </div>
+                                <button onclick="clearCloudFileSelection()" style="background: none; border: none; color: #f56c6c; cursor: pointer; font-size: 1.2rem;">✕</button>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary" id="cloudUploadBtn" onclick="uploadToCloud()" disabled style="width: 100%; margin-top: 1rem;">
+                            上传到云端
+                        </button>
+                    </div>
+
+                    <!-- 文件列表区域 -->
+                    <div style="background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.08);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                            <h3 style="color: #2C5AA0; margin: 0;">📂 我的文件</h3>
+                            <div>
+                                <select id="cloudFileFilter" onchange="loadCloudFiles()" style="padding: 0.5rem; border: 1px solid #dcdfe6; border-radius: 4px; font-size: 0.85rem;">
+                                    <option value="">全部文件</option>
+                                    <option value="data">实验数据</option>
+                                    <option value="report">报告文档</option>
+                                    <option value="config">配置文件</option>
+                                </select>
+                                <button onclick="loadCloudFiles()" style="margin-left: 0.5rem; padding: 0.5rem 1rem; background: #f5f7fa; border: 1px solid #dcdfe6; border-radius: 4px; cursor: pointer;">🔄 刷新</button>
+                            </div>
+                        </div>
+
+                        <div id="cloudFilesList">
+                            <div style="text-align: center; padding: 2rem; color: #909399;">加载中...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 视图4：自研算法 -->
+            <div id="viewSelfAlgorithm" style="display:none;">
+                <h2 class="page-title">自研算法</h2>
+                <p class="page-subtitle">选择老师下发的自研算法任务，下载对应基础数据包，并按任务上传代码、方案、仿真过程和结果</p>
+                <div class="self-algo-panel">
+                    <div class="self-algo-card">
+                        <h3 style="color:#2C5AA0;margin-bottom:1rem;">选择老师下发的任务</h3>
+                        <div class="self-task-list" id="selfAlgoTaskList"><div style="color:#909399;">加载中...</div></div>
+                    </div>
+                    <div class="self-algo-card">
+                        <h3 style="color:#2C5AA0;margin-bottom:1rem;">任务对应基础数据</h3>
+                        <div id="selfAlgoTaskRequirement" style="color:#606266;line-height:1.8;margin-bottom:1rem;">请选择任务。</div>
+                        <div class="self-algo-actions">
+                            <button class="btn-primary" id="selfAlgoDownloadBtn" type="button" onclick="downloadSelfAlgoPack()">下载基础数据包</button>
+                            <span id="selfAlgoPackHint" style="color:#606266;font-size:0.9rem;"></span>
+                        </div>
+                    </div>
+                    <div class="self-algo-card">
+                        <h3 style="color:#2C5AA0;margin-bottom:0.5rem;">四步上传</h3>
+                        <p style="color:#606266;margin-bottom:1rem;">请按顺序选择代码、方案说明、仿真过程文件和仿真结果。四类文件齐全后，平台会保存到云端并自动生成与 baseline 的对比分析。</p>
+                        <div class="self-algo-step-grid">
+                            <div class="self-algo-step" id="selfStepCode">
+                                <h4>1. 上传自研代码</h4>
+                                <p>仅支持 Python 文件，用于记录算法实现。</p>
+                                <input type="file" id="selfCodeInput" accept=".py" style="display:none" onchange="handleSelfAlgoFile('code', event)">
+                                <button class="btn-secondary" type="button" onclick="document.getElementById('selfCodeInput').click()" style="padding:0.55rem 0.9rem;color:#2C5AA0;">选择 .py 文件</button>
+                                <div class="self-algo-file" id="selfCodePreview" style="display:none;"></div>
+                            </div>
+                            <div class="self-algo-step disabled" id="selfStepSpec">
+                                <h4>2. 上传方案说明</h4>
+                                <p>说明算法思路、参数设置、实验环境和约束处理。</p>
+                                <input type="file" id="selfSpecInput" accept=".md,.txt,.docx" style="display:none" onchange="handleSelfAlgoFile('spec', event)">
+                                <button class="btn-secondary" id="selfSpecBtn" type="button" onclick="document.getElementById('selfSpecInput').click()" disabled style="padding:0.55rem 0.9rem;color:#2C5AA0;">选择说明文件</button>
+                                <div class="self-algo-file" id="selfSpecPreview" style="display:none;"></div>
+                            </div>
+                            <div class="self-algo-step disabled" id="selfStepProcess">
+                                <h4>3. 上传仿真过程文件</h4>
+                                <p>上传 SUMO/CARLA/DTALite 等仿真器输出的过程记录，可用 ZIP 打包以还原仿真实验过程。</p>
+                                <input type="file" id="selfProcessInput" accept=".zip,.sumocfg,.xml,.csv,.json,.log,.txt" style="display:none" onchange="handleSelfAlgoFile('process', event)">
+                                <button class="btn-secondary" id="selfProcessBtn" type="button" onclick="document.getElementById('selfProcessInput').click()" disabled style="padding:0.55rem 0.9rem;color:#2C5AA0;">选择过程文件</button>
+                                <div class="self-algo-file" id="selfProcessPreview" style="display:none;"></div>
+                            </div>
+                            <div class="self-algo-step disabled" id="selfStepResult">
+                                <h4>4. 上传仿真结果</h4>
+                                <p>支持 CSV、Excel、JSON、XML、DOCX、TXT 等结果文件。</p>
+                                <input type="file" id="selfResultInput" accept=".xlsx,.xls,.csv,.json,.xml,.docx,.txt" style="display:none" onchange="handleSelfAlgoFile('result', event)">
+                                <button class="btn-secondary" id="selfResultBtn" type="button" onclick="document.getElementById('selfResultInput').click()" disabled style="padding:0.55rem 0.9rem;color:#2C5AA0;">选择结果文件</button>
+                                <div class="self-algo-file" id="selfResultPreview" style="display:none;"></div>
+                            </div>
+                        </div>
+                        <button class="btn-primary" id="selfAlgoSubmitBtn" type="button" onclick="submitSelfAlgorithm()" disabled style="width:100%;margin-top:1rem;">提交并智能分析</button>
+                    </div>
+                    <div class="self-algo-card" id="selfAnalysisCard" style="display:none;">
+                        <h3 style="color:#2C5AA0;margin-bottom:1rem;">智能分析反馈</h3>
+                        <div class="analysis-box" id="selfAnalysisText"></div>
+                    </div>
+                    <div class="self-algo-card">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem;">
+                            <h3 style="color:#2C5AA0;margin:0;">我的自研算法提交</h3>
+                            <button class="btn-secondary" id="selfAlgoRefreshBtn" type="button" onclick="loadSelfAlgorithmSubmissions()" style="padding:0.5rem 1rem;color:#2C5AA0;border:1px solid #c6d8f0;border-radius:6px;background:white;">刷新</button>
+                        </div>
+                        <div id="selfAlgoHistory"><div style="text-align:center;padding:2rem;color:#909399;">加载中...</div></div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div><!-- /page-body -->
+
+    <script>
+        // 模块展开/收起功能
+        function toggleModule(moduleId) {
+            const moduleElement = document.getElementById(moduleId);
+            const expandIcon = document.getElementById('expand-' + moduleId);
+
+            if (moduleElement.style.display === 'none' || moduleElement.style.display === '') {
+                moduleElement.style.display = 'grid';
+                expandIcon.classList.add('expanded');
+            } else {
+                moduleElement.style.display = 'none';
+                expandIcon.classList.remove('expanded');
+            }
+        }
+
+        const VIC_SIM_HOST = window.location.hostname || '127.0.0.1';
+        const VIC_SIM_URL = 'http://' + VIC_SIM_HOST + ':8090/';
+
+        function sleep(ms) {
+            return new Promise(function(resolve) { setTimeout(resolve, ms); });
+        }
+
+        async function waitForVicSimReady() {
+            let targetUrl = VIC_SIM_URL;
+            for (let i = 0; i < 12; i++) {
+                try {
+                    const resp = await fetch('/api/carla-sim/native/status', { cache: 'no-store' });
+                    if (!resp.ok) return targetUrl;
+                    const data = await resp.json().catch(() => ({}));
+                    if (data.running) return targetUrl;
+                } catch (error) {
+                    return targetUrl;
+                }
+                await sleep(1000);
+            }
+            return targetUrl;
+        }
+
+        async function openVicSim() {
+            // 本机外的访问不再启动 VIC-Sim（入口卡片已在局域网下隐藏，这里再兜一层，
+            // 防止深链或其它触发路径绕过）。后端 /api/carla-sim/native/start 同样会 403。
+            var _ctx = window._accessContext;
+            if (_ctx && _ctx.access_mode === 'lan') {
+                alert('局域网访问：虚实结合仿真（VIC-Sim）仅限在运行平台的本机启动，请在教师机的浏览器中操作。');
+                return;
+            }
+            const openedWindow = window.open('about:blank', '_blank');
+            if (!openedWindow) {
+                alert('浏览器拦截了新页面，请允许弹出窗口后重试。');
+                return;
+            }
+            openedWindow.opener = null;
+            openedWindow.document.write('<!doctype html><title>VIC-Sim</title><body style="font-family:Arial,sans-serif;padding:32px;color:#2C5AA0;">正在启动 VIC-Sim，请稍候...</body>');
+            openedWindow.document.close();
+            openedWindow.focus();
+            let targetUrl = VIC_SIM_URL;
+            try {
+                const resp = await fetch('/api/carla-sim/native/start', { method: 'POST' });
+                if (!resp.ok) throw new Error('VIC-Sim native start endpoint unavailable');
+                const data = await resp.json().catch(() => ({}));
+                targetUrl = await waitForVicSimReady();
+            } catch (error) {
+                targetUrl = VIC_SIM_URL;
+            }
+            openedWindow.location.replace(targetUrl);
+        }
+
+        function showExperimentEntryOverlay() {
+            const overlay = document.getElementById('experimentEntryOverlay');
+            if (!overlay) return;
+            overlay.classList.add('show');
+            overlay.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('experiment-entry-busy');
+        }
+
+        function hideExperimentEntryOverlay() {
+            const overlay = document.getElementById('experimentEntryOverlay');
+            if (!overlay) return;
+            overlay.classList.remove('show');
+            overlay.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('experiment-entry-busy');
+        }
+
+        window.addEventListener('pageshow', hideExperimentEntryOverlay);
+
+        // 页面导航函数
+        function navigateToPage(pageType) {
+            const urls = {
+                'task-management': '/src/pages/教学任务管理/task_management.html',
+                'user-info': '/src/pages/学生信息管理/student_management.html',
+                'report-management': '/src/pages/实验报告管理/report_management.html',
+                'help': '/src/pages/操作说明文档/help_documentation.html',
+                'data-collection': '/src/pages/多源数据采集功能/data_collection.html',
+                'data-fusion': '/src/pages/多源数据融合功能/data_fusion_new.html',
+                'traffic-reconstruction': '/src/pages/交通流重构功能/traffic_reconstruction.html',
+                'traffic-prediction': '/src/pages/交通流预测功能/traffic_flow_prediction.html',
+                'signal-optimization': '/src/pages/交通信号优化功能/signal_optimization.html',
+                'path-guidance': '/src/pages/路径诱导功能/path_guidance.html',
+                'speed-control': '/src/pages/车速控制功能/vehicle_speed_control.html',
+                'cooperative-control': '/src/pages/三层级协同优化控制功能/three_level_control.html',
+                'carla-scenario': VIC_SIM_URL,
+                'smart-car-control': 'http://10.8.129.232:5173/%E3%80%81',
+                'algorithm-testing': '/src/pages/虚实结合仿真场景算法测试功能/algorithm_testing.html'
+            };
+            const openInNewPageTypes = new Set(['carla-scenario', 'smart-car-control']);
+            
+            if (pageType === 'carla-scenario') {
+                openVicSim();
+                return;
+            }
+
+            if (urls[pageType]) {
+                console.log('导航到:', pageType, '->', urls[pageType]);
+                if (openInNewPageTypes.has(pageType)) {
+                    const openedWindow = window.open(urls[pageType], '_blank');
+                    if (openedWindow) {
+                        openedWindow.opener = null;
+                        openedWindow.focus();
+                        return;
+                    }
+                    alert('浏览器拦截了新页面，请允许弹出窗口后重试。');
+                    return;
+                }
+                showExperimentEntryOverlay();
+                setTimeout(function() {
+                    window.location.href = urls[pageType];
+                }, 60);
+            } else {
+                console.error('未知的页面类型:', pageType);
+                alert('页面不存在: ' + pageType);
+            }
+        }
+
+        // 退出登录
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                // 清除用户登录信息
+                localStorage.clear();
+                // 跳转到登录页面
+                window.location.href = '/src/pages/登录界面/login.html';
+            }
+        }
+
+        // 显示关于信息
+        function showAbout() {
+            alert('面向车路云一体化的综合交通实验平台\n版本：v2.0\n\n专为车路协同技术研究设计的综合性实验平台');
+        }
+
+        // 显示联系信息
+        function showContact() {
+            alert('联系我们\n\n技术支持：support@example.com\n电话：010-12345678');
+        }
+
+        // 显示权限拒绝提示
+        function showPermissionDenied() {
+            // 创建自定义的权限拒绝提示框
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            const dialog = document.createElement('div');
+            dialog.style.cssText = `
+                background: white;
+                border-radius: 12px;
+                padding: 2rem;
+                max-width: 400px;
+                width: 90%;
+                text-align: center;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                animation: slideIn 0.3s ease;
+            `;
+
+            dialog.innerHTML = `
+                <div style="font-size: 3rem; color: #f56c6c; margin-bottom: 1rem;">🚫</div>
+                <h3 style="color: #333; margin-bottom: 1rem; font-size: 1.3rem;">访问受限</h3>
+                <p style="color: #666; margin-bottom: 1.5rem; line-height: 1.5;">
+                    抱歉，您没有访问该功能的权限。<br>
+                    该功能仅限教师和管理员使用。
+                </p>
+                <button onclick="closePermissionDialog()" style="
+                    background: #2C5AA0;
+                    color: white;
+                    border: none;
+                    padding: 0.75rem 2rem;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 1rem;
+                    font-weight: 500;
+                    transition: background-color 0.3s ease;
+                " onmouseover="this.style.backgroundColor='#1e3f73'" 
+                   onmouseout="this.style.backgroundColor='#2C5AA0'">
+                    我知道了
+                </button>
+            `;
+
+            modal.appendChild(dialog);
+            document.body.appendChild(modal);
+
+            // 添加动画样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes slideIn {
+                    from { 
+                        opacity: 0; 
+                        transform: translateY(-50px) scale(0.9); 
+                    }
+                    to { 
+                        opacity: 1; 
+                        transform: translateY(0) scale(1); 
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // 全局关闭函数
+            window.closePermissionDialog = function () {
+                modal.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => {
+                    if (modal.parentNode) {
+                        modal.parentNode.removeChild(modal);
+                    }
+                    if (style.parentNode) {
+                        style.parentNode.removeChild(style);
+                    }
+                    delete window.closePermissionDialog;
+                }, 300);
+            };
+
+            // 点击背景关闭
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    window.closePermissionDialog();
+                }
+            });
+
+            // 添加fadeOut动画
+            const fadeOutStyle = document.createElement('style');
+            fadeOutStyle.textContent = `
+                @keyframes fadeOut {
+                    from { opacity: 1; }
+                    to { opacity: 0; }
+                }
+            `;
+            document.head.appendChild(fadeOutStyle);
+        }
+
+        // 认证守卫：验证token有效性
+        async function authGuard() {
+            var token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/src/pages/登录界面/login.html';
+                return false;
+            }
+            try {
+                var resp = await fetch('/api/v1/auth/me', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!resp.ok) throw new Error('token无效');
+                var user = await resp.json();
+                localStorage.setItem('username', user.username);
+                localStorage.setItem('userRole', user.role);
+                updateStudentProfile(user);
+                if (user.role !== 'student') {
+                    console.warn('当前用户角色不是学生：', user.role);
+                }
+                return true;
+            } catch (e) {
+                console.error('认证失败:', e);
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                localStorage.removeItem('userRole');
+                window.location.href = '/src/pages/登录界面/login.html';
+                return false;
+            }
+        }
+
+        // ========== 任务列表 & 报告提交逻辑 ==========
+        var _tasks = [];      // 缓存任务列表
+        var _reports = [];    // 缓存我的报告
+        var _currentTaskId = null;
+        var _selfAlgoPacks = [];
+        var _selfAlgoType = 'data_fusion';
+        var _selfAlgoTaskId = null;
+        var _selfAlgoFiles = { code: null, spec: null, process: null, result: null };
+        var SELF_ALGO_TYPES = ['data_fusion', 'traffic_reconstruction', 'traffic_prediction', 'signal_optimization', 'path_guidance', 'vehicle_speed_control', 'coordination_control'];
+
+        function getToken() { return localStorage.getItem('token'); }
+        function authHeaders() { return { 'Authorization': 'Bearer ' + getToken() }; }
+
+        function updateStudentProfile(user) {
+            var username = user && (user.real_name || user.username) || localStorage.getItem('username') || 'student';
+            var className = user && user.class_name || localStorage.getItem('studentClassName') || '交通工程2024级1班';
+            var school = user && user.org_name || localStorage.getItem('studentSchoolName') || '大连理工大学';
+            localStorage.setItem('studentClassName', className);
+            localStorage.setItem('studentSchoolName', school);
+            var ids = {
+                studentName: username,
+                studentProfileName: username,
+                studentClass: className,
+                taskClassInfo: className,
+                studentSchool: school,
+                taskSchoolInfo: school
+            };
+            Object.keys(ids).forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.textContent = ids[id];
+            });
+        }
+
+        function showNotification(message, type) {
+            var oldToast = document.querySelector('.notification-toast');
+            if (oldToast && oldToast.parentNode) {
+                oldToast.parentNode.removeChild(oldToast);
+            }
+            var toast = document.createElement('div');
+            toast.className = 'notification-toast ' + (type || 'info');
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            requestAnimationFrame(function() {
+                toast.classList.add('show');
+            });
+            setTimeout(function() {
+                toast.classList.remove('show');
+                setTimeout(function() {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 250);
+            }, 2200);
+        }
+
+        function setExperimentBackendLauncher(state, text) {
+            var btn = document.getElementById('experimentBackendLauncher');
+            var label = document.getElementById('experimentBackendLauncherText');
+            if (!btn || !label) return;
+            btn.classList.remove('loading', 'ready', 'error');
+            btn.disabled = window._canStartExperimentBackends !== true || state === 'loading';
+            if (state) btn.classList.add(state);
+            label.textContent = window._canStartExperimentBackends !== true
+                ? '无法确认后端启动权限'
+                : (text || '启动实验后端');
+        }
+
+        // 局域网访问时"可见但不可用"：模块入口保留展示，只锁交互并提示原因。
+        // 该模块依赖运行平台的本机仿真环境（CARLA / VIC-Sim / 车规级小车 / SUMO），
+        // 局域网学生端无法运行，后端也会对相关接口返回 403。
+        var LAN_LOCK_MESSAGE = '局域网访问：该模块依赖运行平台的本机仿真环境（CARLA / VIC-Sim / 车规级小车 / SUMO），仅限在教师机的浏览器中使用。';
+
+        function lanLockNotice() {
+            var old = document.getElementById('zxkLanLockNotice');
+            if (old && old.parentNode) old.parentNode.removeChild(old);
+            var tip = document.createElement('div');
+            tip.id = 'zxkLanLockNotice';
+            tip.textContent = LAN_LOCK_MESSAGE;
+            tip.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:99999;max-width:80vw;box-sizing:border-box;padding:10px 18px;border-radius:6px;background:#2C5AA0;color:#fff;font:500 14px/1.6 "Microsoft YaHei",Arial,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,0.25);';
+            document.body.appendChild(tip);
+            setTimeout(function () { if (tip.parentNode) tip.parentNode.removeChild(tip); }, 3200);
+        }
+
+        function applyLanModuleLock(element, locked) {
+            if (!element) return;
+            if (!element.__lanLockHandler) {
+                element.__lanLockHandler = function (event) {
+                    if (!element.__lanLocked) return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+                    lanLockNotice();
+                };
+                element.addEventListener('click', element.__lanLockHandler, true);
+            }
+            element.__lanLocked = locked;
+            if (locked) {
+                // 摘掉内联 onclick，由上面的捕获监听接管：既不导航也不执行原逻辑。
+                if (element.getAttribute('onclick')) {
+                    element.setAttribute('data-lan-onclick', element.getAttribute('onclick'));
+                    element.removeAttribute('onclick');
+                }
+                element.style.opacity = '0.45';
+                element.style.filter = 'grayscale(0.6)';
+                element.style.cursor = 'not-allowed';
+                if (!element.querySelector('.lan-lock-badge')) {
+                    var badge = document.createElement('span');
+                    badge.className = 'lan-lock-badge';
+                    badge.textContent = '仅限本机';
+                    badge.style.cssText = 'position:absolute;top:10px;right:10px;padding:3px 9px;border-radius:10px;background:#909399;color:#fff;font:500 12px/1.4 "Microsoft YaHei",Arial,sans-serif;';
+                    element.appendChild(badge);
+                }
+                return;
+            }
+            var original = element.getAttribute('data-lan-onclick');
+            if (original) {
+                element.setAttribute('onclick', original);
+                element.removeAttribute('data-lan-onclick');
+            }
+            element.style.opacity = '';
+            element.style.filter = '';
+            element.style.cursor = '';
+            var stale = element.querySelector('.lan-lock-badge');
+            if (stale && stale.parentNode) stale.parentNode.removeChild(stale);
+        }
+
+        function applyLanModuleAccess(context) {
+            var isLan = !!context && context.access_mode === 'lan';
+            // 入口卡片始终展示（不再隐藏），局域网下只锁交互。
+            applyLanModuleLock(document.getElementById('moduleCard4'), isLan);
+            var sub = document.getElementById('module4');
+            if (!sub) return;
+            var subCards = sub.querySelectorAll('.sub-module-card');
+            for (var i = 0; i < subCards.length; i += 1) {
+                applyLanModuleLock(subCards[i], isLan);
+            }
+            if (isLan) sub.style.display = 'none';
+        }
+
+        async function loadAccessContext() {
+            try {
+                var resp = await fetch('/api/v1/access-context', { cache: 'no-store' });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                var context = await resp.json();
+                window._accessContext = context;
+                window._canControlLocalServices = context.can_control_local_services === true;
+                window._canStartExperimentBackends = context.can_start_experiment_backends === true;
+                applyLanModuleAccess(context);
+                var btn = document.getElementById('experimentBackendLauncher');
+                if (!window._canStartExperimentBackends) {
+                    setExperimentBackendLauncher('remote-disabled', '无法启动实验后端');
+                    if (btn) {
+                        btn.title = '无法确认实验后端启动权限，请刷新页面重试';
+                    }
+                } else if (btn) {
+                    setExperimentBackendLauncher('', context.is_local ? '启动实验后端' : '启动后端服务');
+                    btn.title = context.is_local
+                        ? '启动平台后端 CMD、CARLA/VIC-Sim，并预热实验页面'
+                        : '启动平台基础后端 CMD；局域网不会启动 CARLA、VIC-Sim 或 DTALite';
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                // 无法确认服务能力时保持禁用，避免发送未授权的启动请求。
+                window._canControlLocalServices = false;
+                window._canStartExperimentBackends = false;
+                setExperimentBackendLauncher('remote-disabled', '无法确认后端启动权限');
+                console.warn('访问模式检测失败，已禁用后端启动按钮:', error);
+            }
+        }
+
+        const EXPERIMENT_PRELOAD_ASSETS = [
+            '/src/pages/多源数据采集功能/data_collection.html',
+            '/src/pages/多源数据采集功能/data_collection.css',
+            '/src/pages/多源数据采集功能/data_collection.js',
+            '/src/pages/多源数据融合功能/data_fusion_new.html',
+            '/src/pages/多源数据融合功能/data_fusion.css',
+            '/src/pages/多源数据融合功能/data_fusion_new.js',
+            '/src/pages/交通流重构功能/traffic_reconstruction.html',
+            '/src/pages/交通流重构功能/traffic_reconstruction.css',
+            '/src/pages/交通流重构功能/traffic_reconstruction.js',
+            '/src/pages/交通流预测功能/traffic_flow_prediction.html',
+            '/src/pages/交通流预测功能/traffic_flow_prediction.css',
+            '/src/pages/交通流预测功能/traffic_flow_prediction.js',
+            '/src/pages/交通信号优化功能/signal_optimization.html',
+            '/src/pages/交通信号优化功能/signal_optimization.css',
+            '/src/pages/交通信号优化功能/signal_optimization.js',
+            '/src/pages/路径诱导功能/path_guidance.html',
+            '/src/pages/路径诱导功能/path_guidance.css',
+            '/src/pages/路径诱导功能/path_guidance.js',
+            '/src/pages/车速控制功能/vehicle_speed_control.html',
+            '/src/pages/车速控制功能/vehicle_speed_control.css',
+            '/src/pages/车速控制功能/vehicle_speed_control.js',
+            '/src/pages/三层级协同优化控制功能/three_level_control.html',
+            '/src/pages/三层级协同优化控制功能/three_level_control.css',
+            '/src/pages/三层级协同优化控制功能/three_level_control.js',
+            '/src/pages/虚实结合仿真场景构建功能/carla_scene_builder.html',
+            '/src/pages/虚实结合仿真场景构建功能/carla_scene_builder.css',
+            '/src/pages/虚实结合仿真场景构建功能/carla_scene_builder.js',
+            '/src/pages/车规级智能车辆开发与控制功能/vehicle_control.html',
+            '/src/pages/车规级智能车辆开发与控制功能/vehicle_control.css',
+            '/src/pages/车规级智能车辆开发与控制功能/vehicle_control.js',
+            '/src/pages/虚实结合仿真场景算法测试功能/algorithm_testing.html',
+            '/src/pages/虚实结合仿真场景算法测试功能/algorithm_testing.css',
+            '/src/pages/虚实结合仿真场景算法测试功能/algorithm_testing.js',
+            '/src/components/ai-assistant.css?v=deepseek-professional-20260620',
+            '/src/components/ai-assistant.js?v=deepseek-professional-20260620',
+            '/src/components/chat-log-widget.css',
+            '/src/components/chat-log-widget.js',
+            '/src/components/interaction-feedback.js',
+            '/src/components/status-bar.js'
+        ];
+
+        async function preloadExperimentPages() {
+            var tasks = EXPERIMENT_PRELOAD_ASSETS.map(function(url) {
+                return fetch(url, { cache: 'force-cache' }).catch(function(error) {
+                    console.warn('实验资源预取失败:', url, error);
+                    return null;
+                });
+            });
+            await Promise.allSettled(tasks);
+        }
+
+        function summarizeExperimentBackendResult(data) {
+            var services = (data && data.services) || [];
+            var lines = [];
+            if (data && data.message) lines.push(data.message);
+            if (data && data.console_pid) lines.push('可见CMD PID：' + data.console_pid);
+            if (services.length) {
+                lines.push('服务启动结果：');
+                lines = lines.concat(services.map(function(item) {
+                return item.name + '：' + (item.ready ? '就绪' : (item.message || '未就绪'));
+                }));
+            }
+            var nativeChecks = data && data.native && data.native.checks ? data.native.checks : [];
+            if (nativeChecks.length) {
+                lines.push('仿真原生服务：');
+                lines = lines.concat(nativeChecks.map(function(item) {
+                    var suffix = item.pid ? ' PID ' + item.pid : '';
+                    return item.name + '：' + (item.ready ? '就绪' : (item.message || '未就绪')) + suffix;
+                }));
+            }
+            var checks = data && data.warmup && data.warmup.checks ? data.warmup.checks : [];
+            if (checks.length) {
+                lines.push('预热耗时明细：');
+                lines = lines.concat(checks.map(function(item) {
+                    var tag = item.ok ? 'OK' : (item.optional ? '跳过' : '失败');
+                    return tag + ' ' + item.name + '：' + item.elapsed_ms + ' ms';
+                }));
+            }
+            return lines.length ? lines.join('\n') : '实验后端启动命令已发送';
+        }
+
+        async function refreshExperimentBackendStatus(silent) {
+            try {
+                await loadAccessContext();
+                var resp = await fetch('/api/v1/experiment-backends/status', { cache: 'no-store' });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                var data = await resp.json();
+                window._experimentBackendReady = !!data.ready;
+                var btn = document.getElementById('experimentBackendLauncher');
+                if (btn && window._canStartExperimentBackends === true) {
+                    var lanMode = window._accessContext && window._accessContext.access_mode === 'lan';
+                    btn.title = data.ready
+                        ? '基础后端当前已就绪；点击可重新执行后端 CMD 预热'
+                        : (lanMode
+                            ? '启动平台基础后端 CMD；局域网不会启动 CARLA、VIC-Sim 或 DTALite'
+                            : '启动平台后端 CMD、CARLA/VIC-Sim，并预热实验页面');
+                }
+                if (!silent && data.ready) showNotification('实验后端当前已就绪，可点击重新预热', 'info');
+            } catch (error) {
+                if (!silent) showNotification('实验后端状态检测失败：' + error.message, 'warning');
+            }
+        }
+
+        async function startExperimentBackends() {
+            if (window._canStartExperimentBackends !== true) {
+                showNotification('无法确认实验后端启动权限，请刷新页面重试', 'warning');
+                setExperimentBackendLauncher('remote-disabled', '无法启动实验后端');
+                return;
+            }
+            setExperimentBackendLauncher('loading', '启动实验后端');
+            try {
+                var preloadTask = preloadExperimentPages();
+                var resp = await fetch('/api/v1/experiment-backends/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                await preloadTask;
+                var data = await resp.json();
+                if (!resp.ok) throw new Error(data.detail || data.message || 'HTTP ' + resp.status);
+                setExperimentBackendLauncher(data.ready ? 'ready' : 'error', data.ready ? '实验后端已启动' : '启动实验后端');
+                var cmdText = data.console_pid ? '，后端CMD PID ' + data.console_pid : '';
+                showNotification((data.message || (data.ready ? '实验后端已启动' : '部分后端仍在启动')) + cmdText, data.ready ? 'success' : 'warning');
+                setTimeout(function() {
+                    window.alert(summarizeExperimentBackendResult(data));
+                }, 80);
+            } catch (error) {
+                setExperimentBackendLauncher('error', '启动实验后端');
+                showNotification('实验后端启动失败：' + error.message, 'error');
+            }
+        }
+
+        function toggleSidebarSection(listId, arrowId) {
+            var list = document.getElementById(listId);
+            var arrow = document.getElementById(arrowId);
+            if (!list || !arrow) return;
+            var isOpen = list.classList.contains('open');
+            list.classList.toggle('open', !isOpen);
+            arrow.classList.toggle('open', !isOpen);
+        }
+
+        function openSidebarSection(listId, arrowId) {
+            var list = document.getElementById(listId);
+            var arrow = document.getElementById(arrowId);
+            if (!list || !arrow) return;
+            list.classList.add('open');
+            arrow.classList.add('open');
+        }
+
+        function setActiveSidebarNav(activeId) {
+            document.querySelectorAll('.sidebar-nav').forEach(function(el) {
+                el.classList.toggle('active', el.id === activeId);
+            });
+            document.querySelectorAll('.task-item').forEach(function(el) { el.classList.remove('active'); });
+        }
+
+        // 切换任务列表展开/收起
+        function toggleTaskList() {
+            showTasksView();
+        }
+
+        async function showTasksView() {
+            document.getElementById('viewModules').style.display = 'none';
+            document.getElementById('viewTaskDetail').style.display = '';
+            document.getElementById('viewTasksList').style.display = '';
+            document.getElementById('taskDetailPanel').style.display = 'none';
+            document.getElementById('viewCloudFiles').style.display = 'none';
+            document.getElementById('viewSelfAlgorithm').style.display = 'none';
+            _currentTaskId = null;
+            setActiveSidebarNav('navTasks');
+            if (_tasks.length === 0) await loadTasks();
+            renderTaskList();
+        }
+
+        // 加载任务列表
+        async function loadTasks() {
+            var container = document.getElementById('taskList');
+            var loading = document.getElementById('taskLoading');
+            if (!loading && container) {
+                container.innerHTML = '<div class="task-loading" id="taskLoading">加载中...</div>';
+                loading = document.getElementById('taskLoading');
+            }
+            if (loading) {
+                loading.textContent = '加载中...';
+                loading.style.display = 'block';
+                loading.style.cursor = 'default';
+                loading.onclick = null;
+            }
+            try {
+                var resp = await fetch('/api/v1/tasks', { headers: authHeaders() });
+                if (!resp.ok) throw new Error('获取任务失败');
+                _tasks = await resp.json();
+                // 同时加载我的报告
+                var rResp = await fetch('/api/v1/reports', { headers: authHeaders() });
+                if (rResp.ok) _reports = await rResp.json();
+                renderTaskList();
+                return true;
+            } catch (e) {
+                if (loading) {
+                    loading.textContent = '加载失败，点击重试';
+                    loading.style.cursor = 'pointer';
+                    loading.onclick = function() { loading.onclick = null; loadTasks(); };
+                }
+                return false;
+            }
+        }
+
+        function renderTaskList() {
+            var container = document.getElementById('taskList');
+            if (_tasks.length === 0) {
+                container.innerHTML = '<div class="empty-state">老师尚未下发任务</div>';
+                return;
+            }
+            var html = '';
+            _tasks.forEach(function(t) {
+                var report = _reports.find(function(r) { return r.task_id === t.id; });
+                var badgeClass = 'badge-pending', badgeText = '未提交';
+                if (report) {
+                    if (report.score !== null && report.score !== undefined) {
+                        badgeClass = 'badge-graded'; badgeText = report.score + '分';
+                    } else {
+                        badgeClass = 'badge-submitted'; badgeText = '待批阅';
+                    }
+                }
+                var activeClass = (_currentTaskId === t.id) ? ' active' : '';
+                html += '<div class="task-item' + activeClass + '" onclick="showTaskDetail(' + t.id + ')">'
+                    + '<span class="task-name">' + escHtml(t.title) + '</span>'
+                    + '<div class="task-card-meta"><span>班级：' + escHtml(t.class_name || localStorage.getItem('studentClassName') || '交通工程2024级1班') + '</span>'
+                    + '<span>模块：' + escHtml(taskModuleLabel(t.module_id)) + '</span></div>'
+                    + '<span class="task-badge ' + badgeClass + '">' + badgeText + '</span>'
+                    + '</div>';
+            });
+            container.innerHTML = '<div class="task-grid">' + html + '</div>';
+        }
+
+        function escHtml(s) {
+            var d = document.createElement('div'); d.textContent = s; return d.innerHTML;
+        }
+
+        function taskModuleLabel(moduleId) {
+            return {
+                data_fusion: '多源数据融合',
+                traffic_reconstruction: '交通流重构',
+                traffic_prediction: '交通流预测',
+                signal_optimization: '交通信号优化',
+                path_guidance: '路径诱导',
+                vehicle_speed_control: '车速控制',
+                coordination_control: '三层级协同优化',
+                data: '多源数据采集与融合',
+                prediction: '交通流重构与预测',
+                control: '三层级协同优化控制',
+                simulation: '仿真实验教学',
+                integration: '车路协同虚实结合仿真'
+            }[moduleId] || moduleId || '未指定';
+        }
+
+        function parseTaskRequirements(description) {
+            var result = { fields: [], links: [] };
+            var text = description || '';
+            var regex = /【([^】]+)】([\s\S]*?)(?=【[^】]+】|$)/g;
+            var match;
+            while ((match = regex.exec(text)) !== null) {
+                var key = (match[1] || '').trim();
+                var value = (match[2] || '').trim();
+                if (!key || !value) continue;
+                if (key.indexOf('下载链接') >= 0) result.links.push(value);
+                else result.fields.push({ key: key, value: value });
+            }
+            if (!result.fields.length && text.trim()) {
+                result.fields.push({ key: '任务说明', value: text.trim() });
+            }
+            return result;
+        }
+
+        function buildTaskRequirementsHtml(task) {
+            var parsed = parseTaskRequirements(task.description || '');
+            var html = '<div class="task-requirements">';
+            parsed.fields.forEach(function(item) {
+                html += '<div class="requirement-row"><strong>' + escHtml(item.key) + '</strong><span>' + escHtml(item.value) + '</span></div>';
+            });
+            html += '</div>';
+            var links = parsed.links.length ? parsed.links : task.module_id && SELF_ALGO_TYPES.indexOf(task.module_id) >= 0
+                ? ['/api/v1/self-algorithms/packs/' + encodeURIComponent(task.module_id) + '/download']
+                : [];
+            if (links.length) {
+                html += '<div class="task-download-actions">';
+                links.forEach(function(link, index) {
+                    var href = link.indexOf('/api/cloud/') === 0 ? link.replace('/api/cloud/', '/api/v1/') : link;
+                    var encodedHref = encodeURIComponent(href);
+                    html += '<button class="download-pill" type="button" onclick="downloadTaskResource(decodeURIComponent(\'' + encodedHref + '\'))">下载任务资料' + (links.length > 1 ? ' ' + (index + 1) : '') + '</button>';
+                });
+                html += '</div>';
+            }
+            return html;
+        }
+
+        async function downloadTaskResource(url) {
+            try {
+                var fallbackName = (url.split('/').filter(Boolean).slice(-2).join('_') || 'task_resource') + '.zip';
+                await downloadSelfAlgoBlob(url, fallbackName);
+                showNotification('任务资料下载已开始', 'success');
+            } catch (e) {
+                showNotification('下载失败：' + e.message, 'error');
+            }
+        }
+
+        // 显示实验中心视图
+        function showModules() {
+            document.getElementById('viewModules').style.display = '';
+            document.getElementById('viewTaskDetail').style.display = 'none';
+            document.getElementById('viewTasksList').style.display = 'none';
+            document.getElementById('taskDetailPanel').style.display = 'none';
+            document.getElementById('viewCloudFiles').style.display = 'none';
+            document.getElementById('viewSelfAlgorithm').style.display = 'none';
+            _currentTaskId = null;
+            setActiveSidebarNav('navModules');
+        }
+
+        // 显示任务详情
+        async function showTaskDetail(taskId) {
+            _currentTaskId = taskId;
+            var task = _tasks.find(function(t) { return t.id === taskId; });
+            if (!task) return;
+
+            document.getElementById('viewModules').style.display = 'none';
+            document.getElementById('viewTaskDetail').style.display = '';
+            document.getElementById('viewTasksList').style.display = '';
+            document.getElementById('taskDetailPanel').style.display = '';
+            document.getElementById('viewCloudFiles').style.display = 'none';
+            document.getElementById('viewSelfAlgorithm').style.display = 'none';
+            setActiveSidebarNav('navTasks');
+            renderTaskList(); // 更新高亮
+
+            document.getElementById('taskDetailTitle').textContent = task.title;
+            document.getElementById('taskDetailStatus').textContent =
+                task.status === 'published' ? '进行中' : task.status === 'closed' ? '已截止' : task.status;
+            document.getElementById('taskDetailDeadline').textContent =
+                task.deadline ? new Date(task.deadline).toLocaleString('zh-CN') : '无截止时间';
+            document.getElementById('taskDetailCreated').textContent =
+                task.created_at ? new Date(task.created_at).toLocaleString('zh-CN') : '-';
+            document.getElementById('taskDetailDesc').innerHTML = buildTaskRequirementsHtml(task);
+
+            // 渲染报告区域
+            var report = _reports.find(function(r) { return r.task_id === taskId; });
+            var area = document.getElementById('reportArea');
+
+            if (report && report.score !== null && report.score !== undefined) {
+                // 已批阅
+                area.innerHTML = '<div class="report-file-info">已提交文件：' + escHtml(report.file_name) + '</div>'
+                    + '<div class="grade-display">'
+                    + '<div style="color:#666;font-size:0.9rem;margin-bottom:4px;">教师评分</div>'
+                    + '<div class="grade-score">' + report.score + '</div>'
+                    + (report.feedback ? '<div class="grade-feedback"><strong>评语：</strong>' + escHtml(report.feedback) + '</div>' : '')
+                    + '</div>';
+            } else if (report) {
+                // 已提交待批阅
+                area.innerHTML = '<div class="report-file-info pending-review">已提交文件：' + escHtml(report.file_name) + ' — 等待教师批阅</div>'
+                    + '<p style="margin-top:0.8rem;color:#888;font-size:0.88rem;">您可以重新上传覆盖之前的提交：</p>'
+                    + buildUploadHtml(taskId);
+            } else {
+                // 未提交
+                area.innerHTML = '<p style="color:#909399;margin-bottom:0.5rem;">您尚未提交实验报告</p>'
+                    + buildUploadHtml(taskId);
+            }
+        }
+
+        function buildUploadHtml(taskId) {
+            return '<div class="upload-area" onclick="document.getElementById(\'fileInput\').click()">'
+                + '<input type="file" id="fileInput" accept=".pdf,.docx,.doc" onchange="handleFileSelect(this,' + taskId + ')">'
+                + '<div style="font-size:2rem;margin-bottom:0.5rem;">📄</div>'
+                + '<div style="color:#666;">点击选择文件上传</div>'
+                + '<div style="color:#999;font-size:0.8rem;margin-top:4px;">支持 PDF、DOCX 格式</div>'
+                + '</div>'
+                + '<button class="btn-primary" id="uploadBtn" disabled onclick="doUpload(' + taskId + ')">提交报告</button>'
+                + '<span id="uploadStatus" style="margin-left:10px;font-size:0.88rem;color:#666;"></span>';
+        }
+
+        var _selectedFile = null;
+        function handleFileSelect(input, taskId) {
+            _selectedFile = input.files[0];
+            var btn = document.getElementById('uploadBtn');
+            if (_selectedFile) {
+                btn.disabled = false;
+                btn.textContent = '提交报告（' + _selectedFile.name + '）';
+            }
+        }
+
+        async function doUpload(taskId) {
+            if (!_selectedFile) return;
+            var btn = document.getElementById('uploadBtn');
+            var status = document.getElementById('uploadStatus');
+            btn.disabled = true; btn.textContent = '上传中...';
+            status.textContent = '';
+
+            var formData = new FormData();
+            formData.append('file', _selectedFile);
+
+            try {
+                var resp = await fetch('/api/v1/reports?task_id=' + taskId, {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: formData
+                });
+                if (!resp.ok) {
+                    var err = await resp.json().catch(function() { return {}; });
+                    throw new Error((err.detail && err.detail.message) || err.detail || '上传失败');
+                }
+                var newReport = await resp.json();
+                // 更新缓存
+                var idx = _reports.findIndex(function(r) { return r.task_id === taskId; });
+                if (idx >= 0) _reports[idx] = newReport; else _reports.push(newReport);
+                status.style.color = '#67c23a';
+                status.textContent = '提交成功！';
+                renderTaskList();
+                setTimeout(function() { showTaskDetail(taskId); }, 800);
+            } catch (e) {
+                status.style.color = '#f56c6c';
+                status.textContent = e.message || '上传失败';
+                btn.disabled = false; btn.textContent = '重新提交';
+            }
+        }
+
+        async function syncLatestCloudData() {
+            try {
+                var resp = await fetch('/api/v1/sync/pull', {
+                    method: 'POST',
+                    headers: authHeaders()
+                });
+                if (resp.status === 401) {
+                    localStorage.removeItem('token');
+                    window.location.href = '/src/pages/登录界面/login.html';
+                    return null;
+                }
+                if (!resp.ok) return null;
+                return await resp.json();
+            } catch (e) {
+                console.warn('云端同步失败，回退为本地刷新:', e);
+                return null;
+            }
+        }
+
+        function setRefreshButtonState(refreshing) {
+            var btn = document.getElementById('refreshStudentDataBtn');
+            if (!btn) return;
+            btn.disabled = refreshing;
+            btn.classList.toggle('spinning', refreshing);
+        }
+
+        async function refreshStudentData() {
+            setRefreshButtonState(true);
+            try {
+                var syncResult = await syncLatestCloudData();
+                var loadOk = await loadTasks();
+                if (!loadOk) {
+                    showNotification('刷新失败，请稍后重试', 'error');
+                    return;
+                }
+                if (_currentTaskId !== null) {
+                    var stillExists = _tasks.some(function(t) { return t.id === _currentTaskId; });
+                    if (stillExists) {
+                        await showTaskDetail(_currentTaskId);
+                    } else {
+                        showModules();
+                    }
+                }
+                if (syncResult && syncResult.success) {
+                    showNotification('已刷新最新任务与评分', 'success');
+                } else if (syncResult && syncResult.errors && syncResult.errors.length > 0) {
+                    showNotification('列表已刷新，部分云端数据同步失败', 'warning');
+                } else {
+                    showNotification('任务列表已刷新', 'success');
+                }
+            } catch (e) {
+                console.error('刷新学生数据失败:', e);
+                showNotification('刷新失败，请稍后重试', 'error');
+            } finally {
+                setRefreshButtonState(false);
+            }
+        }
+
+        function openPasswordDialog() {
+            var dialog = document.getElementById('passwordDialog');
+            if (dialog) dialog.style.display = 'flex';
+        }
+
+        function closePasswordDialog() {
+            var dialog = document.getElementById('passwordDialog');
+            if (dialog) dialog.style.display = 'none';
+            ['pwdOld', 'pwdNew', 'pwdConfirm', 'pwdReason'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+        }
+
+        async function submitPasswordChangeRequest() {
+            var oldPassword = document.getElementById('pwdOld').value;
+            var newPassword = document.getElementById('pwdNew').value;
+            var confirmPassword = document.getElementById('pwdConfirm').value;
+            var reason = document.getElementById('pwdReason').value;
+            if (!oldPassword || !newPassword) {
+                showNotification('请填写原密码和新密码', 'warning');
+                return;
+            }
+            if (newPassword.length < 6) {
+                showNotification('新密码至少 6 位', 'warning');
+                return;
+            }
+            if (newPassword !== confirmPassword) {
+                showNotification('两次输入的新密码不一致', 'warning');
+                return;
+            }
+            var btn = document.getElementById('submitPasswordBtn');
+            btn.disabled = true;
+            btn.textContent = '提交中...';
+            try {
+                var resp = await fetch('/api/v1/auth/change-password', {
+                    method: 'POST',
+                    headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
+                    body: JSON.stringify({ old_password: oldPassword, new_password: newPassword, reason: reason })
+                });
+                if (!resp.ok) {
+                    var err = await resp.json().catch(function() { return {}; });
+                    throw new Error(extractSelfAlgoError(err, '提交失败'));
+                }
+                showNotification('密码修改申请已提交，等待管理员审批', 'success');
+                closePasswordDialog();
+            } catch (e) {
+                showNotification('提交失败：' + (e.message || '请稍后重试'), 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '提交申请';
+            }
+        }
+
+        // 页面加载完成后的初始化
+        window.addEventListener('load', function () {
+            console.log('学生首页加载完成');
+            var refreshBtn = document.getElementById('refreshStudentDataBtn');
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', refreshStudentData);
+            }
+            authGuard().then(function(ok) {
+                if (ok) loadTasks();
+            });
+        });
+
+        // ========== 云端文件管理功能 ==========
+        var _cloudSelectedFile = null;
+
+        function showCloudFiles() {
+            document.getElementById('viewModules').style.display = 'none';
+            document.getElementById('viewTaskDetail').style.display = 'none';
+            document.getElementById('viewTasksList').style.display = 'none';
+            document.getElementById('taskDetailPanel').style.display = 'none';
+            document.getElementById('viewCloudFiles').style.display = '';
+            document.getElementById('viewSelfAlgorithm').style.display = 'none';
+            setActiveSidebarNav('navCloudFiles');
+
+            // 加载任务列表到下拉框
+            loadTasksForCloudUpload();
+            // 加载文件列表
+            loadCloudFiles();
+        }
+
+        function selfAlgoLabel(type) {
+            var pack = _selfAlgoPacks.find(function(item) { return item.algorithm_type === type; });
+            if (pack) return pack.label;
+            return {
+                data_fusion: '多源数据融合',
+                traffic_reconstruction: '交通流重构',
+                traffic_prediction: '交通流预测',
+                signal_optimization: '上层-交通信号优化',
+                path_guidance: '中层-路径诱导',
+                vehicle_speed_control: '下层-车速控制',
+                coordination_control: '三层级协同对比'
+            }[type] || type;
+        }
+
+        function selfAlgoNavId(type) {
+            return 'navSelfAlgorithm';
+        }
+
+        function extractSelfAlgoError(data, fallback) {
+            if (!data || typeof data !== 'object') return fallback;
+            var detail = data.detail;
+            if (typeof detail === 'string') return detail;
+            if (detail && typeof detail === 'object') return detail.message || detail.detail || fallback;
+            return data.message || fallback;
+        }
+
+        async function showSelfAlgorithm(type) {
+            _selfAlgoType = type || _selfAlgoType;
+            setActiveSidebarNav('navSelfAlgorithm');
+            document.getElementById('viewModules').style.display = 'none';
+            document.getElementById('viewTaskDetail').style.display = 'none';
+            document.getElementById('viewTasksList').style.display = 'none';
+            document.getElementById('taskDetailPanel').style.display = 'none';
+            document.getElementById('viewCloudFiles').style.display = 'none';
+            document.getElementById('viewSelfAlgorithm').style.display = '';
+            if (_tasks.length === 0) await loadTasks();
+            await loadSelfAlgorithmPacks();
+            renderSelfAlgoTaskList();
+            resetSelfAlgoUpload();
+            await loadSelfAlgorithmSubmissions();
+        }
+
+        async function loadSelfAlgorithmPacks() {
+            if (_selfAlgoPacks.length > 0) return;
+            var tabs = document.getElementById('selfAlgoTabs');
+            if (tabs) tabs.innerHTML = '<div style="color:#909399;">加载中...</div>';
+            try {
+                var resp = await fetch('/api/v1/self-algorithms/packs', { headers: authHeaders() });
+                if (!resp.ok) {
+                    var err = await resp.json().catch(function() { return {}; });
+                    throw new Error(extractSelfAlgoError(err, '加载基础包失败'));
+                }
+                var result = await resp.json();
+                _selfAlgoPacks = result.data || [];
+                if (_selfAlgoPacks.length && !_selfAlgoPacks.some(function(item) { return item.algorithm_type === _selfAlgoType; })) {
+                    _selfAlgoType = _selfAlgoPacks[0].algorithm_type;
+                }
+            } catch (e) {
+                if (tabs) tabs.innerHTML = '<div style="color:#f56c6c;">加载失败：' + escHtml(e.message || '请稍后重试') + '</div>';
+                showNotification('自研算法基础包加载失败：' + (e.message || '请稍后重试'), 'error');
+            }
+        }
+
+        function renderSelfAlgoTabs() {
+            var tabs = document.getElementById('selfAlgoTabs');
+            var hint = document.getElementById('selfAlgoPackHint');
+            if (!tabs) return;
+            if (!_selfAlgoPacks.length) {
+                tabs.innerHTML = '<div style="color:#909399;">暂无基础数据包</div>';
+                return;
+            }
+            tabs.innerHTML = _selfAlgoPacks.map(function(pack) {
+                var active = pack.algorithm_type === _selfAlgoType ? ' active' : '';
+                return '<button class="self-algo-tab' + active + '" type="button" onclick="selectSelfAlgoType(\'' + pack.algorithm_type + '\')">'
+                    + escHtml(pack.label)
+                    + '<small>' + escHtml(pack.primary_metric ? ('主要指标：' + pack.primary_metric) : pack.description) + '</small>'
+                    + '</button>';
+            }).join('');
+            var current = _selfAlgoPacks.find(function(item) { return item.algorithm_type === _selfAlgoType; });
+            if (hint && current) {
+                hint.textContent = '当前包：' + current.download_name + '；输入文件：' + (current.input_files || []).join('、') + '；提交：代码、方案说明、仿真过程、仿真结果';
+            }
+        }
+
+        function getSelfAlgoTasks() {
+            return (_tasks || []).filter(function(task) {
+                return SELF_ALGO_TYPES.indexOf(task.module_id) >= 0;
+            });
+        }
+
+        function renderSelfAlgoTaskList() {
+            var list = document.getElementById('selfAlgoTaskList');
+            var hint = document.getElementById('selfAlgoPackHint');
+            var requirement = document.getElementById('selfAlgoTaskRequirement');
+            if (!list) return;
+            var tasks = getSelfAlgoTasks();
+            if (!tasks.length) {
+                list.innerHTML = '<div class="empty-state">老师尚未下发自研算法任务</div>';
+                if (hint) hint.textContent = '';
+                if (requirement) requirement.textContent = '当前没有可提交的自研算法任务。';
+                _selfAlgoTaskId = null;
+                return;
+            }
+            if (!_selfAlgoTaskId || !tasks.some(function(item) { return item.id === _selfAlgoTaskId; })) {
+                _selfAlgoTaskId = tasks[0].id;
+                _selfAlgoType = tasks[0].module_id;
+            }
+            list.innerHTML = tasks.map(function(task) {
+                var active = task.id === _selfAlgoTaskId ? ' active' : '';
+                return '<button class="self-task-card' + active + '" type="button" onclick="selectSelfAlgoTask(' + task.id + ')">'
+                    + '<strong>' + escHtml(task.title) + '</strong>'
+                    + '<span>' + escHtml(taskModuleLabel(task.module_id)) + ' · ' + escHtml(task.class_name || localStorage.getItem('studentClassName') || '交通工程2024级1班') + '</span>'
+                    + '</button>';
+            }).join('');
+            updateSelfAlgoTaskRequirement();
+        }
+
+        function updateSelfAlgoTaskRequirement() {
+            var task = _tasks.find(function(item) { return item.id === _selfAlgoTaskId; });
+            var requirement = document.getElementById('selfAlgoTaskRequirement');
+            var hint = document.getElementById('selfAlgoPackHint');
+            if (!task) {
+                if (requirement) requirement.textContent = '请选择任务。';
+                if (hint) hint.textContent = '';
+                return;
+            }
+            _selfAlgoType = task.module_id || _selfAlgoType;
+            if (requirement) requirement.innerHTML = buildTaskRequirementsHtml(task);
+            var current = _selfAlgoPacks.find(function(item) { return item.algorithm_type === _selfAlgoType; });
+            if (hint && current) {
+                hint.textContent = '当前任务：' + task.title + '；基础包：' + current.download_name + '；提交会自动归类到该任务。';
+            }
+        }
+
+        function selectSelfAlgoTask(taskId) {
+            var task = _tasks.find(function(item) { return item.id === taskId; });
+            if (!task) return;
+            _selfAlgoTaskId = task.id;
+            _selfAlgoType = task.module_id;
+            renderSelfAlgoTaskList();
+            resetSelfAlgoUpload();
+            loadSelfAlgorithmSubmissions();
+            showNotification('已选择任务：' + task.title, 'info');
+        }
+
+        function selectSelfAlgoType(type) {
+            _selfAlgoType = type;
+            setActiveSidebarNav('navSelfAlgorithm');
+            renderSelfAlgoTaskList();
+            resetSelfAlgoUpload();
+            loadSelfAlgorithmSubmissions();
+            showNotification('已切换到：' + selfAlgoLabel(type), 'info');
+        }
+
+        function resetSelfAlgoUpload() {
+            _selfAlgoFiles = { code: null, spec: null, process: null, result: null };
+            ['selfCodeInput', 'selfSpecInput', 'selfProcessInput', 'selfResultInput'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            ['selfCodePreview', 'selfSpecPreview', 'selfProcessPreview', 'selfResultPreview'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) { el.style.display = 'none'; el.textContent = ''; }
+            });
+            updateSelfAlgoSteps();
+        }
+
+        function updateSelfAlgoSteps() {
+            var hasCode = !!_selfAlgoFiles.code;
+            var hasSpec = !!_selfAlgoFiles.spec;
+            var hasProcess = !!_selfAlgoFiles.process;
+            var hasResult = !!_selfAlgoFiles.result;
+            document.getElementById('selfSpecBtn').disabled = !hasCode;
+            document.getElementById('selfProcessBtn').disabled = !hasCode || !hasSpec;
+            document.getElementById('selfResultBtn').disabled = !hasCode || !hasSpec || !hasProcess;
+            document.getElementById('selfAlgoSubmitBtn').disabled = !(hasCode && hasSpec && hasProcess && hasResult);
+            document.getElementById('selfStepSpec').classList.toggle('disabled', !hasCode);
+            document.getElementById('selfStepProcess').classList.toggle('disabled', !hasCode || !hasSpec);
+            document.getElementById('selfStepResult').classList.toggle('disabled', !hasCode || !hasSpec || !hasProcess);
+        }
+
+        function handleSelfAlgoFile(kind, event) {
+            var file = event.target.files[0];
+            if (!file) return;
+            var allowed = {
+                code: ['.py'],
+                spec: ['.md', '.txt', '.docx'],
+                process: ['.zip', '.sumocfg', '.xml', '.csv', '.json', '.log', '.txt'],
+                result: ['.xlsx', '.xls', '.csv', '.json', '.xml', '.docx', '.txt']
+            };
+            if (kind === 'spec' && !_selfAlgoFiles.code) {
+                showNotification('请先选择自研代码文件', 'warning');
+                event.target.value = '';
+                return;
+            }
+            if (kind === 'process' && (!_selfAlgoFiles.code || !_selfAlgoFiles.spec)) {
+                showNotification('请先完成代码和方案说明上传步骤', 'warning');
+                event.target.value = '';
+                return;
+            }
+            if (kind === 'result' && (!_selfAlgoFiles.code || !_selfAlgoFiles.spec || !_selfAlgoFiles.process)) {
+                showNotification('请先上传仿真过程文件', 'warning');
+                event.target.value = '';
+                return;
+            }
+            var ext = '.' + file.name.split('.').pop().toLowerCase();
+            if (allowed[kind].indexOf(ext) < 0 || file.size > 80 * 1024 * 1024) {
+                showNotification('文件类型不支持或大小超过 80MB', 'warning');
+                event.target.value = '';
+                return;
+            }
+            _selfAlgoFiles[kind] = file;
+            var previewId = kind === 'code' ? 'selfCodePreview' : kind === 'spec' ? 'selfSpecPreview' : kind === 'process' ? 'selfProcessPreview' : 'selfResultPreview';
+            var preview = document.getElementById(previewId);
+            preview.style.display = 'block';
+            preview.textContent = file.name + '（' + formatFileSize(file.size) + '）';
+            updateSelfAlgoSteps();
+        }
+
+        function getFilenameFromDisposition(disposition, fallbackName) {
+            if (!disposition) return fallbackName;
+            var utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+            if (utf8Match && utf8Match[1]) {
+                try { return decodeURIComponent(utf8Match[1].replace(/"/g, '')); } catch (e) {}
+            }
+            var asciiMatch = disposition.match(/filename="?([^";]+)"?/i);
+            return asciiMatch && asciiMatch[1] ? asciiMatch[1] : fallbackName;
+        }
+
+        async function downloadSelfAlgoBlob(url, fallbackName) {
+            var resp = await fetch(url, { headers: authHeaders() });
+            if (!resp.ok) {
+                var err = await resp.json().catch(function() { return {}; });
+                throw new Error(extractSelfAlgoError(err, '下载失败'));
+            }
+            var objectUrl = URL.createObjectURL(await resp.blob());
+            var a = document.createElement('a');
+            a.href = objectUrl;
+            a.download = getFilenameFromDisposition(resp.headers.get('content-disposition'), fallbackName);
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(objectUrl);
+        }
+
+        async function downloadSelfAlgoPack() {
+            var selectedTask = _tasks.find(function(item) { return item.id === _selfAlgoTaskId; });
+            if (selectedTask && selectedTask.module_id) _selfAlgoType = selectedTask.module_id;
+            var current = _selfAlgoPacks.find(function(item) { return item.algorithm_type === _selfAlgoType; });
+            if (!current && _selfAlgoPacks.length) {
+                current = _selfAlgoPacks.find(function(item) { return SELF_ALGO_TYPES.indexOf(item.algorithm_type) >= 0; }) || _selfAlgoPacks[0];
+                _selfAlgoType = current.algorithm_type;
+                renderSelfAlgoTaskList();
+            }
+            if (!current) {
+                showNotification('暂无可下载的基础数据包', 'warning');
+                return;
+            }
+            try {
+                await downloadSelfAlgoBlob(
+                    '/api/v1/self-algorithms/packs/' + encodeURIComponent(_selfAlgoType) + '/download',
+                    current && current.download_name ? current.download_name : _selfAlgoType + '_基础数据包.zip'
+                );
+                showNotification('基础数据包下载已开始', 'success');
+            } catch (e) {
+                showNotification('下载失败：' + e.message, 'error');
+            }
+        }
+
+        async function submitSelfAlgorithm() {
+            if (!_selfAlgoFiles.code || !_selfAlgoFiles.spec || !_selfAlgoFiles.process || !_selfAlgoFiles.result) return;
+            var selectedTask = _tasks.find(function(item) { return item.id === _selfAlgoTaskId; });
+            if (!selectedTask) {
+                showNotification('请先选择老师下发的自研算法任务', 'warning');
+                return;
+            }
+            _selfAlgoType = selectedTask.module_id;
+            var btn = document.getElementById('selfAlgoSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = '分析中...';
+            var formData = new FormData();
+            formData.append('algorithm_type', _selfAlgoType);
+            formData.append('task_id', String(selectedTask.id));
+            if (selectedTask.class_id) formData.append('class_id', String(selectedTask.class_id));
+            formData.append('code_file', _selfAlgoFiles.code);
+            formData.append('spec_file', _selfAlgoFiles.spec);
+            formData.append('process_file', _selfAlgoFiles.process);
+            formData.append('result_file', _selfAlgoFiles.result);
+            try {
+                var resp = await fetch('/api/v1/self-algorithms/submissions', { method:'POST', headers:authHeaders(), body:formData });
+                if (!resp.ok) {
+                    var err = await resp.json().catch(function() { return {}; });
+                    throw new Error(extractSelfAlgoError(err, '提交失败'));
+                }
+                var item = (await resp.json()).data || {};
+                document.getElementById('selfAnalysisCard').style.display = 'block';
+                document.getElementById('selfAnalysisText').textContent = item.analysis_text || '已完成分析。';
+                resetSelfAlgoUpload();
+                await loadSelfAlgorithmSubmissions();
+                showNotification('自研算法提交成功，分析已完成', 'success');
+            } catch (e) {
+                showNotification('提交失败：' + e.message, 'error');
+            } finally {
+                btn.textContent = '提交并智能分析';
+                updateSelfAlgoSteps();
+            }
+        }
+
+        async function loadSelfAlgorithmSubmissions() {
+            var list = document.getElementById('selfAlgoHistory');
+            try {
+                var query = '/api/v1/self-algorithms/submissions?page_size=20';
+                if (_selfAlgoType) query += '&algorithm_type=' + encodeURIComponent(_selfAlgoType);
+                if (_selfAlgoTaskId) query += '&task_id=' + encodeURIComponent(_selfAlgoTaskId);
+                var resp = await fetch(query, { headers:authHeaders() });
+                if (!resp.ok) throw new Error('加载失败');
+                var items = ((await resp.json()).data || {}).items || [];
+                if (!items.length) {
+                    list.innerHTML = '<div style="text-align:center;padding:2rem;color:#909399;">当前任务暂无提交记录</div>';
+                    return;
+                }
+                list.innerHTML = items.map(function(item) {
+                    var text = item.analysis_text || '暂无分析';
+                    var processButton = item.process_original_filename
+                        ? '<button class="btn-secondary" onclick="downloadSelfAlgoSubmission(' + item.id + ', &quot;process&quot;)">过程</button> '
+                        : '<button class="btn-secondary" disabled title="旧提交未包含仿真过程文件">过程缺失</button> ';
+                    return '<div class="self-history-card"><strong style="color:#2C5AA0;">' + escHtml(selfAlgoLabel(item.algorithm_type)) + '</strong>'
+                        + '<div class="self-history-meta"><span>任务：' + escHtml(item.task_title || '-') + '</span><span>' + escHtml(item.created_at || '-') + '</span><span>过程：' + escHtml(item.process_original_filename || '旧提交未包含') + '</span><span>结果：' + escHtml(item.result_original_filename || '-') + '</span></div>'
+                        + '<div><button class="btn-secondary" onclick="downloadSelfAlgoSubmission(' + item.id + ', &quot;code&quot;)">代码</button> '
+                        + '<button class="btn-secondary" onclick="downloadSelfAlgoSubmission(' + item.id + ', &quot;spec&quot;)">方案</button> '
+                        + processButton
+                        + '<button class="btn-secondary" onclick="downloadSelfAlgoSubmission(' + item.id + ', &quot;result&quot;)">结果</button></div>'
+                        + '<div class="analysis-box">' + escHtml(text) + '</div></div>';
+                }).join('');
+            } catch (e) {
+                list.innerHTML = '<div style="text-align:center;padding:2rem;color:#f56c6c;">加载失败</div>';
+            }
+        }
+
+        async function downloadSelfAlgoSubmission(id, kind) {
+            try {
+                await downloadSelfAlgoBlob('/api/v1/self-algorithms/submissions/' + id + '/download/' + kind, kind + '_' + id);
+            } catch (e) {
+                showNotification('下载失败：' + e.message, 'error');
+            }
+        }
+
+        function loadTasksForCloudUpload() {
+            var select = document.getElementById('cloudFileTaskId');
+            select.innerHTML = '<option value="">不关联任务（独立文件）</option>';
+
+            if (_tasks && _tasks.length > 0) {
+                _tasks.forEach(function(task) {
+                    var option = document.createElement('option');
+                    option.value = task.id;
+                    option.textContent = task.title;
+                    select.appendChild(option);
+                });
+            }
+        }
+
+        function handleCloudFileSelect(event) {
+            var file = event.target.files[0];
+            if (!file) return;
+
+            // 验证文件大小（50MB）
+            var maxSize = 50 * 1024 * 1024;
+            if (file.size > maxSize) {
+                alert('文件大小超过 50MB 限制');
+                event.target.value = '';
+                return;
+            }
+
+            // 验证文件类型
+            var fileType = document.getElementById('cloudFileType').value;
+            var allowedExtensions = {
+                'data': ['.csv', '.xlsx', '.xls'],
+                'report': ['.pdf', '.docx', '.doc', '.txt'],
+                'config': ['.xml', '.json', '.txt']
+            };
+
+            var ext = '.' + file.name.split('.').pop().toLowerCase();
+            if (!allowedExtensions[fileType].includes(ext)) {
+                alert('文件类型不匹配！' + fileType + ' 类型支持的扩展名：' + allowedExtensions[fileType].join(', '));
+                event.target.value = '';
+                return;
+            }
+
+            _cloudSelectedFile = file;
+
+            // 显示文件预览
+            document.getElementById('cloudFilePreview').style.display = 'block';
+            document.getElementById('cloudFilePreviewName').textContent = file.name;
+            document.getElementById('cloudFilePreviewSize').textContent = formatFileSize(file.size);
+            document.getElementById('cloudUploadBtn').disabled = false;
+        }
+
+        function clearCloudFileSelection() {
+            _cloudSelectedFile = null;
+            document.getElementById('cloudFileInput').value = '';
+            document.getElementById('cloudFilePreview').style.display = 'none';
+            document.getElementById('cloudUploadBtn').disabled = true;
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        async function uploadToCloud() {
+            if (!_cloudSelectedFile) return;
+
+            var btn = document.getElementById('cloudUploadBtn');
+            var fileType = document.getElementById('cloudFileType').value;
+            var taskId = document.getElementById('cloudFileTaskId').value;
+            var description = document.getElementById('cloudFileDescription').value;
+
+            btn.disabled = true;
+            btn.textContent = '上传中...';
+
+            var formData = new FormData();
+            formData.append('file', _cloudSelectedFile);
+            formData.append('file_type', fileType);
+            if (taskId) formData.append('task_id', taskId);
+            if (description) formData.append('description', description);
+
+            try {
+                var resp = await fetch('/api/v1/cloud/files/upload', {
+                    method: 'POST',
+                    headers: authHeaders(),
+                    body: formData
+                });
+
+                if (!resp.ok) {
+                    var err = await resp.json().catch(function() { return {}; });
+                    throw new Error(err.detail || '上传失败');
+                }
+
+                var result = await resp.json();
+                alert('文件上传成功！');
+
+                // 清空表单
+                clearCloudFileSelection();
+                document.getElementById('cloudFileDescription').value = '';
+
+                // 刷新文件列表
+                loadCloudFiles();
+            } catch (error) {
+                alert('上传失败：' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '上传到云端';
+            }
+        }
+
+        async function loadCloudFiles() {
+            var fileType = document.getElementById('cloudFileFilter').value;
+            var listDiv = document.getElementById('cloudFilesList');
+            listDiv.innerHTML = '<div style="text-align: center; padding: 2rem; color: #909399;">加载中...</div>';
+
+            try {
+                var url = '/api/v1/cloud/files/list';
+                if (fileType) url += '?file_type=' + fileType;
+
+                var resp = await fetch(url, {
+                    method: 'GET',
+                    headers: authHeaders()
+                });
+
+                if (!resp.ok) throw new Error('加载失败');
+
+                var result = await resp.json();
+                var files = result.data.items || [];
+
+                if (files.length === 0) {
+                    listDiv.innerHTML = '<div style="text-align: center; padding: 2rem; color: #909399;">暂无文件</div>';
+                    return;
+                }
+
+                // 渲染文件列表
+                var html = '<table style="width: 100%; border-collapse: collapse;">';
+                html += '<thead><tr style="background: #f5f7fa; border-bottom: 2px solid #e4e7ed;">';
+                html += '<th style="padding: 0.8rem; text-align: left; font-weight: 600; color: #606266;">文件名</th>';
+                html += '<th style="padding: 0.8rem; text-align: center; font-weight: 600; color: #606266; width: 100px;">类型</th>';
+                html += '<th style="padding: 0.8rem; text-align: center; font-weight: 600; color: #606266; width: 100px;">大小</th>';
+                html += '<th style="padding: 0.8rem; text-align: center; font-weight: 600; color: #606266; width: 150px;">上传时间</th>';
+                html += '<th style="padding: 0.8rem; text-align: center; font-weight: 600; color: #606266; width: 100px;">状态</th>';
+                html += '<th style="padding: 0.8rem; text-align: center; font-weight: 600; color: #606266; width: 150px;">操作</th>';
+                html += '</tr></thead><tbody>';
+
+                files.forEach(function(file) {
+                    var typeLabel = {'data': '数据', 'report': '报告', 'config': '配置'}[file.file_type] || file.file_type;
+                    var typeColor = {'data': '#409eff', 'report': '#67c23a', 'config': '#909399'}[file.file_type] || '#909399';
+                    var statusLabel = file.status === 'graded' ? '已批改' : '待批改';
+                    var statusColor = file.status === 'graded' ? '#67c23a' : '#e6a23c';
+
+                    html += '<tr style="border-bottom: 1px solid #ebeef5;">';
+                    html += '<td style="padding: 0.8rem;">' + file.original_filename + '</td>';
+                    html += '<td style="padding: 0.8rem; text-align: center;"><span style="background: ' + typeColor + '; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">' + typeLabel + '</span></td>';
+                    html += '<td style="padding: 0.8rem; text-align: center;">' + formatFileSize(file.file_size) + '</td>';
+                    html += '<td style="padding: 0.8rem; text-align: center; font-size: 0.85rem; color: #909399;">' + new Date(file.submitted_at).toLocaleString('zh-CN') + '</td>';
+                    html += '<td style="padding: 0.8rem; text-align: center;"><span style="background: ' + statusColor + '; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">' + statusLabel + '</span></td>';
+                    html += '<td style="padding: 0.8rem; text-align: center;">';
+                    html += '<button onclick="downloadCloudFile(' + file.id + ')" style="padding: 0.4rem 0.8rem; background: #409eff; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 0.5rem; font-size: 0.85rem;">下载</button>';
+                    html += '<button onclick="deleteCloudFile(' + file.id + ')" style="padding: 0.4rem 0.8rem; background: #f56c6c; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.85rem;">删除</button>';
+                    html += '</td>';
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table>';
+                listDiv.innerHTML = html;
+            } catch (error) {
+                listDiv.innerHTML = '<div style="text-align: center; padding: 2rem; color: #f56c6c;">加载失败：' + error.message + '</div>';
+            }
+        }
+
+        function downloadCloudFile(reportId) {
+            window.open('/api/cloud/reports/' + reportId + '/download', '_blank');
+        }
+
+        async function deleteCloudFile(reportId) {
+            if (!confirm('确定要删除这个文件吗？')) return;
+
+            try {
+                var resp = await fetch('/api/v1/cloud/files/' + reportId, {
+                    method: 'DELETE',
+                    headers: authHeaders()
+                });
+
+                if (!resp.ok) throw new Error('删除失败');
+
+                alert('文件删除成功');
+                loadCloudFiles();
+            } catch (error) {
+                alert('删除失败：' + error.message);
+            }
+        }
+
+        refreshExperimentBackendStatus(true);
+    </script>
+    <!-- 底部状态栏 -->
+    <script src="/src/components/status-bar.js"></script>
+    <!-- AI实验助手 -->
+    <link rel="stylesheet" href="/src/components/ai-assistant.css?v=deepseek-professional-20260620">
+    <script src="/src/components/ai-assistant.js?v=deepseek-professional-20260620"></script>
+</body>
+
+</html>

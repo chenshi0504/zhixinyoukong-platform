@@ -1,0 +1,38 @@
+{
+  "1": {
+    "class_name": "Car",
+    "mean_conf": 0.8446,
+    "var_conf": 0.011726,
+    "count": 24,
+    "mean_bbox": [
+      470.23,
+      265.09,
+      562.19,
+      341.32
+    ]
+  },
+  "0": {
+    "class_name": "Cyclist",
+    "mean_conf": 0.5703,
+    "var_conf": 0.063768,
+    "count": 7,
+    "mean_bbox": [
+      1447.45,
+      212.95,
+      1487.51,
+      251.51
+    ]
+  },
+  "7": {
+    "class_name": "Truck",
+    "mean_conf": 0.5837,
+    "var_conf": 2e-06,
+    "count": 3,
+    "mean_bbox": [
+      47.62,
+      116.96,
+      155.43,
+      169.37
+    ]
+  }
+}

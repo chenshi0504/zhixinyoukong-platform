@@ -1,0 +1,19 @@
+{
+  "session_id": "test_session_10",
+  "messages": [
+    {
+      "role": "user",
+      "content": "保存测试",
+      "timestamp": "2026-09-19T00:17:20.050452",
+      "metadata": {}
+    },
+    {
+      "role": "assistant",
+      "content": "收到",
+      "timestamp": "2026-09-19T00:17:20.050452",
+      "metadata": {}
+    }
+  ],
+  "citations": [],
+  "saved_at": "2026-09-19T00:17:20.050452"
+}

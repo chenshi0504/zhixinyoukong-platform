@@ -1,0 +1,585 @@
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', Arial, sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* 顶部标题区域 */
+.header {
+    background-color: #2C5AA0;
+    color: white;
+    padding: 20px 40px;
+    text-align: center;
+}
+
+.main-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+/* 主容器 */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.main-container {
+    display: grid;
+    grid-template-columns: 40% 60%;
+    gap: 20px;
+    min-height: calc(100vh - 120px);
+    margin-bottom: 30px;
+}
+
+/* 左侧控制面板 */
+.left-panel {
+    background-color: #F8F9FA;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #E0E0E0;
+    overflow-y: auto;
+}
+
+.left-panel section {
+    margin-bottom: 25px;
+}
+
+.left-panel h3 {
+    color: #2c3e50;
+    font-size: 16px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #2C5AA0;
+    padding-bottom: 5px;
+}
+
+/* 算法讲解区样式 */
+.algorithm-intro {
+    margin-bottom: 20px;
+}
+
+.algorithm-description {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    border-left: 4px solid #2C5AA0;
+}
+
+.algorithm-description p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* 算法选择样式 */
+.optimization-mode {
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 6px;
+}
+
+.algorithm-select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+}
+
+.algorithm-select:focus {
+    outline: none;
+    border-color: #2C5AA0;
+    box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2);
+}
+
+/* 按钮样式 */
+.btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #2C5AA0;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #1e3d72;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+}
+
+.btn-success {
+    background-color: #27ae60;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #229954;
+}
+
+.btn-icon {
+    margin-right: 5px;
+}
+
+/* 操作控制面板 */
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.status-display {
+    margin-top: 10px;
+    padding: 8px 12px;
+    background-color: #ecf0f1;
+    border-radius: 4px;
+    text-align: center;
+}
+
+#currentStatus {
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+/* 配置文件按钮样式 */
+.config-file-section {
+    margin-top: 20px;
+}
+
+.config-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.config-file-btn {
+    padding: 10px 14px;
+    background-color: #2C5AA0;
+    border: 2px solid #2C5AA0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+    font-size: 13px;
+    color: white;
+    font-weight: 500;
+}
+
+.config-file-btn:hover {
+    background-color: #1e3d72;
+    border-color: #1e3d72;
+}
+
+.config-file-btn.step-done {
+    background-color: white;
+    border-color: #2C5AA0;
+    color: #2C5AA0;
+}
+
+/* 右侧分析区域 */
+.right-panel {
+    background-color: #F8F9FA;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #E0E0E0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+}
+
+/* 算法状态显示 */
+.algorithm-status {
+    background-color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.algorithm-status span {
+    font-size: 14px;
+    color: #2c3e50;
+}
+
+#currentAlgorithm {
+    font-weight: bold;
+    color: #2C5AA0;
+}
+
+.update-time {
+    color: #7f8c8d;
+}
+
+/* 结果查看区样式 */
+.result-view-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.result-view-section h3 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    color: #2C5AA0;
+    font-weight: 600;
+    border-bottom: 2px solid #2C5AA0;
+    padding-bottom: 5px;
+}
+
+.result-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.result-images {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.result-image-item {
+    background: #F8F9FA;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #E0E0E0;
+}
+
+.result-img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.result-img-caption {
+    margin: 10px 0 0 0;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.result-summary-placeholder {
+    background: #f8f9fa;
+    border-radius: 6px;
+    min-height: 60px;
+}
+
+/* 自主算法设计区 - PyCharm Darcula 风格 */
+.custom-algorithm-section {
+    margin-top: 0;
+}
+
+.custom-algorithm-section h3 {
+    color: #2c3e50;
+    font-size: 16px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #e67e22;
+    padding-bottom: 5px;
+}
+
+.custom-algo-desc {
+    margin-bottom: 10px;
+}
+
+.custom-algo-desc p {
+    font-size: 0.85em;
+    color: #666;
+    line-height: 1.5;
+}
+
+.code-editor-wrapper {
+    border: 1px solid #515658;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #2b2b2b;
+    transition: all 0.3s ease;
+}
+
+.code-editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
+    background: #3c3f41;
+    color: #a9b7c6;
+    font-size: 13px;
+    border-bottom: 1px solid #515658;
+}
+
+.btn-code-action {
+    background: #4c5052;
+    border: 1px solid #5e6366;
+    color: #a9b7c6;
+    padding: 2px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.btn-code-action:hover {
+    background: #5c6164;
+    color: #ffc66d;
+    border-color: #6e7377;
+}
+
+.code-editor-body {
+    position: relative;
+    min-height: 280px;
+}
+
+.code-highlight {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    margin: 0;
+    padding: 12px;
+    font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #a9b7c6;
+    background: #2b2b2b;
+    border: none;
+    tab-size: 4;
+    white-space: pre;
+    overflow: auto;
+    pointer-events: none;
+    word-wrap: normal;
+}
+
+.code-highlight code {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit;
+    background: transparent;
+}
+
+.code-editor {
+    position: relative;
+    width: 100%;
+    min-height: 280px;
+    padding: 12px;
+    font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    color: transparent;
+    background: transparent;
+    border: none;
+    outline: none;
+    resize: vertical;
+    tab-size: 4;
+    white-space: pre;
+    overflow: auto;
+    caret-color: #ffffff;
+    z-index: 1;
+}
+
+.code-editor::selection {
+    background: rgba(33, 66, 131, 0.7);
+    color: transparent;
+}
+
+.code-editor::-moz-selection {
+    background: rgba(33, 66, 131, 0.7);
+    color: transparent;
+}
+
+.code-editor:focus {
+    box-shadow: inset 0 0 0 1px #4e94ce;
+}
+
+/* PyCharm Darcula 语法高亮颜色 */
+.py-keyword { color: #cc7832; font-weight: bold; }
+.py-builtin { color: #8888c6; }
+.py-string { color: #6a8759; }
+.py-comment { color: #808080; font-style: italic; }
+.py-number { color: #6897bb; }
+.py-decorator { color: #bbb529; }
+.py-func { color: #ffc66d; }
+.py-class { color: #ffc66d; font-weight: bold; }
+.py-self { color: #94558d; }
+.py-const { color: #9876aa; font-style: italic; }
+.py-operator { color: #a9b7c6; }
+
+.code-hint {
+    padding: 5px 12px;
+    background: #3c3f41;
+    border-top: 1px solid #515658;
+    font-size: 12px;
+    color: #6a8759;
+}
+
+/* 全屏模式遮罩 */
+.code-fullscreen-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9998;
+    backdrop-filter: blur(4px);
+}
+
+.code-fullscreen-overlay.active {
+    display: block;
+}
+
+/* 全屏模式编辑器 */
+.code-editor-wrapper.fullscreen {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85vw; height: 85vh;
+    z-index: 9999;
+    border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+}
+
+.code-editor-wrapper.fullscreen .code-editor-header {
+    padding: 10px 16px;
+    font-size: 14px;
+    border-radius: 10px 10px 0 0;
+}
+
+.code-editor-wrapper.fullscreen .code-editor-body {
+    flex: 1;
+    min-height: unset;
+    overflow: hidden;
+}
+
+.code-editor-wrapper.fullscreen .code-editor,
+.code-editor-wrapper.fullscreen .code-highlight {
+    min-height: unset;
+    height: 100%;
+    font-size: 16px;
+    line-height: 1.7;
+    padding: 16px 20px;
+    resize: none;
+}
+
+.code-editor-wrapper.fullscreen .code-hint {
+    padding: 8px 16px;
+    font-size: 12px;
+    border-radius: 0 0 10px 10px;
+}
+
+.code-editor-wrapper.fullscreen .btn-code-action {
+    padding: 4px 14px;
+    font-size: 12px;
+}
+
+/* 导航按钮样式 */
+.nav-actions {
+    background-color: #f8f9fa;
+    padding: 15px 40px;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.nav-content {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+#backBtn {
+    padding: 8px 20px;
+    font-size: 14px;
+}
+
+/* 服务器状态样式 */
+.server-status {
+    margin-left: auto;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 500;
+    background: #f8f9fa;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .main-container {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+
+    .main-title {
+        font-size: 20px;
+    }
+
+    .subtitle {
+        font-size: 12px;
+    }
+}
+
+/* 加载状态 */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

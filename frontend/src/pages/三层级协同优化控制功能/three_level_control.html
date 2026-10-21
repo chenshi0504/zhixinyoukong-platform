@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三层级协同优化控制功能</title>
+    <link rel="stylesheet" href="three_level_control.css">
+    <link rel="stylesheet" href="../../components/chat-log-widget.css">
+</head>
+<body>
+    <header class="header">
+        <h1 class="main-title">三层级协同优化控制功能</h1>
+        <p class="subtitle">上层信号优化  中层路径诱导  下层车速控制 | 可选择2~3个层级协同运行</p>
+    </header>
+
+    <nav class="nav-actions">
+        <div class="nav-content">
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="backBtn">返回</button>
+                <span class="server-status" id="serverStatus">服务器: 检查中...</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- 第一行：三个层级并列选择 -->
+        <section class="level-row">
+            <!-- 信号优化 -->
+            <div class="level-card active" id="signalCard">
+                <div class="level-card-header">
+                    <span class="level-icon"></span>
+                    <span class="level-title">上层  信号配时优化</span>
+                    <label class="level-toggle">
+                        <input type="checkbox" id="signalEnabled" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="level-card-body" id="signalBody">
+                    <div class="form-group">
+                        <label>优化算法：</label>
+                        <select id="signalAlgo" class="algo-select">
+                            <option value="turbo">TuRBO (信任域贝叶斯优化)</option>
+                            <option value="bo">BO (贝叶斯优化)</option>
+                            <option value="dqn">DQN (深度Q网络) [需预热]</option>
+                            <option value="ppo">PPO (近端策略优化) [需预热]</option>
+                            <option value="ga">GA (遗传算法)</option>
+                            <option value="pso">PSO (粒子群优化)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>信号优化时间间隔：</label>
+                        <select id="signalOptInterval" class="algo-select">
+                            <option value="300">300秒</option>
+                            <option value="600" selected>600秒</option>
+                            <option value="900">900秒</option>
+                            <option value="1200">1200秒</option>
+                        </select>
+                    </div>
+                    <div class="level-desc">基于优化算法搜索最优绿信比与信号周期，每隔设定时间执行一次优化</div>
+                </div>
+            </div>
+
+            <!-- 路径诱导 -->
+            <div class="level-card active" id="pathCard">
+                <div class="level-card-header">
+                    <span class="level-icon"></span>
+                    <span class="level-title">中层  路径诱导</span>
+                    <label class="level-toggle">
+                        <input type="checkbox" id="pathEnabled" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="level-card-body" id="pathBody">
+                    <div class="form-group">
+                        <label>诱导算法：</label>
+                        <select id="pathAlgo" class="algo-select">
+                            <option value="dijkstra">Dijkstra (动态最短路径)</option>
+                            <option value="ssp">SSP (逐次最短路径)</option>
+                            <option value="astar">A* (启发式搜索)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>路径优化时间间隔：</label>
+                        <select id="pathRerouteInterval" class="algo-select">
+                            <option value="30" selected>30秒</option>
+                            <option value="60">60秒</option>
+                            <option value="90">90秒</option>
+                            <option value="120">120秒</option>
+                        </select>
+                    </div>
+                    <div class="level-desc">基于实时路网状态为CAV车辆动态规划路径，每隔设定时间重新优化路径</div>
+                </div>
+            </div>
+
+            <!-- 车速控制 -->
+            <div class="level-card active" id="speedCard">
+                <div class="level-card-header">
+                    <span class="level-icon"></span>
+                    <span class="level-title">下层  车速控制</span>
+                    <label class="level-toggle">
+                        <input type="checkbox" id="speedEnabled" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="level-card-body" id="speedBody">
+                    <div class="form-group">
+                        <label>控制算法：</label>
+                        <select id="speedAlgo" class="algo-select">
+                            <option value="idm">IDM (智能驾驶员模型)</option>
+                            <option value="acc">ACC (自适应巡航控制)</option>
+                            <option value="cacc">CACC (协同自适应巡航)</option>
+                            <option value="pid">PID (经典速度控制)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>控制步长：</label>
+                        <select id="speedControlDt" class="algo-select">
+                            <option value="0.5" selected>0.5秒</option>
+                            <option value="1">1秒</option>
+                            <option value="2">2秒</option>
+                        </select>
+                    </div>
+                    <div class="level-desc">通过TraCI实时控制CAV车辆速度，每隔控制步长执行一次速度决策</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第二行：公共参数 + 公共配置 + 运行控制 -->
+        <section class="control-row">
+            <div class="params-card">
+                <h3>仿真参数</h3>
+                <div class="params-grid">
+                    <div class="form-group">
+                        <label for="flowLevel">流量等级：</label>
+                        <select id="flowLevel" class="algo-select">
+                            <option value="2">流量1 (低流量)</option>
+                            <option value="4" selected>流量2 (中流量)</option>
+                            <option value="6">流量3 (高流量)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="prSelect">CAV渗透率：</label>
+                        <select id="prSelect" class="algo-select">
+                            <option value="20">20%</option>
+                            <option value="40" selected>40%</option>
+                            <option value="60">60%</option>
+                            <option value="80">80%</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="acceptRate">CAV采纳率：</label>
+                        <select id="acceptRate" class="algo-select">
+                            <option value="80">80%</option>
+                            <option value="85">85%</option>
+                            <option value="90">90%</option>
+                            <option value="95">95%</option>
+                            <option value="100" selected>100%</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="maxSimTime">最大仿真时间(s)：</label>
+                        <input type="number" id="maxSimTime" class="algo-select" value="3600" min="600" max="10000" step="300">
+                    </div>
+                </div>
+                <div class="accept-rate-desc">采纳率：仅该比例的CAV会按照设定的路径诱导和车速控制策略运行，其余CAV按SUMO默认行为</div>
+            </div>
+            <div class="params-card">
+                <h3>配置文件</h3>
+                <div class="config-file-list">
+                    <button class="config-file-btn" id="netFileBtn"> 路网文件</button>
+                    <span class="config-file-path" id="netFilePath">默认: siouxfalls.net.xml</span>
+                    <button class="config-file-btn" id="cfgFileBtn"> 仿真配置文件</button>
+                    <span class="config-file-path" id="cfgFilePath">默认: siouxfalls.sumocfg</span>
+                    <button class="config-file-btn" id="signalCfgBtn"> 信号配置文件</button>
+                    <span class="config-file-path" id="signalCfgPath">默认: signal_config/</span>
+                    <button class="config-file-btn" id="odFileBtn"> OD矩阵文件</button>
+                    <span class="config-file-path" id="odFilePath">默认: SiouxFalls_od.csv</span>
+                    <button class="config-file-btn" id="routeFileBtn"> 路由文件</button>
+                    <span class="config-file-path" id="routeFilePath">默认: 自动生成</span>
+                </div>
+            </div>
+            <div class="params-card control-card">
+                <h3>运行控制</h3>
+                <div class="level-summary" id="levelSummary">已选择 3 个层级：信号优化 + 路径诱导 + 车速控制</div>
+                <button id="startSimulation" class="btn btn-primary btn-large"> 开始协同仿真</button>
+                <button id="resetParams" class="btn btn-secondary" style="width:100%;"> 重置参数</button>
+                <div class="status-display">
+                    <span id="currentStatus">状态: 就绪</span>
+                    <span id="updateTime" style="margin-left:12px;font-size:12px;color:#999;">--:--:--</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第三行：仿真结果 -->
+        <section class="results-row">
+            <div class="result-card">
+                <h3>仿真结果</h3>
+                <div id="resultSummary" class="result-summary-placeholder">
+                    <p style="color:#999;text-align:center;padding:30px;">选择层级算法后点击"开始协同仿真"，各层级将依次启动仿真，结果汇总展示</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第四行：结果图表 + 导出 -->
+        <section class="output-row">
+            <div class="result-card" style="flex:2;">
+                <h3>结果图表</h3>
+                <div class="result-images" id="resultImages">
+                    <p style="color:#999;text-align:center;padding:40px 20px;">运行仿真后将在此显示各层级输出图表和数据文件</p>
+                </div>
+            </div>
+            <div class="result-card" style="flex:1;">
+                <h3>实验报告</h3>
+                <div class="result-buttons-vertical">
+                    <button class="btn btn-primary" id="exportResultsBtn"><span class="btn-icon"></span>导出结果CSV</button>
+                    <button class="btn btn-primary" id="exportReportBtn"><span class="btn-icon"></span>导出实验报告</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="three_level_control.js"></script>
+    <script src="../../components/chat-log-widget.js"></script>
+    <!-- AI实验助手 -->
+    <link rel="stylesheet" href="/src/components/ai-assistant.css?v=deepseek-professional-20260620">
+    <script src="/src/components/ai-assistant.js?v=deepseek-professional-20260620"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+    <!-- 局域网访问同样可以运行：后端在运行平台的本机弹出 CMD 窗口执行统一三层级仿真，
+         执行状态与结果由页面轮询 /api/three-level/status 等接口获得。 -->
+</body>
+</html>
+
+

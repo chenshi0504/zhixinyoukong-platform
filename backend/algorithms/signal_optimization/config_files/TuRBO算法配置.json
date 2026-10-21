@@ -1,0 +1,7 @@
+{
+    "algorithm": "TuRBO",
+    "saturation_level": 100,
+    "cycle_time": 110,
+    "green_ratio": 62,
+    "description": "TuRBO算法配置 - 信任域贝叶斯优化，快速收敛"
+}

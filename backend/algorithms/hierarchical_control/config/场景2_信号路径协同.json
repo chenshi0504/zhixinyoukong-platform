@@ -1,0 +1,27 @@
+{
+  "scenario": "两两协同优化-信号+路径",
+  "algorithms": {
+    "upper": "MPC-TuRBO",
+    "middle": "KSP+MSA"
+  },
+  "coordination": {
+    "mode": "sequential",
+    "update_frequency": 60,
+    "information_sharing": true
+  },
+  "parameters": {
+    "signal": {
+      "cycle_length": 120,
+      "optimization_horizon": 300
+    },
+    "path": {
+      "k_paths": 5,
+      "msa_iterations": 30
+    }
+  },
+  "network": {
+    "intersections": 4,
+    "links": 12,
+    "od_pairs": 6
+  }
+}

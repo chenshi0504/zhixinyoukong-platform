@@ -1,0 +1,22 @@
+{
+  "scenario": "两两协同优化-路径+车速",
+  "algorithms": {
+    "middle": "KSP+MSA",
+    "lower": "MPC-TuRBO"
+  },
+  "coordination": {
+    "mode": "parallel",
+    "synchronization_interval": 30,
+    "feedback_enabled": true
+  },
+  "parameters": {
+    "path": {
+      "k_paths": 5,
+      "convergence_threshold": 0.01
+    },
+    "speed": {
+      "prediction_horizon": 10,
+      "control_horizon": 5
+    }
+  }
+}

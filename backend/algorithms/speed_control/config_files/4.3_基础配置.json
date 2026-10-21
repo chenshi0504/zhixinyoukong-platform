@@ -1,0 +1,11 @@
+{
+  "module": "车速控制",
+  "algorithm": "MPC-TuRBO",
+  "objective": "提升车队通行效率",
+  "parameters": {
+    "iterations": 50,
+    "convergence_threshold": 0.01,
+    "time_horizon": 300
+  },
+  "scenario": "基础场景"
+}

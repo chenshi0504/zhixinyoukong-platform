@@ -1,0 +1,26 @@
+{
+  "1": {
+    "class_name": "Car",
+    "mean_conf": 0.6778,
+    "var_conf": 0.053822,
+    "count": 33,
+    "mean_bbox": [
+      1262.73,
+      349.63,
+      1373.45,
+      446.71
+    ]
+  },
+  "3": {
+    "class_name": "Pedestrian",
+    "mean_conf": 0.7634,
+    "var_conf": 0.002132,
+    "count": 6,
+    "mean_bbox": [
+      456.18,
+      402.79,
+      495.85,
+      507.44
+    ]
+  }
+}

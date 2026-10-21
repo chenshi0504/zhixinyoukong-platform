@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <input>
+        <net-file value="siouxfalls.net.xml"/>
+        <route-files value="siouxfalls.rou.xml"/>
+    </input>
+    
+    <time>
+        <begin value="0"/>
+        <!-- Remove fixed end time to let simulation run until all vehicles finish -->
+    </time>
+    
+    <processing>
+        <ignore-route-errors value="false"/>
+        <time-to-teleport value="300"/>
+        <max-depart-delay value="-1"/>
+        <routing-algorithm value="dijkstra"/>
+        <step-length value="1.0"/>
+        <collision.action value="warn"/>
+    </processing>
+    
+    <output>
+        <summary-output value="../output/sumo/summary_{MODE}_{FLOW}_{PR}.xml"/>
+        <tripinfo-output value="../output/sumo/tripinfo_{MODE}_{FLOW}_{PR}.xml"/>
+        <edgedata-output value="../output/sumo/edgedata_{MODE}_{FLOW}_{PR}.xml"/>
+    </output>
+    
+    <report>
+        <verbose value="false"/>
+        <no-step-log value="true"/>
+        <duration-log.statistics value="true"/>
+        <no-warnings value="false"/>
+    </report>
+    
+    <gui_only>
+        <delay value="0"/>
+        <start value="true"/>
+        <quit-on-end value="true"/>
+        <gui-settings-file value="osm.view.xml"/>
+    </gui_only>
+</configuration>

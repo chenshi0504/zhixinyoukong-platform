@@ -1,0 +1,430 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIC-Sim - 虚实结合仿真场景构建</title>
+    <link rel="stylesheet" href="carla_scene_builder.css">
+    <link rel="stylesheet" href="../../components/chat-log-widget.css">
+</head>
+<body>
+    <nav class="nav">
+        <div class="nav-inner">
+            <a class="nav-brand" href="#" data-page="home">
+                VIC-Sim <span>HIL Co-Simulation Platform</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#" data-page="home" class="active">首页</a></li>
+                <li><a href="#" data-page="scenario">场景</a></li>
+                <li><a href="#" data-page="comms">通信</a></li>
+                <li><a href="#" data-page="db">数据库</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="btn btn-outline" id="backBtn" type="button">返回</button>
+                <button class="btn btn-primary" id="startNativeVicBtn" type="button">启动 VIC-Sim 原生界面</button>
+                <button class="btn btn-outline" id="openNativeVicBtn" type="button">新页面打开</button>
+                <span class="demo-badge" id="demoBadge" style="display:none;">演示模式</span>
+            </div>
+        </div>
+    </nav>
+
+    <div id="backend-bar" class="backend-bar checking">
+        <span class="bdot"></span>
+        <span id="serverStatus">服务器: 检查中...</span>
+    </div>
+
+    <main>
+        <section class="page active" id="page-home">
+            <div class="hero">
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    智信优控 · 虚实结合仿真场景构建
+                </div>
+                <h1>VIC-Sim <span class="accent">仿真测试平台</span></h1>
+                <p class="hero-sub">
+                    按 VIC-Sim 原有流程组织 CARLA + SUMO 联合仿真，支持 HIL 协同仿真（Town05）和校园底图联合仿真。
+                </p>
+                <div class="hero-pills">
+                    <span class="pill">CARLA</span>
+                    <span class="pill">SUMO TraCI</span>
+                    <span class="pill">Town05 HIL</span>
+                    <span class="pill">Campus Co-Sim</span>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="stats-row">
+                    <div class="stat"><div class="stat-val">2</div><div class="stat-label">联合仿真场景</div></div>
+                    <div class="stat"><div class="stat-val">0.05s</div><div class="stat-label">仿真步长</div></div>
+                    <div class="stat"><div class="stat-val">2</div><div class="stat-label">界面图传输</div></div>
+                    <div class="stat"><div class="stat-val">1</div><div class="stat-label">真实流程入口</div></div>
+                </div>
+
+                <div class="teaching-note">
+                    <strong>教学提示</strong>
+                    <span>本模块只保留必要讲解，操作流程回到 VIC-Sim：场景选择、同步通道、效果展示传输、联合仿真、日志与输出文件。</span>
+                </div>
+
+                <div class="cards-grid">
+                    <button class="card card-accent" type="button" data-page="scenario">
+                        <div class="card-icon">A</div>
+                        <h3>场景 A - HIL 协同仿真</h3>
+                        <p>Town05、VIC-Sim HIL 闭环、虚拟 GPS 轨迹与 CARLA-SUMO 双向同步。</p>
+                    </button>
+                    <button class="card" type="button" data-page="scenario">
+                        <div class="card-icon">B</div>
+                        <h3>场景 B - 校园底图联合仿真</h3>
+                        <p>校园 SUMO 路网与 CARLA OpenDRIVE 世界同步，前端接收两类界面图。</p>
+                    </button>
+                    <button class="card" type="button" data-page="comms">
+                        <div class="card-icon">IO</div>
+                        <h3>通信状态</h3>
+                        <p>查看 CARLA、SUMO、同步桥接、效果传输和 CAV 状态。</p>
+                    </button>
+                </div>
+
+                <div class="arch-diagram">
+                    <div class="arch-row">
+                        <span class="arch-node carla">CARLA Server<br><small>:2000</small></span>
+                        <span class="arch-arrow">↔</span>
+                        <span class="arch-node vicsim">VIC-Sim Core<br><small>Python API</small></span>
+                        <span class="arch-arrow">↔</span>
+                        <span class="arch-node sumo">SUMO<br><small>TraCI</small></span>
+                    </div>
+                    <div class="arch-row secondary">
+                        <span class="arch-node hil">HIL Server</span>
+                        <span class="arch-arrow">→</span>
+                        <span class="arch-node gps">Virtual GPS Replay</span>
+                        <span class="arch-arrow">→</span>
+                        <span class="arch-node db">Trace / Output Files</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page" id="page-scenario">
+            <div class="section">
+                <h2 class="sec-title">仿真场景</h2>
+                <p class="sec-sub">选择场景，并按 VIC-Sim 原有流程运行联合仿真。</p>
+
+                <div class="scenario-list scene-tabs" id="scenarioList">
+                    <p class="hint-text">正在加载场景资源...</p>
+                </div>
+
+                <div class="scenario-shell">
+                    <section class="scenario-main">
+                        <article class="scene-panel active">
+                            <div class="scene-head">
+                                <div>
+                                    <h3 id="selectedSceneTitle">场景控制台</h3>
+                                    <p id="selectedSceneMeta">请选择实验场景</p>
+                                </div>
+                                <div class="run-status idle">
+                                    <span class="dot"></span>
+                                    <span id="statusValue">就绪</span>
+                                </div>
+                            </div>
+
+                            <div class="scene-summary">
+                                <p id="sceneIntro">本实验围绕 CARLA-SUMO 联合仿真完成场景构建。</p>
+                                <ul id="objectiveList">
+                                    <li>理解 CARLA-SUMO 联合仿真的场景配置方法</li>
+                                    <li>观察 SUMO 车辆与 CARLA Actor 的同步关系</li>
+                                </ul>
+                            </div>
+
+                            <div class="preflight">
+                                <div class="preflight-title">运行参数</div>
+                                <div class="preflight-items compact-grid">
+                                    <label class="form-group">
+                                        <span>路线 / 车辆标识</span>
+                                        <input type="text" id="routeInput" class="form-control" value="hil_ego">
+                                    </label>
+                                    <label class="form-group">
+                                        <span>目标速度 (m/s)</span>
+                                        <input type="number" id="targetSpeed" class="form-control" value="5.0" min="0.5" max="15.0" step="0.5">
+                                    </label>
+                                </div>
+                                <div class="pf-hint" id="routeHint">HIL 场景默认使用 hil_ego，校园场景默认使用 econ_loop</div>
+                            </div>
+
+                            <div class="run-bar">
+                                <button class="btn btn-primary" id="startMqttBtn" type="button">准备同步通道</button>
+                                <button class="btn btn-primary" id="startReceiverBtn" type="button">启动效果展示传输</button>
+                                <button class="btn btn-accent" id="startSimBtn" type="button">运行联合仿真</button>
+                                <button class="btn btn-outline" id="stopSimBtn" type="button">停止</button>
+                                <button class="btn btn-outline" id="resetBtn" type="button">重置</button>
+                            </div>
+
+                            <div class="progress-container" id="progressContainer" style="display:none;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progressFill" style="width:0%"></div>
+                                </div>
+                                <span class="progress-text" id="progressText">0%</span>
+                            </div>
+
+                            <div class="cam-selector">
+                                <div class="cam-selector-title">CARLA 跟随视角</div>
+                                <div class="cam-options">
+                                    <label class="cam-opt selected">
+                                        <input type="radio" name="cam-a" value="third" checked>
+                                        <span class="cam-card"><span class="cam-name">第三人称</span><span class="cam-desc">车辆后方跟随</span></span>
+                                    </label>
+                                    <label class="cam-opt">
+                                        <input type="radio" name="cam-a" value="birdseye">
+                                        <span class="cam-card"><span class="cam-name">鸟瞰视角</span><span class="cam-desc">联合仿真全局</span></span>
+                                    </label>
+                                    <label class="cam-opt">
+                                        <input type="radio" name="cam-a" value="driver">
+                                        <span class="cam-card"><span class="cam-name">驾驶员</span><span class="cam-desc">第一人称车内</span></span>
+                                    </label>
+                                    <label class="cam-opt">
+                                        <input type="radio" name="cam-a" value="free">
+                                        <span class="cam-card"><span class="cam-name">自由视角</span><span class="cam-desc">Spectator</span></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="steps-section">
+                                <h3>实验步骤</h3>
+                                <div class="steps-list">
+                                    <div class="step-item" data-step="1">
+                                        <span class="step-number">1</span>
+                                        <div class="step-content">
+                                            <span class="step-text">准备 CARLA-SUMO 同步通道</span>
+                                            <span class="step-detail">检测场景资源与同步桥状态</span>
+                                        </div>
+                                    </div>
+                                    <div class="step-item" data-step="2">
+                                        <span class="step-number">2</span>
+                                        <div class="step-content">
+                                            <span class="step-text">启动效果展示传输</span>
+                                            <span class="step-detail">获取 SUMO 界面图与 CARLA 界面图</span>
+                                        </div>
+                                    </div>
+                                    <div class="step-item" data-step="3">
+                                        <span class="step-number">3</span>
+                                        <div class="step-content">
+                                            <span class="step-text">运行联合仿真</span>
+                                            <span class="step-detail">调用后端 VIC-Sim / CARLA Co-Sim 入口</span>
+                                        </div>
+                                    </div>
+                                    <div class="step-item" data-step="4">
+                                        <span class="step-number">4</span>
+                                        <div class="step-content">
+                                            <span class="step-text">观察结果</span>
+                                            <span class="step-detail">轨迹、状态、日志和文件同步更新</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+
+                        <section class="preview-section native-sim-section">
+                            <h3>
+                                VIC-Sim 原生仿真界面
+                                <button class="btn btn-sm btn-primary" id="startNativeVicBtnInline" type="button">启动/连接</button>
+                                <button class="btn btn-sm btn-outline" id="refreshPreviewBtn" type="button">刷新界面</button>
+                            </h3>
+                            <div class="native-status-row">
+                                <span class="native-status" id="nativeVicStatus">正在检测 VIC-Sim 原生服务...</span>
+                                <span class="preview-tag" id="sumoPreviewTag">真实界面传输</span>
+                                <span class="preview-tag" id="carlaPreviewTag">自动检测</span>
+                            </div>
+                            <div class="native-frame-shell">
+                                <iframe id="nativeVicFrame" title="VIC-Sim 原生仿真测试平台" loading="lazy"></iframe>
+                            </div>
+                            <p class="hint-text native-frame-hint">
+                                此处直接连接 D:\chenshi\VIC-Sim 的原生前端与后端。运行仿真时，请在嵌入界面中使用 VIC-Sim 自带的场景、通信、数据库和日志功能。
+                            </p>
+                        </section>
+
+                        <section class="trajectory-section">
+                            <h3>
+                                轨迹可视化
+                                <button class="btn btn-sm btn-outline" id="loadTrajectoryBtn" type="button">加载轨迹</button>
+                            </h3>
+                            <canvas id="trajectoryCanvas" width="840" height="360"></canvas>
+                        </section>
+                    </section>
+
+                    <aside class="scenario-side">
+                        <section class="sim-status-section">
+                            <h3>仿真状态</h3>
+                            <div class="scene-info-grid">
+                                <div class="info-card" id="cardSumo">
+                                    <div class="info-label">SUMO 仿真</div>
+                                    <div class="info-value" id="sumoStatus">未启动</div>
+                                </div>
+                                <div class="info-card" id="cardMqtt">
+                                    <div class="info-label">同步桥接</div>
+                                    <div class="info-value" id="mqttStatus">未启动</div>
+                                </div>
+                                <div class="info-card" id="cardReceiver">
+                                    <div class="info-label">效果传输</div>
+                                    <div class="info-value" id="receiverStatus">未启动</div>
+                                </div>
+                                <div class="info-card" id="cardCav">
+                                    <div class="info-label">同步车辆</div>
+                                    <div class="info-value" id="cavStatus">未创建</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="architecture-section">
+                            <h3>系统架构与数据流</h3>
+                            <div class="arch-flow">
+                                <div class="arch-node" id="archSumo">
+                                    <div class="arch-label">SUMO-GUI</div>
+                                    <div class="arch-desc">路网与交通流</div>
+                                </div>
+                                <div class="arch-arrow">→</div>
+                                <div class="arch-node" id="archMqtt">
+                                    <div class="arch-label">同步桥接</div>
+                                    <div class="arch-desc">时间步进与坐标转换</div>
+                                </div>
+                                <div class="arch-arrow">→</div>
+                                <div class="arch-node" id="archReceiver">
+                                    <div class="arch-label">效果传输</div>
+                                    <div class="arch-desc">界面图与轨迹</div>
+                                </div>
+                                <div class="arch-arrow">→</div>
+                                <div class="arch-node" id="archDevice">
+                                    <div class="arch-label">CARLA / HIL</div>
+                                    <div class="arch-desc">三维 Actor 与闭环反馈</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="cav-realtime-section" id="cavRealtimeSection" style="display:none;">
+                            <h3>同步车辆实时数据</h3>
+                            <div class="cav-data-grid">
+                                <div class="cav-data-item"><span>当前边</span><strong id="cavEdge">--</strong></div>
+                                <div class="cav-data-item"><span>速度</span><strong id="cavSpeed">-- m/s</strong></div>
+                                <div class="cav-data-item"><span>位置 X</span><strong id="cavX">--</strong></div>
+                                <div class="cav-data-item"><span>位置 Y</span><strong id="cavY">--</strong></div>
+                                <div class="cav-data-item"><span>航向角</span><strong id="cavHeading">--°</strong></div>
+                                <div class="cav-data-item"><span>运行时间</span><strong id="cavElapsed">--</strong></div>
+                            </div>
+                        </section>
+
+                        <section class="log-section">
+                            <h3>
+                                仿真日志
+                                <button class="btn btn-sm btn-outline" id="clearLogBtn" type="button">清空</button>
+                            </h3>
+                            <div class="log-container" id="logContainer">
+                                <div class="log-empty">等待操作...</div>
+                            </div>
+                        </section>
+                    </aside>
+                </div>
+            </div>
+        </section>
+
+        <section class="page" id="page-comms">
+            <div class="section">
+                <h2 class="sec-title">通信状态</h2>
+                <p class="sec-sub">VIC-Sim HIL 与仿真环境的数据通信和协议。</p>
+                <div class="comms-grid">
+                    <div class="comms-card">
+                        <div class="comms-name">CARLA ↔ VIC-Sim</div>
+                        <div class="comms-flow"><span>CarlaUE4</span><b>↔</b><span>carla.Client</span><b>↔</b><span>vic_sim</span></div>
+                        <p>协议: CARLA Python API (TCP)，端口 localhost:2000。</p>
+                    </div>
+                    <div class="comms-card">
+                        <div class="comms-name">SUMO ↔ VIC-Sim</div>
+                        <div class="comms-flow"><span>sumo-gui</span><b>↔</b><span>TraCI</span><b>↔</b><span>StateBuffer</span></div>
+                        <p>配置: hil_town05.sumocfg 与 school.sumocfg。</p>
+                    </div>
+                    <div class="comms-card">
+                        <div class="comms-name">效果展示传输</div>
+                        <div class="comms-flow"><span>SUMO View</span><b>→</b><span>Preview API</span><b>→</b><span>Browser</span></div>
+                        <p>前端持续刷新 SUMO 与 CARLA 仿真界面图，用于课堂效果展示。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="page" id="page-db">
+            <div class="section">
+                <h2 class="sec-title">数据库与资源</h2>
+                <p class="sec-sub">管理状态、输出轨迹与摘要文件。</p>
+
+                <section class="software-manager-section">
+                    <h3>
+                        软件运行管理
+                        <button class="btn btn-sm btn-outline" id="refreshSoftwareBtn" type="button">刷新状态</button>
+                    </h3>
+                    <div class="software-grid" id="softwareGrid">
+                        <div class="software-card" data-id="carla">
+                            <div class="sw-header">
+                                <span class="sw-name">CARLA</span>
+                                <span class="sw-status-dot" id="carlaStatusDot"></span>
+                            </div>
+                            <div class="sw-desc">自动驾驶三维仿真器</div>
+                            <div class="sw-info">
+                                <span class="sw-path" id="carlaPath">检测中...</span>
+                                <span class="sw-running-tag" id="carlaRunTag" style="display:none;">运行中</span>
+                            </div>
+                            <div class="sw-actions">
+                                <button class="btn sw-launch-btn" id="launchCarlaBtn" onclick="launchSoftware('carla')" type="button">启动 CARLA</button>
+                                <button class="btn sw-stop-btn" id="stopCarlaBtn" onclick="stopSoftware('carla')" style="display:none;" type="button">停止</button>
+                            </div>
+                        </div>
+                        <div class="software-card" data-id="sumo">
+                            <div class="sw-header">
+                                <span class="sw-name">NETEDIT (SUMO)</span>
+                                <span class="sw-status-dot" id="sumoStatusDot"></span>
+                            </div>
+                            <div class="sw-desc">SUMO 路网编辑与交通流仿真</div>
+                            <div class="sw-info">
+                                <span class="sw-path" id="sumoPath">检测中...</span>
+                                <span class="sw-running-tag" id="sumoRunTag" style="display:none;">运行中</span>
+                            </div>
+                            <div class="sw-actions">
+                                <button class="btn sw-launch-btn" onclick="launchSoftware('sumo')" type="button">启动 NETEDIT</button>
+                                <button class="btn sw-stop-btn" id="stopSumoBtn" onclick="stopSoftware('sumo')" style="display:none;" type="button">停止</button>
+                            </div>
+                        </div>
+                        <div class="software-card" data-id="nexta">
+                            <div class="sw-header">
+                                <span class="sw-name">NEXTA (DTALite)</span>
+                                <span class="sw-status-dot" id="nextaStatusDot"></span>
+                            </div>
+                            <div class="sw-desc">交通分配与路网结果可视化</div>
+                            <div class="sw-info">
+                                <span class="sw-path" id="nextaPath">检测中...</span>
+                                <span class="sw-running-tag" id="nextaRunTag" style="display:none;">运行中</span>
+                            </div>
+                            <div class="sw-actions">
+                                <button class="btn sw-launch-btn" onclick="launchSoftware('nexta')" type="button">启动 NEXTA</button>
+                                <button class="btn sw-stop-btn" id="stopNextaBtn" onclick="stopSoftware('nexta')" style="display:none;" type="button">停止</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="output-section">
+                    <h3>
+                        轨迹输出文件
+                        <button class="btn btn-sm btn-outline" id="refreshFilesBtn" type="button">刷新</button>
+                    </h3>
+                    <div class="output-files" id="outputFiles">
+                        <p class="hint-text">仿真启动后将在 output/ 目录生成轨迹与摘要文件</p>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <script src="carla_scene_builder.js"></script>
+    <script src="../../components/chat-log-widget.js"></script>
+    <link rel="stylesheet" href="/src/components/ai-assistant.css?v=deepseek-professional-20260620">
+    <script src="/src/components/ai-assistant.js?v=deepseek-professional-20260620"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+    <!-- 局域网访问守卫：仅本机可操作，局域网内页面全部功能禁用 -->
+    <script src="/src/components/lan-guard.js"></script>
+</body>
+</html>
+

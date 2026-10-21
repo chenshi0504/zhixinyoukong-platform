@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <input>
+        <net-file value="Tianjin.net.xml"/>
+        <route-files value="Tianjin.rou.xml"/>
+        <additional-files value="jianceqi.add.xml"/>
+    </input>
+    <time>
+        <begin value="0"/>
+        <end value="900"/>
+    </time>
+    <gui_only>
+        <start value="t"/>
+        <quit-on-end value="t"/>
+        <gui-settings-file value="osm.view.xml"/>
+    </gui_only>
+</configuration>

@@ -1,0 +1,14 @@
+{
+    "algorithm": "floyd",
+    "algorithm_name": "Floyd算法",
+    "description": "动态规划算法，全局最优路径规划",
+    "networkFile": "network3.xml",
+    "density": 100,
+    "targetSpeed": 50,
+    "parameters": {
+        "handle_negative_weights": true,
+        "store_all_paths": false,
+        "optimization_level": 2,
+        "path_reconstruction": true
+    }
+}

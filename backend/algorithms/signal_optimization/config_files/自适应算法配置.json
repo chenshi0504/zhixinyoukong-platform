@@ -1,0 +1,7 @@
+{
+    "algorithm": "Adaptive",
+    "saturation_level": 80,
+    "cycle_time": 100,
+    "green_ratio": 58,
+    "description": "自适应算法配置 - 基于实时交通流的动态信号控制"
+}

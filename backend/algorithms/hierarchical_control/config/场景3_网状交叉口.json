@@ -1,0 +1,35 @@
+{
+  "scenario": "三层级全协同-网状交叉口",
+  "network_type": "network_intersections",
+  "algorithms": {
+    "upper": "MPC-TuRBO",
+    "middle": "KSP+MSA",
+    "lower": "MPC-TuRBO"
+  },
+  "coordination": {
+    "mode": "distributed_coordination",
+    "communication_topology": "mesh",
+    "synchronization_interval": 30
+  },
+  "objective_function": "minimize_average_delay",
+  "parameters": {
+    "signal": {
+      "coordination_type": "green_wave",
+      "offset_optimization": true
+    },
+    "path": {
+      "dynamic_routing": true,
+      "real_time_update": true
+    },
+    "speed": {
+      "platoon_coordination": true,
+      "eco_driving": true
+    }
+  },
+  "network": {
+    "intersections": 9,
+    "links": 24,
+    "od_pairs": 12,
+    "area_size": "2km x 2km"
+  }
+}

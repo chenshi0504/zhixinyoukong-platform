@@ -1,0 +1,27 @@
+{
+  "baseline": {
+    "description": "基线配置：纯向量检索，无重排序",
+    "config": {
+      "use_hybrid": false,
+      "use_rerank": false,
+      "vector_weight": 1.0,
+      "keyword_weight": 0.0
+    }
+  },
+  "optimized": {
+    "description": "优化配置：混合检索 + 智能重排序 + 上下文感知",
+    "config": {
+      "use_hybrid": true,
+      "use_rerank": true,
+      "vector_weight": 0.7,
+      "keyword_weight": 0.3,
+      "rerank_weights": {
+        "semantic": 0.4,
+        "keyword": 0.2,
+        "recency": 0.15,
+        "user_preference": 0.15,
+        "quality": 0.1
+      }
+    }
+  }
+}

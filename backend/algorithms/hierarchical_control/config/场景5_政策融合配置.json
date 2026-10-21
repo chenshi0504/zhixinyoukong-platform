@@ -1,0 +1,50 @@
+{
+  "scenario": "政策融合场景",
+  "policies": {
+    "ATIS": {
+      "enabled": true,
+      "push_frequency": 30,
+      "coverage_rate": 0.8,
+      "information_types": [
+        "路况",
+        "推荐路径",
+        "预计延误"
+      ],
+      "update_mode": "real_time"
+    },
+    "congestion_pricing": {
+      "enabled": true,
+      "base_rate": 2.0,
+      "congestion_factor": 1.5,
+      "pricing_zones": [
+        "CBD",
+        "主干道"
+      ],
+      "time_periods": [
+        {
+          "period": "早高峰",
+          "multiplier": 2.0
+        },
+        {
+          "period": "平峰",
+          "multiplier": 1.0
+        },
+        {
+          "period": "晚高峰",
+          "multiplier": 1.8
+        }
+      ]
+    }
+  },
+  "three_level_coordination": {
+    "upper": "信号优化",
+    "middle": "路径诱导（结合ATIS）",
+    "lower": "车速控制"
+  },
+  "expected_effects": {
+    "travel_time_reduction": "25-45%",
+    "delay_reduction": "30-55%",
+    "throughput_increase": "18-35%",
+    "revenue_generation": "拥挤收费收入"
+  }
+}

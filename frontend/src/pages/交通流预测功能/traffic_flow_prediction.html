@@ -1,0 +1,254 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交通流预测功能</title>
+    <link rel="stylesheet" href="traffic_flow_prediction.css">
+    <link rel="stylesheet" href="../../components/chat-log-widget.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+    <!-- 顶部标题区域 -->
+    <header class="header">
+        <h1 class="main-title">交通流预测功能</h1>
+        <p class="subtitle">交通流预测算法和模型应用</p>
+    </header>
+
+    <!-- 导航操作区 -->
+    <nav class="nav-actions">
+        <div class="nav-content">
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" id="backBtn">返回</button>
+                <span class="server-status" id="serverStatus">服务器: 检查中...</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="container">
+        <main class="main-container">
+        <!-- 左侧功能面板 -->
+        <aside class="left-panel">
+            <!-- 算法讲解区 -->
+            <section class="algorithm-intro">
+                <h3>算法讲解</h3>
+                <div class="algorithm-description">
+                    <p><strong>交通流预测算法</strong></p>
+                    <p style="margin-top: 8px; font-size: 0.9em; color: #555; line-height: 1.6;">
+                        基于机器学习的交通流预测方法，通过历史交通流数据，利用多种预测模型进行短期交通流量预测，为交通管理和出行规划提供决策支持。
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                        <strong>核心步骤：</strong><br>
+                        1. 选择预测算法<br>
+                        2. 加载历史交通流数据<br>
+                        3. 训练预测模型<br>
+                        4. 输出预测结果和性能评估
+                    </p>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #666;">
+                        <strong>预测模型：</strong><br>
+                        • 线性回归：基于历史数据的线性趋势预测<br>
+                        • 随机森林：集成学习方法，处理非线性关系<br>
+                        • 支持向量回归(SVR)：核函数映射高维空间<br>
+                        • 决策树回归：基于特征分裂的树模型
+                    </p>
+                </div>
+            </section>
+
+            <!-- 操作控制区 -->
+            <section class="control-panel">
+                <!-- 模型选择 -->
+                <div style="margin-bottom: 12px;">
+                    <label for="modelSelect" style="display: block; font-size: 0.9em; font-weight: 600; color: #333; margin-bottom: 6px;">选择预测算法：</label>
+                    <select id="modelSelect" style="width: 100%; padding: 8px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9em; background: white; color: #333; cursor: pointer;">
+                        <option value="all">全部算法（4个模型）</option>
+                        <option value="lr">线性回归 (LinearRegression)</option>
+                        <option value="rf">随机森林 (RandomForest)</option>
+                        <option value="svr">支持向量回归 (SVR)</option>
+                        <option value="dtr">决策树回归 (DecisionTree)</option>
+                    </select>
+                </div>
+                <div class="control-buttons">
+                    <button id="loadDataBtn" class="btn step-btn" onclick="handleLoadData()">加载数据</button>
+                    <button id="trainModelBtn" class="btn step-btn" onclick="handleTrainModel()">训练模型</button>
+                    <button id="runPredictionBtn" class="btn step-btn" onclick="handleRunPrediction()">运行预测</button>
+                    <button id="generateVisualizationBtn" class="btn step-btn" onclick="handleGenerateVisualization()">生成可视化</button>
+                    <button id="resetBtn" class="btn step-btn" onclick="handleResetStatus()">重置状态</button>
+                </div>
+                <div class="status-display">
+                    <span class="status-label">系统状态：</span>
+                    <span class="status-value" id="currentStatus">就绪</span>
+                </div>
+            </section>
+
+            <!-- 算法设计区 -->
+            <section class="algorithm-design-panel">
+                <h3>🧪 算法设计实验</h3>
+                <p style="font-size: 0.85em; color: #666; margin-bottom: 10px; line-height: 1.5;">
+                    选择算法模板，修改关键参数后运行，对比不同算法设计的预测效果。
+                </p>
+                <!-- 模板选择 -->
+                <div style="margin-bottom: 10px;">
+                    <label for="templateSelect" style="display: block; font-size: 0.85em; font-weight: 600; color: #333; margin-bottom: 4px;">选择算法模板：</label>
+                    <select id="templateSelect" onchange="handleTemplateChange()" style="width: 100%; padding: 6px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.85em; background: white;">
+                        <option value="ridge">岭回归 (Ridge)</option>
+                        <option value="lasso">Lasso回归</option>
+                        <option value="knn">K近邻回归 (KNN)</option>
+                        <option value="gbr">梯度提升回归 (GBR)</option>
+                        <option value="mlp">神经网络 (MLP)</option>
+                        <option value="custom">自定义算法</option>
+                    </select>
+                </div>
+                <!-- 代码编辑器 -->
+                <div class="code-editor-wrapper" id="codeEditorWrapper">
+                    <div class="code-editor-header">
+                        <span>📝 Python 代码</span>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn-code-action" onclick="handleResetTemplate()">恢复模板</button>
+                            <button class="btn-code-action" id="expandCodeBtn" onclick="handleToggleCodeExpand()">⛶ 放大</button>
+                        </div>
+                    </div>
+                    <div class="code-editor-body">
+                        <pre class="code-highlight" id="codeHighlight" aria-hidden="true"><code id="codeHighlightCode"></code></pre>
+                        <textarea id="codeEditor" class="code-editor" spellcheck="false" rows="18"></textarea>
+                    </div>
+                    <div class="code-hint">
+                        <span>💡 提示：修改模型参数后点击运行，结果将在右侧展示</span>
+                    </div>
+                </div>
+                <!-- 运行按钮 -->
+                <div style="margin-top: 10px; display: flex; gap: 8px;">
+                    <button class="btn step-btn" onclick="handleRunCustomAlgorithm()" id="runCustomBtn" style="flex: 1;">▶ 运行自定义算法</button>
+                </div>
+                <div id="customAlgoStatus" style="margin-top: 8px; font-size: 0.85em; color: #666; text-align: center;"></div>
+            </section>
+        </aside>
+
+        <!-- 右侧展示区域 -->
+        <section class="right-panel">
+            <!-- 数据概览区 -->
+            <div class="data-overview">
+                <h3>数据概览</h3>
+                <div class="overview-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">📈</div>
+                        <div class="stat-content">
+                            <div class="stat-label">平均流量</div>
+                            <div class="stat-value" id="avgFlow">--</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⚡</div>
+                        <div class="stat-content">
+                            <div class="stat-label">最大流量</div>
+                            <div class="stat-value" id="maxFlow">--</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📉</div>
+                        <div class="stat-content">
+                            <div class="stat-label">最小流量</div>
+                            <div class="stat-value" id="minFlow">--</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <div class="stat-label">标准差</div>
+                            <div class="stat-value" id="stdFlow">--</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overview-stats" style="margin-top: 10px;">
+                    <div class="stat-card">
+                        <div class="stat-icon">🎓</div>
+                        <div class="stat-content">
+                            <div class="stat-label">训练集大小</div>
+                            <div class="stat-value" id="trainSize">--</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🧪</div>
+                        <div class="stat-content">
+                            <div class="stat-label">测试集大小</div>
+                            <div class="stat-value" id="testSize">--</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📐</div>
+                        <div class="stat-content">
+                            <div class="stat-label">线性回归 R²</div>
+                            <div class="stat-value" id="lrR2">--</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🌲</div>
+                        <div class="stat-content">
+                            <div class="stat-label">随机森林 R²</div>
+                            <div class="stat-value" id="rfR2">--</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="overview-stats" style="margin-top: 10px;">
+                    <div class="stat-card">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-content">
+                            <div class="stat-label">SVR R²</div>
+                            <div class="stat-value" id="svrR2">--</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🌳</div>
+                        <div class="stat-content">
+                            <div class="stat-label">决策树 R²</div>
+                            <div class="stat-value" id="dtrR2">--</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-content">
+                            <div class="stat-label">最佳模型</div>
+                            <div class="stat-value" id="bestModel">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 结果输出展示区 -->
+            <div class="result-output-section">
+                <h3>结果输出</h3>
+                <div class="output-controls">
+                    <button class="btn btn-success" id="downloadReportBtn">
+                        <span class="btn-icon">📄</span>
+                        下载实验报告
+                    </button>
+                    <button class="btn btn-info" id="downloadDataBtn">
+                        <span class="btn-icon">💾</span>
+                        下载交通流数据
+                    </button>
+                </div>
+                <div class="result-display" id="resultDisplay">
+                    <div class="placeholder-content">
+                        <div class="placeholder-icon">📈</div>
+                        <p>结果展示区</p>
+                        <p class="placeholder-hint">点击上方按钮下载实验报告或数据</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        </main>
+    </div>
+
+    <!-- 全屏代码编辑遮罩 -->
+    <div class="code-fullscreen-overlay" id="codeFullscreenOverlay" onclick="handleToggleCodeExpand()"></div>
+
+    <script src="traffic_flow_prediction.js"></script>
+    <script src="../../components/chat-log-widget.js"></script>
+    <!-- AI实验助手 -->
+    <link rel="stylesheet" href="/src/components/ai-assistant.css?v=deepseek-professional-20260620">
+    <script src="/src/components/ai-assistant.js?v=deepseek-professional-20260620"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+</html>
+
+

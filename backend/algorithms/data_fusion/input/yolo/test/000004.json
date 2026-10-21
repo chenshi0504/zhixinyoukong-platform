@@ -1,0 +1,62 @@
+{
+  "1": {
+    "class_name": "Car",
+    "mean_conf": 0.7149,
+    "var_conf": 0.040807,
+    "count": 63,
+    "mean_bbox": [
+      718.33,
+      227.04,
+      795.63,
+      287.3
+    ]
+  },
+  "5": {
+    "class_name": "Bus",
+    "mean_conf": 0.6207,
+    "var_conf": 0.064724,
+    "count": 6,
+    "mean_bbox": [
+      1012.24,
+      295.9,
+      1288.85,
+      665.51
+    ]
+  },
+  "0": {
+    "class_name": "Cyclist",
+    "mean_conf": 0.6615,
+    "var_conf": 0.027149,
+    "count": 13,
+    "mean_bbox": [
+      1713.94,
+      351.24,
+      1790.31,
+      444.37
+    ]
+  },
+  "3": {
+    "class_name": "Pedestrian",
+    "mean_conf": 0.4881,
+    "var_conf": 0.026218,
+    "count": 22,
+    "mean_bbox": [
+      1362.67,
+      318.95,
+      1395.2,
+      402.62
+    ]
+  },
+  "7": {
+    "class_name": "Truck",
+    "mean_conf": 0.3641,
+    "var_conf": 0.001174,
+    "count": 3,
+    "mean_bbox": [
+      0.75,
+      131.3,
+      94.11,
+      180.7
+    ]
+  }
+}

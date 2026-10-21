@@ -1,0 +1,71 @@
+# ---------- 密钥与环境 ----------
+.env
+.env.*
+!.env.example
+config.local.env
+*.pem
+!license/license_public.pem
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+.venv/
+venv/
+env/
+.Python
+*.egg-info/
+.pytest_cache/
+.hypothesis/
+.coverage
+htmlcov/
+
+# ---------- 运行时产物 ----------
+backend/runtime/
+backend/logs/
+backend/uploads/
+backend/data.db
+*.db
+*.sqlite3
+runtime/
+logs/
+uploads/
+*.log
+
+# ---------- 模型权重与大数据 ----------
+*.pt
+*.pth
+*.weights
+*.onnx
+*.h5
+*.pcd
+*.bin
+*.tempstate*
+checkpoints/
+!**/checkpoints/.gitkeep
+
+# ---------- 前端 ----------
+node_modules/
+.npm-cache/
+dist/
+.vite/
+*.local
+
+# ---------- 构建产物 ----------
+build/
+output/
+docker/release/
+*.exe
+*.dll
+*.msi
+*.iss.bak
+
+# ---------- 系统与编辑器 ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo

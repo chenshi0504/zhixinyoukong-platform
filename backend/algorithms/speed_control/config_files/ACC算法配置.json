@@ -1,0 +1,29 @@
+{
+  "algorithm": "ACC",
+  "scenario": "自适应巡航控制",
+  "objective": "保持安全车距",
+  "parameters": {
+    "time_gap": 1.5,
+    "min_distance": 5,
+    "max_acceleration": 2.0,
+    "max_deceleration": 3.5,
+    "comfort_factor": 0.7,
+    "optimization_weight": 0.5,
+    "response_time": 200,
+    "safety_threshold": 0.8
+  },
+  "vehicle": {
+    "type": "sedan",
+    "length": 4.5,
+    "max_speed": 120
+  },
+  "road_segment": {
+    "length": 2000,
+    "speed_limits": [
+      30,
+      50,
+      60,
+      40
+    ]
+  }
+}

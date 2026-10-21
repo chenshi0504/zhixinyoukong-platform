@@ -1,0 +1,6 @@
+algorithm=K近邻回归 (KNN)
+params=K=5, weights=uniform, time_step=5
+r2=0.9609
+rmse=93.75
+mae=66.94
+time=0.12

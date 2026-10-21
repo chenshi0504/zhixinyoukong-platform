@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>智信优控 - 启动中</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1a3a5c 0%, #2C5AA0 50%, #1e3d72 100%);
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    user-select: none;
+}
+.logo-area {
+    text-align: center;
+    margin-bottom: 48px;
+}
+.logo-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+.app-name {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+}
+.app-subtitle {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 2px;
+}
+.progress-area {
+    width: 360px;
+    text-align: center;
+}
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #fff;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+}
+.stage-text {
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    min-height: 20px;
+}
+.software-list {
+    margin-top: 32px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    min-height: 60px;
+}
+.sw-item {
+    margin: 4px 0;
+}
+.sw-ok { color: rgba(255,255,255,0.7); }
+.sw-missing { color: #ffb74d; }
+.version {
+    position: fixed;
+    bottom: 16px;
+    right: 24px;
+    font-size: 11px;
+    color: rgba(255,255,255,0.3);
+}
+</style>
+</head>
+<body>
+<div class="logo-area">
+    <div class="logo-icon">🚦</div>
+    <div class="app-name">智信优控</div>
+    <div class="app-subtitle">面向车路云一体化的综合交通实验平台</div>
+</div>
+<div class="progress-area">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="stage-text" id="stageText">正在启动...</div>
+</div>
+<div class="software-list" id="softwareList"></div>
+<div class="version">v3.3.1</div>
+
+<script>
+function updateProgress(stage, percent) {
+    document.getElementById('progressFill').style.width = percent + '%';
+    document.getElementById('stageText').textContent = stage;
+}
+
+function showSoftwareStatus(items) {
+    // items: [{name, installed, version, path}]
+    var html = '';
+    items.forEach(function(sw) {
+        if (sw.installed) {
+            html += '<div class="sw-item sw-ok">✓ ' + sw.name + ' — ' + (sw.path || '已安装') + '</div>';
+        } else {
+            html += '<div class="sw-item sw-missing">✗ ' + sw.name + ' 未安装（需要 ' + sw.version + '）</div>';
+        }
+    });
+    document.getElementById('softwareList').innerHTML = html;
+}
+
+function showError(msg) {
+    document.getElementById('stageText').textContent = '启动失败: ' + msg;
+    document.getElementById('stageText').style.color = '#ff8a80';
+}
+
+function showLicenseRequired(reason) {
+    var el = document.getElementById('softwareList');
+    el.innerHTML += '<div class="sw-item sw-missing" style="margin-top:12px;font-size:13px;">⚠ ' + reason + '</div>';
+    document.getElementById('stageText').textContent = '需要激活软件授权';
+    document.getElementById('stageText').style.color = '#ffb74d';
+}
+
+function showTrialInfo(remainingDays) {
+    var el = document.getElementById('softwareList');
+    var color = remainingDays <= 7 ? '#ffb74d' : 'rgba(255,255,255,0.7)';
+    el.innerHTML += '<div class="sw-item" style="margin-top:12px;font-size:13px;color:' + color + ';">⏱ 试用版 — 剩余 ' + remainingDays + ' 天，请联系管理员获取正式License</div>';
+}
+</script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,14 @@
+{
+    "algorithm": "dijkstra",
+    "algorithm_name": "Dijkstra算法",
+    "description": "经典的单源最短路径算法，保证找到最优解",
+    "networkFile": "network1.xml",
+    "density": 80,
+    "targetSpeed": 60,
+    "parameters": {
+        "use_priority_queue": true,
+        "max_iterations": 1000,
+        "convergence_threshold": 0.001,
+        "weight_type": "distance"
+    }
+}

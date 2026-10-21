@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>教师首页 - 面向车路云一体化的综合交通实验平台</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); color: #333; line-height: 1.6; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #2C5AA0 0%, #1e3d72 100%); color: white; padding: 1rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .platform-title { font-size: 1.8rem; font-weight: 600; }
+        .user-info { display: flex; align-items: center; gap: 1rem; }
+        .welcome-text { font-size: 1rem; }
+        .btn { padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.3s ease; }
+        .btn-secondary { background-color: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-secondary:hover { background-color: rgba(255,255,255,0.3); }
+        .main-content { max-width: 1400px; margin: 3rem auto; padding: 0 2rem; }
+        .page-title { text-align: center; color: #2C5AA0; font-size: 2.2rem; font-weight: 600; margin-bottom: 1rem; }
+        .page-subtitle { text-align: center; color: #666; font-size: 1.1rem; margin-bottom: 3rem; }
+        .modules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
+        .module-card { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent; position: relative; animation: fadeInUp 0.6s ease-out; }
+        .module-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0,0,0,0.15); border-color: #2C5AA0; }
+        .module-icon { font-size: 3rem; margin-bottom: 1rem; text-align: center; }
+        .module-title { color: #2C5AA0; font-size: 1.3rem; font-weight: 600; margin-bottom: 0.75rem; text-align: center; }
+        .module-description { color: #666; font-size: 0.95rem; text-align: center; line-height: 1.5; }
+        .expand-icon { position: absolute; top: 1rem; right: 1rem; font-size: 1.2rem; color: #2C5AA0; transition: transform 0.3s ease; }
+        .expand-icon.expanded { transform: rotate(180deg); }
+        .sub-modules { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1rem; padding: 1rem; background: rgba(44,90,160,0.05); border-radius: 8px; border-left: 4px solid #2C5AA0; }
+        .sub-module-card { background: white; border-radius: 8px; padding: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.75rem; border: 1px solid #e9ecef; }
+        .sub-module-card:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.15); border-color: #2C5AA0; }
+        .sub-icon { font-size: 1.5rem; flex-shrink: 0; }
+        .sub-title { color: #333; font-size: 0.9rem; font-weight: 500; }
+        .footer { background: white; padding: 2rem; text-align: center; color: #666; font-size: 0.9rem; margin-top: 3rem; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); }
+        .footer-links { margin-bottom: 1rem; }
+        .footer-links a { color: #2C5AA0; text-decoration: none; margin: 0 1rem; }
+        .footer-links a:hover { text-decoration: underline; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { .header-content { flex-direction: column; gap: 1rem; text-align: center; } .platform-title { font-size: 1.5rem; } .page-title { font-size: 1.8rem; } .modules-grid { grid-template-columns: 1fr; } .main-content { padding: 0 1rem; margin: 2rem auto; } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <h1 class="platform-title">面向车路云一体化的综合交通实验平台</h1>
+            <div class="user-info">
+                <span class="welcome-text">欢迎，<span id="userName">老师</span>（教师）</span>
+                <button class="btn btn-secondary" onclick="logout()">退出登录</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <h2 class="page-title">教师工作台</h2>
+        <p class="page-subtitle">管理实验任务、查看学生提交、评阅实验报告</p>
+
+        <div class="modules-grid">
+            <!-- 教学管理模块 -->
+            <div class="module-card" onclick="toggleModule('module-teach')">
+                <div class="module-icon">📋</div>
+                <h3 class="module-title">教学管理</h3>
+                <p class="module-description">管理实验任务、学生信息、实验报告</p>
+                <div class="expand-icon" id="expand-module-teach">▼</div>
+            </div>
+            <div class="sub-modules" id="module-teach" style="display: none;">
+                <div class="sub-module-card" onclick="navigateToPage('task-management')">
+                    <span class="sub-icon">📋</span>
+                    <span class="sub-title">实验任务管理</span>
+                </div>
+                <div class="sub-module-card" onclick="navigateToPage('user-info')">
+                    <span class="sub-icon">👤</span>
+                    <span class="sub-title">学生信息管理</span>
+                </div>
+                <div class="sub-module-card" onclick="navigateToPage('report-management')">
+                    <span class="sub-icon">📝</span>
+                    <span class="sub-title">实验报告管理</span>
+                </div>
+                <div class="sub-module-card" onclick="navigateToPage('help')">
+                    <span class="sub-icon">📖</span>
+                    <span class="sub-title">操作说明文档</span>
+                </div>
+            </div>
+
+            <!-- 实验模块 -->
+            <div class="module-card" onclick="toggleModule('module1')">
+                <div class="module-icon">📊</div>
+                <h3 class="module-title">多源数据采集与融合模块</h3>
+                <p class="module-description">多源数据采集技术和融合算法应用</p>
+                <div class="expand-icon" id="expand-module1">▼</div>
+            </div>
+            <div class="sub-modules" id="module1" style="display: none;">
+                <div class="sub-module-card" onclick="navigateToPage('data-collection')"><span class="sub-icon">📡</span><span class="sub-title">多源数据采集功能</span></div>
+                <div class="sub-module-card" onclick="navigateToPage('data-fusion')"><span class="sub-icon">🔗</span><span class="sub-title">多源数据融合功能</span></div>
+            </div>
+
+            <div class="module-card" onclick="toggleModule('module2')">
+                <div class="module-icon">🚗</div>
+                <h3 class="module-title">交通流重构与预测模块</h3>
+                <p class="module-description">交通流数据重构技术和预测算法</p>
+                <div class="expand-icon" id="expand-module2">▼</div>
+            </div>
+            <div class="sub-modules" id="module2" style="display: none;">
+                <div class="sub-module-card" onclick="navigateToPage('traffic-reconstruction')"><span class="sub-icon">🔧</span><span class="sub-title">交通流重构功能</span></div>
+                <div class="sub-module-card" onclick="navigateToPage('traffic-prediction')"><span class="sub-icon">📈</span><span class="sub-title">交通流预测功能</span></div>
+            </div>
+
+            <div class="module-card" onclick="toggleModule('module3')">
+                <div class="module-icon">⚙️</div>
+                <h3 class="module-title">三层级协同优化控制模块</h3>
+                <p class="module-description">车路协同系统的多层级控制架构</p>
+                <div class="expand-icon" id="expand-module3">▼</div>
+            </div>
+            <div class="sub-modules" id="module3" style="display: none;">
+                <div class="sub-module-card" onclick="navigateToPage('signal-optimization')"><span class="sub-icon">🚦</span><span class="sub-title">交通信号优化功能</span></div>
+                <div class="sub-module-card" onclick="navigateToPage('path-guidance')"><span class="sub-icon">🗺️</span><span class="sub-title">路径诱导功能</span></div>
+                <div class="sub-module-card" onclick="navigateToPage('speed-control')"><span class="sub-icon">🎛️</span><span class="sub-title">车速控制功能</span></div>
+                <div class="sub-module-card" onclick="navigateToPage('cooperative-control')"><span class="sub-icon">🔄</span><span class="sub-title">三层级协同优化控制功能</span></div>
+            </div>
+
+            <div class="module-card" id="moduleCard4" onclick="toggleModule('module4')">
+                <div class="module-icon">🎮</div>
+                <h3 class="module-title">面向车路协同的虚实结合仿真模块</h3>
+                <p class="module-description">车路协同的虚实结合仿真环境</p>
+                <div class="expand-icon" id="expand-module4">▼</div>
+            </div>
+            <div class="sub-modules" id="module4" style="display: none;">
+                <div class="sub-module-card" onclick="navigateToPage('carla-scenario')"><span class="sub-icon">🏗️</span><span class="sub-title">虚实结合仿真场景构建功能</span></div>
+                <div class="sub-module-card" onclick="navigateToPage('smart-car-control')"><span class="sub-icon">🚙</span><span class="sub-title">车规级智能车辆开发与控制功能</span></div>
+                <div class="sub-module-card" onclick="navigateToPage('algorithm-testing')"><span class="sub-icon">🧪</span><span class="sub-title">虚实结合仿真场景算法测试功能</span></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="#" onclick="navigateToPage('help')">使用帮助</a>
+            <a href="#" onclick="alert('面向车路云一体化的综合交通实验平台\n版本：v2.0')">关于平台</a>
+        </div>
+        <p>&copy; 2024 面向车路云一体化的综合交通实验平台. 版权所有.</p>
+    </footer>
+
+    <script>
+        function toggleModule(moduleId) {
+            var el = document.getElementById(moduleId);
+            var icon = document.getElementById('expand-' + moduleId);
+            if (el.style.display === 'none' || el.style.display === '') { el.style.display = 'grid'; icon.classList.add('expanded'); }
+            else { el.style.display = 'none'; icon.classList.remove('expanded'); }
+        }
+
+        const VIC_SIM_HOST = window.location.hostname || '127.0.0.1';
+        const VIC_SIM_URL = 'http://' + VIC_SIM_HOST + ':8090/';
+
+        function sleep(ms) {
+            return new Promise(function(resolve) { setTimeout(resolve, ms); });
+        }
+
+        async function waitForVicSimReady() {
+            let targetUrl = VIC_SIM_URL;
+            for (let i = 0; i < 12; i++) {
+                try {
+                    const resp = await fetch('/api/carla-sim/native/status', { cache: 'no-store' });
+                    if (!resp.ok) return targetUrl;
+                    const data = await resp.json().catch(() => ({}));
+                    if (data.running) return targetUrl;
+                } catch (error) {
+                    return targetUrl;
+                }
+                await sleep(1000);
+            }
+            return targetUrl;
+        }
+
+        async function openVicSim() {
+            if (_lanAccess) {
+                alert('局域网访问：虚实结合仿真（VIC-Sim）仅限在运行平台的本机启动，请在教师机的浏览器中操作。');
+                return;
+            }
+            const openedWindow = window.open('about:blank', '_blank');
+            if (!openedWindow) {
+                alert('浏览器拦截了新页面，请允许弹出窗口后重试。');
+                return;
+            }
+            openedWindow.opener = null;
+            openedWindow.document.write('<!doctype html><title>VIC-Sim</title><body style="font-family:Arial,sans-serif;padding:32px;color:#2C5AA0;">正在启动 VIC-Sim，请稍候...</body>');
+            openedWindow.document.close();
+            openedWindow.focus();
+            let targetUrl = VIC_SIM_URL;
+            try {
+                const resp = await fetch('/api/carla-sim/native/start', { method: 'POST' });
+                if (!resp.ok) throw new Error('VIC-Sim native start endpoint unavailable');
+                const data = await resp.json().catch(() => ({}));
+                targetUrl = await waitForVicSimReady();
+            } catch (error) {
+                targetUrl = VIC_SIM_URL;
+            }
+            openedWindow.location.replace(targetUrl);
+        }
+
+        function navigateToPage(pageType) {
+            const urls = {
+                'task-management': '/src/pages/教学任务管理/task_management.html',
+                'user-info': '/src/pages/学生信息管理/student_management.html',
+                'report-management': '/src/pages/实验报告管理/report_management.html',
+                'help': '/src/pages/操作说明文档/help_documentation.html',
+                'data-collection': '/src/pages/多源数据采集功能/data_collection.html',
+                'data-fusion': '/src/pages/多源数据融合功能/data_fusion_new.html',
+                'traffic-reconstruction': '/src/pages/交通流重构功能/traffic_reconstruction.html',
+                'traffic-prediction': '/src/pages/交通流预测功能/traffic_flow_prediction.html',
+                'signal-optimization': '/src/pages/交通信号优化功能/signal_optimization.html',
+                'path-guidance': '/src/pages/路径诱导功能/path_guidance.html',
+                'speed-control': '/src/pages/车速控制功能/vehicle_speed_control.html',
+                'cooperative-control': '/src/pages/三层级协同优化控制功能/three_level_control.html',
+                'carla-scenario': VIC_SIM_URL,
+                'smart-car-control': 'http://10.8.129.232:5173/%E3%80%81',
+                'algorithm-testing': '/src/pages/虚实结合仿真场景算法测试功能/algorithm_testing.html'
+            };
+            const openInNewPageTypes = new Set(['carla-scenario', 'smart-car-control']);
+            
+            if (pageType === 'carla-scenario') {
+                openVicSim();
+                return;
+            }
+
+            if (urls[pageType]) {
+                console.log('导航到:', pageType, '->', urls[pageType]);
+                if (openInNewPageTypes.has(pageType)) {
+                    const openedWindow = window.open(urls[pageType], '_blank');
+                    if (openedWindow) {
+                        openedWindow.opener = null;
+                        openedWindow.focus();
+                        return;
+                    }
+                    alert('浏览器拦截了新页面，请允许弹出窗口后重试。');
+                    return;
+                }
+                window.location.href = urls[pageType];
+            } else {
+                console.error('未知的页面类型:', pageType);
+                alert('页面不存在: ' + pageType);
+            }
+        }
+
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                localStorage.clear();
+                window.location.href = '/src/pages/登录界面/login.html';
+            }
+        }
+
+        async function authGuard() {
+            var token = localStorage.getItem('token');
+            if (!token) { window.location.href = '/src/pages/登录界面/login.html'; return; }
+            try {
+                var resp = await fetch('/api/v1/auth/me', { headers: { 'Authorization': 'Bearer ' + token } });
+                if (!resp.ok) throw new Error('token无效');
+                var user = await resp.json();
+                localStorage.setItem('username', user.username);
+                localStorage.setItem('userRole', user.role);
+                document.getElementById('userName').textContent = user.username;
+            } catch (e) {
+                console.error('认证失败:', e);
+                localStorage.removeItem('token'); localStorage.removeItem('username'); localStorage.removeItem('userRole');
+                window.location.href = '/src/pages/登录界面/login.html';
+            }
+        }
+
+        var _lanAccess = false;
+
+        // 局域网访问时"可见但不可用"：模块入口保留展示，只锁交互并提示原因。
+        // 该模块依赖运行平台的本机仿真环境（CARLA / VIC-Sim / 车规级小车 / SUMO），
+        // 局域网学生端无法运行，后端也会对相关接口返回 403。
+        var LAN_LOCK_MESSAGE = '局域网访问：该模块依赖运行平台的本机仿真环境（CARLA / VIC-Sim / 车规级小车 / SUMO），仅限在教师机的浏览器中使用。';
+
+        function lanLockNotice() {
+            var old = document.getElementById('zxkLanLockNotice');
+            if (old && old.parentNode) old.parentNode.removeChild(old);
+            var tip = document.createElement('div');
+            tip.id = 'zxkLanLockNotice';
+            tip.textContent = LAN_LOCK_MESSAGE;
+            tip.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);z-index:99999;max-width:80vw;box-sizing:border-box;padding:10px 18px;border-radius:6px;background:#2C5AA0;color:#fff;font:500 14px/1.6 "Microsoft YaHei",Arial,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,0.25);';
+            document.body.appendChild(tip);
+            setTimeout(function () { if (tip.parentNode) tip.parentNode.removeChild(tip); }, 3200);
+        }
+
+        function applyLanModuleLock(element, locked) {
+            if (!element) return;
+            if (!element.__lanLockHandler) {
+                element.__lanLockHandler = function (event) {
+                    if (!element.__lanLocked) return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+                    lanLockNotice();
+                };
+                element.addEventListener('click', element.__lanLockHandler, true);
+            }
+            element.__lanLocked = locked;
+            if (locked) {
+                // 摘掉内联 onclick，由上面的捕获监听接管：既不导航也不执行原逻辑。
+                if (element.getAttribute('onclick')) {
+                    element.setAttribute('data-lan-onclick', element.getAttribute('onclick'));
+                    element.removeAttribute('onclick');
+                }
+                element.style.opacity = '0.45';
+                element.style.filter = 'grayscale(0.6)';
+                element.style.cursor = 'not-allowed';
+                if (!element.querySelector('.lan-lock-badge')) {
+                    var badge = document.createElement('span');
+                    badge.className = 'lan-lock-badge';
+                    badge.textContent = '仅限本机';
+                    badge.style.cssText = 'position:absolute;top:10px;right:10px;padding:3px 9px;border-radius:10px;background:#909399;color:#fff;font:500 12px/1.4 "Microsoft YaHei",Arial,sans-serif;';
+                    element.appendChild(badge);
+                }
+                return;
+            }
+            var original = element.getAttribute('data-lan-onclick');
+            if (original) {
+                element.setAttribute('onclick', original);
+                element.removeAttribute('data-lan-onclick');
+            }
+            element.style.opacity = '';
+            element.style.filter = '';
+            element.style.cursor = '';
+            var stale = element.querySelector('.lan-lock-badge');
+            if (stale && stale.parentNode) stale.parentNode.removeChild(stale);
+        }
+
+        function applyLanModuleAccess(context) {
+            var isLan = !!context && context.access_mode === 'lan';
+            // 入口卡片始终展示（不再隐藏），局域网下只锁交互。
+            applyLanModuleLock(document.getElementById('moduleCard4'), isLan);
+            var sub = document.getElementById('module4');
+            if (!sub) return;
+            var subCards = sub.querySelectorAll('.sub-module-card');
+            for (var i = 0; i < subCards.length; i += 1) {
+                applyLanModuleLock(subCards[i], isLan);
+            }
+            if (isLan) sub.style.display = 'none';
+        }
+
+        async function loadAccessContext() {
+            try {
+                var resp = await fetch('/api/v1/access-context', { cache: 'no-store' });
+                if (!resp.ok) throw new Error('HTTP ' + resp.status);
+                var context = await resp.json();
+                _lanAccess = context.access_mode === 'lan';
+                applyLanModuleAccess(context);
+            } catch (e) {
+                // 无法确认访问模式时保持页面可用，后端仍会对本机专属接口返回 403。
+                console.warn('[access-context] 检测失败，保持页面可用:', e);
+            }
+        }
+
+        window.addEventListener('load', function () {
+            authGuard();
+            loadAccessContext();
+        });
+    </script>
+    <!-- 底部状态栏 -->
+    <script src="/src/components/status-bar.js"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+</html>
+
+

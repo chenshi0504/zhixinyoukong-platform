@@ -1,0 +1,11 @@
+{
+  "module": "交通信号优化",
+  "algorithm": "MPC-TuRBO",
+  "objective": "最小化剩余流量",
+  "parameters": {
+    "iterations": 100,
+    "convergence_threshold": 0.005,
+    "time_horizon": 600
+  },
+  "scenario": "高级场景"
+}

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>任务管理功能 - 面向车路协同的虚实结合仿真平台</title>
+    <link rel="stylesheet" href="task_management.css">
+</head>
+
+<body>
+    <!-- 顶部标题区域 -->
+    <header class="header">
+        <h1 class="main-title">任务管理功能</h1>
+        <p class="subtitle">创建、分配和管理教学任务，跟踪学生学习进度</p>
+    </header>
+
+    <!-- 导航操作区 -->
+    <nav class="nav-actions">
+        <div class="nav-content">
+            <div class="nav-buttons">
+                <button class="btn btn-primary" id="createTaskBtn">创建任务</button>
+                <button class="btn btn-secondary" id="assignTaskBtn">分配任务</button>
+                <button class="btn btn-info" id="progressBtn">查看进度</button>
+                <button class="btn btn-info" id="studentMgmtBtn">学生管理</button>
+                <button class="btn btn-info" id="reportMgmtBtn">报告管理</button>
+                <button class="btn btn-warning" id="helpBtn">操作说明</button>
+                <button class="btn btn-secondary" id="logoutBtn">退出登录</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="stats-panel">
+                <h3>统计信息</h3>
+                <div class="stat-item">
+                    <span class="stat-label">总任务数</span>
+                    <span class="stat-value" id="totalTasks">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">进行中</span>
+                    <span class="stat-value" id="activeTasks">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">已完成</span>
+                    <span class="stat-value" id="completedTasks">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">逾期任务</span>
+                    <span class="stat-value overdue" id="overdueTasks">0</span>
+                </div>
+            </div>
+
+            <!-- 云端平台连接状态 -->
+            <div class="stats-panel" style="margin-top: 15px;">
+                <h3>云端平台</h3>
+                <div class="stat-item" style="flex-direction: column; align-items: flex-start;">
+                    <div style="display: flex; align-items: center; width: 100%;">
+                        <span id="cloudStatusDot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#ccc;margin-right:8px;"></span>
+                        <span id="cloudStatusText" style="font-size:13px;color:#999;">检测中...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-panel">
+                <h3>筛选条件</h3>
+                <div class="filter-group">
+                    <label for="statusFilter">任务状态</label>
+                    <select id="statusFilter" class="filter-select">
+                        <option value="all">全部</option>
+                        <option value="active">进行中</option>
+                        <option value="completed">已完成</option>
+                        <option value="overdue">逾期</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="moduleFilter">教学模块</label>
+                    <select id="moduleFilter" class="filter-select">
+                        <option value="all">全部模块</option>
+                        <option value="simulation">仿真实验教学</option>
+                        <option value="data">多源数据采集与融合</option>
+                        <option value="prediction">交通流重构与预测</option>
+                        <option value="control">三层级协同优化控制</option>
+                        <option value="integration">车路协同虚实结合仿真</option>
+                    </select>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 任务列表区域 -->
+        <section class="content-area">
+            <div class="task-list-container">
+                <div class="task-list-header">
+                    <h2>任务列表</h2>
+                    <div class="task-list-actions">
+                        <button class="icon-refresh-btn" id="refreshTaskBtn" type="button" title="刷新最新任务数据">↻</button>
+                        <div class="view-controls">
+                            <button class="view-btn active" data-view="list">列表视图</button>
+                            <button class="view-btn" data-view="grid">卡片视图</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="task-list" id="taskList">
+                    <!-- 任务项将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 任务创建模态框 -->
+    <div class="modal" id="createTaskModal">
+        <div class="modal-content task-create-modal-content">
+            <div class="modal-header">
+                <h3>选择案例并下发任务</h3>
+                <button class="close-btn" id="closeCreateModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createTaskForm">
+                    <div class="form-group">
+                        <label>任务案例模板</label>
+                        <div class="task-case-grid" id="taskCaseGrid"></div>
+                    </div>
+                    <div class="task-case-detail" id="taskCaseDetail">
+                        <div class="empty-case-tip">请选择一个案例，平台会自动填充场景、数据、算法、上传要求和软件版本。</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskTitle">任务标题</label>
+                        <input type="text" id="taskTitle" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDescription">任务描述</label>
+                        <textarea id="taskDescription" name="description" rows="9" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskScoring">评分与提交要求</label>
+                        <textarea id="taskScoring" name="scoring_criteria" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskModule">所属模块</label>
+                        <select id="taskModule" name="module" required>
+                            <option value="">请选择模块</option>
+                            <option value="simulation">仿真实验教学</option>
+                            <option value="data">多源数据采集与融合</option>
+                            <option value="prediction">交通流重构与预测</option>
+                            <option value="control">三层级协同优化控制</option>
+                            <option value="integration">车路协同虚实结合仿真</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskDeadline">截止日期</label>
+                        <input type="date" id="taskDeadline" name="deadline" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelCreateBtn">取消</button>
+                <button type="submit" class="btn btn-primary" id="confirmCreateBtn">创建并下发</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 任务分配模态框 -->
+    <div class="modal" id="assignTaskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>分配任务</h3>
+                <button class="close-btn" id="closeAssignModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="selectTask">选择任务</label>
+                    <select id="selectTask" class="form-select">
+                        <option value="">请选择要分配的任务</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>选择学生</label>
+                    <div class="student-list" id="studentList">
+                        <!-- 学生列表将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelAssignBtn">取消</button>
+                <button type="button" class="btn btn-primary" id="confirmAssignBtn">确认分配</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 进度查看模态框 -->
+    <div class="modal" id="progressModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>任务进度统计</h3>
+                <button class="close-btn" id="closeProgressModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="progress-overview">
+                    <div class="progress-chart">
+                        <canvas id="progressChart" width="300" height="200"></canvas>
+                    </div>
+                    <div class="progress-details" id="progressDetails">
+                        <!-- 进度详情将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeProgressBtn">关闭</button>
+                <button type="button" class="btn btn-primary" id="exportProgressBtn">导出报告</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../utils/cloud-status-checker.js"></script>
+    <script src="task_management.js"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+
+</html>
+

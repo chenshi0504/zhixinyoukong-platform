@@ -1,0 +1,341 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生信息管理功能 - 面向车路协同的虚实结合仿真平台</title>
+    <link rel="stylesheet" href="student_management.css">
+</head>
+
+<body>
+    <!-- 顶部标题区域 -->
+    <header class="header">
+        <h1 class="main-title">学生信息管理功能</h1>
+        <p class="subtitle">管理学生基本信息，跟踪学习进度和成绩</p>
+    </header>
+
+    <!-- 导航操作区 -->
+    <nav class="nav-actions">
+        <div class="nav-content">
+            <div class="nav-buttons">
+                <button class="btn btn-primary" id="addStudentBtn">添加学生</button>
+                <button class="btn btn-secondary" id="importBtn">批量导入</button>
+                <button class="btn btn-info" id="exportBtn">导出数据</button>
+                <button class="btn btn-secondary" id="backBtn">返回</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <!-- 统计信息面板 -->
+            <div class="stats-panel">
+                <h3>统计信息</h3>
+                <div class="stat-item">
+                    <span class="stat-label">学生总数</span>
+                    <span class="stat-value" id="totalStudents">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">活跃学生</span>
+                    <span class="stat-value" id="activeStudents">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">平均成绩</span>
+                    <span class="stat-value" id="averageScore">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">完成率</span>
+                    <span class="stat-value" id="completionRate">0%</span>
+                </div>
+            </div>
+
+            <!-- 筛选面板 -->
+            <div class="filter-panel">
+                <h3>筛选条件</h3>
+                <div class="filter-group">
+                    <label for="classFilter">班级</label>
+                    <select id="classFilter" class="filter-select">
+                        <option value="all">全部班级</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="majorFilter">专业</label>
+                    <select id="majorFilter" class="filter-select">
+                        <option value="all">全部专业</option>
+                        <option value="交通工程">交通工程</option>
+                        <option value="智能交通">智能交通</option>
+                        <option value="交通运输">交通运输</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="yearFilter">入学年份</label>
+                    <select id="yearFilter" class="filter-select">
+                        <option value="all">全部年份</option>
+                        <option value="2021">2021级</option>
+                        <option value="2022">2022级</option>
+                        <option value="2023">2023级</option>
+                        <option value="2024">2024级</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="searchInput">搜索学生</label>
+                    <input type="text" id="searchInput" class="search-input" placeholder="输入姓名或学号">
+                </div>
+            </div>
+        </aside>
+
+        <!-- 学生信息表格区域 -->
+        <section class="content-area">
+            <div class="table-container">
+                <div class="table-header">
+                    <h2>学生列表</h2>
+                    <div class="table-controls">
+                        <button class="btn btn-sm" id="selectAllBtn">全选</button>
+                        <button class="btn btn-sm btn-danger" id="batchDeleteBtn" disabled>批量删除</button>
+                        <span class="selected-count">已选择 <span id="selectedCount">0</span> 名学生</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="student-table" id="studentTable">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="selectAllCheckbox"></th>
+                                <th class="sortable" data-sort="studentId">学号 <span class="sort-icon">↕</span></th>
+                                <th class="sortable" data-sort="name">姓名 <span class="sort-icon">↕</span></th>
+                                <th class="sortable" data-sort="class">班级 <span class="sort-icon">↕</span></th>
+                                <th class="sortable" data-sort="major">专业 <span class="sort-icon">↕</span></th>
+                                <th>联系方式</th>
+                                <th class="sortable" data-sort="completedTasks">完成任务 <span class="sort-icon">↕</span>
+                                </th>
+                                <th class="sortable" data-sort="averageScore">平均成绩 <span class="sort-icon">↕</span></th>
+                                <th>最后登录</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTableBody">
+                            <!-- 学生数据将通过JavaScript动态生成 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分页导航 -->
+                <div class="pagination" id="pagination">
+                    <button class="page-btn" id="prevPageBtn" disabled>上一页</button>
+                    <div class="page-numbers" id="pageNumbers"></div>
+                    <button class="page-btn" id="nextPageBtn">下一页</button>
+                    <div class="page-info">
+                        <span>每页显示</span>
+                        <select id="pageSizeSelect" class="page-size-select">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                        </select>
+                        <span>条记录</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 添加学生模态框 -->
+    <div class="modal" id="addStudentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加学生</h3>
+                <button class="close-btn" id="closeAddModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addStudentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentId">学号 *</label>
+                            <input type="text" id="studentId" name="studentId" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentName">姓名 *</label>
+                            <input type="text" id="studentName" name="name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentClass">班级 *</label>
+                            <select id="studentClass" name="class" required>
+                                <option value="">请选择班级</option>
+                                <option value="交通工程2021级">交通工程2021级</option>
+                                <option value="交通工程2022级">交通工程2022级</option>
+                                <option value="智能交通2021级">智能交通2021级</option>
+                                <option value="智能交通2022级">智能交通2022级</option>
+                                <option value="交通运输2021级">交通运输2021级</option>
+                                <option value="交通运输2022级">交通运输2022级</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="studentMajor">专业 *</label>
+                            <select id="studentMajor" name="major" required>
+                                <option value="">请选择专业</option>
+                                <option value="交通工程">交通工程</option>
+                                <option value="智能交通">智能交通</option>
+                                <option value="交通运输">交通运输</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="studentPhone">联系电话</label>
+                            <input type="tel" id="studentPhone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="studentEmail">邮箱</label>
+                            <input type="email" id="studentEmail" name="email">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="enrollmentYear">入学年份 *</label>
+                            <select id="enrollmentYear" name="enrollmentYear" required>
+                                <option value="">请选择年份</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelAddBtn">取消</button>
+                <button type="submit" class="btn btn-primary" id="confirmAddBtn">添加学生</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑学生模态框 -->
+    <div class="modal" id="editStudentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑学生信息</h3>
+                <button class="close-btn" id="closeEditModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editStudentForm">
+                    <input type="hidden" id="editStudentId" name="id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editStudentNumber">学号 *</label>
+                            <input type="text" id="editStudentNumber" name="studentId" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editStudentName">姓名 *</label>
+                            <input type="text" id="editStudentName" name="name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editStudentClass">班级 *</label>
+                            <select id="editStudentClass" name="class" required>
+                                <option value="">请选择班级</option>
+                                <option value="交通工程2021级">交通工程2021级</option>
+                                <option value="交通工程2022级">交通工程2022级</option>
+                                <option value="智能交通2021级">智能交通2021级</option>
+                                <option value="智能交通2022级">智能交通2022级</option>
+                                <option value="交通运输2021级">交通运输2021级</option>
+                                <option value="交通运输2022级">交通运输2022级</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editStudentMajor">专业 *</label>
+                            <select id="editStudentMajor" name="major" required>
+                                <option value="">请选择专业</option>
+                                <option value="交通工程">交通工程</option>
+                                <option value="智能交通">智能交通</option>
+                                <option value="交通运输">交通运输</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editStudentPhone">联系电话</label>
+                            <input type="tel" id="editStudentPhone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="editStudentEmail">邮箱</label>
+                            <input type="email" id="editStudentEmail" name="email">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editEnrollmentYear">入学年份 *</label>
+                            <select id="editEnrollmentYear" name="enrollmentYear" required>
+                                <option value="">请选择年份</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelEditBtn">取消</button>
+                <button type="submit" class="btn btn-primary" id="confirmEditBtn">保存修改</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 学生详情模态框 -->
+    <div class="modal" id="studentDetailModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>学生详细信息</h3>
+                <button class="close-btn" id="closeDetailModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="student-detail" id="studentDetail">
+                    <!-- 学生详情将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="closeDetailBtn">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量导入模态框 -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>批量导入学生</h3>
+                <button class="close-btn" id="closeImportModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="import-area">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-icon">📁</div>
+                        <p>点击选择Excel文件或拖拽文件到此处</p>
+                        <p class="upload-hint">支持.xlsx, .xls格式文件</p>
+                        <input type="file" id="fileInput" accept=".xlsx,.xls" style="display: none;">
+                    </div>
+                    <div class="template-download">
+                        <p>没有模板？<a href="#" id="downloadTemplate">下载导入模板</a></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="cancelImportBtn">取消</button>
+                <button type="button" class="btn btn-primary" id="confirmImportBtn" disabled>开始导入</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="student_management.js"></script>
+    <script src="/src/components/interaction-feedback.js"></script>
+</body>
+
+</html>
+
