@@ -10,6 +10,21 @@
 <header class="top"><div class="wrap"><h1 style="font-size:22px">学生自研算法题包</h1>
 <p style="font-size:14px">智信优控 · 面向车路云一体化的综合交通实验平台</p></div></header>
 <main class="wrap">
+<div class="doc">
+<nav class="toc"><ul>
+<li><a href="#学生自研算法能力设计">学生自研算法能力设计</a><ul>
+<li><a href="#目标">目标</a></li>
+<li><a href="#已落地的基准题目">已落地的基准题目</a></li>
+<li><a href="#统一学生算法数据包">统一学生算法数据包</a></li>
+<li><a href="#交通流预测数据包">交通流预测数据包</a></li>
+<li><a href="#学生提交格式">学生提交格式</a></li>
+<li><a href="#统一评测">统一评测</a></li>
+<li><a href="#教学使用流程">教学使用流程</a></li>
+<li><a href="#后端提交链路">后端提交链路</a></li>
+<li><a href="#可扩展设计">可扩展设计</a></li>
+<li><a href="#验证">验证</a></li>
+</ul></li>
+</ul></nav>
 <h1 id="学生自研算法能力设计">学生自研算法能力设计</h1>
 <h2 id="目标">目标</h2>
 <p>平台中的学生自研算法能力采用“标准数据包 + 标准提交格式 + 统一评测器”的轻量方案。学生不必直接调用本地仿真平台、SUMO、CARLA 或 DTALite 环境，也能围绕同一题目的原始数据开发算法，并与平台基准算法结果进行可重复对比。</p>
@@ -380,6 +395,7 @@
 <li>交通预测训练集、测试集、答案和基准预测样本数一致。</li>
 <li>交通预测测试特征不泄露 <code>target_total_flow</code>。</li>
 </ul>
+</div>
 </main>
 <footer><div class="wrap">大连理工大学 智慧交通团队 · 教学科研使用请注明出处</div></footer>
 </body>
