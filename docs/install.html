@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>安装手册 · 智信优控</title>
+<link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<header class="top"><div class="wrap"><h1 style="font-size:22px">安装手册</h1>
+<p style="font-size:14px">智信优控 · 面向车路云一体化的综合交通实验平台</p></div></header>
+<main class="wrap">
+<h1 id="智信优控-面向车路云一体化的综合交通实验平台-安装手册">智信优控 — 面向车路云一体化的综合交通实验平台 安装手册</h1>
+<blockquote>
+<p>版本：v3.3.3 | 更新日期：2026-04-14</p>
+</blockquote>
+<hr />
+<h2 id="一系统要求">一、系统要求</h2>
+<h3 id="硬件要求">1.1 硬件要求</h3>
+<table>
+<thead>
+<tr class="header">
+<th>项目</th>
+<th>最低要求</th>
+<th>推荐配置</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>处理器</td>
+<td>Intel i5 / AMD Ryzen 5</td>
+<td>Intel i7 / AMD Ryzen 7</td>
+</tr>
+<tr class="even">
+<td>内存</td>
+<td>8 GB</td>
+<td>16 GB 及以上</td>
+</tr>
+<tr class="odd">
+<td>硬盘空间</td>
+<td>5 GB（仅平台）</td>
+<td>25 GB（含外部仿真工具）</td>
+</tr>
+<tr class="even">
+<td>显卡</td>
+<td>集成显卡（基础功能）</td>
+<td>NVIDIA 独立显卡，显存 ≥ 4 GB（CARLA 仿真必须）</td>
+</tr>
+<tr class="odd">
+<td>网络</td>
+<td>首次激活需联网</td>
+<td>宽带网络（云端同步功能）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="软件要求">1.2 软件要求</h3>
+<table>
+<thead>
+<tr class="header">
+<th>项目</th>
+<th>要求</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>操作系统</td>
+<td>Windows 10 / 11（64 位）</td>
+</tr>
+<tr class="even">
+<td>.NET Framework</td>
+<td>4.5 及以上（Windows 默认已包含）</td>
+</tr>
+<tr class="odd">
+<td>VC++ 运行库</td>
+<td>Visual C++ 2015-2022 Redistributable x64</td>
+</tr>
+<tr class="even">
+<td>DirectX 运行时</td>
+<td>DirectX End-User Runtime（CARLA 用户必装）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="二平台安装">二、平台安装</h2>
+<h3 id="获取安装程序">2.1 获取安装程序</h3>
+<p>安装包包含以下文件，请确保它们位于同一文件夹中：</p>
+<pre><code>installer/
+├── 智信优控_本地_Setup_v3.3.3.exe     ← 安装程序主体
+├── 智信优控_本地_Setup_v3.3.3-1.bin   ← 安装数据（必须与 exe 同目录）
+├── env/
+│   ├── config.local.env               ← 环境配置模板
+│   └── 一键配置环境.bat               ← 自动配置脚本
+├── data/                              ← 案例数据
+│   ├── data.db                        ← 初始数据库
+│   └── algorithms/                    ← 算法案例数据
+├── software/                          ← 外部工具（DTALite 等）
+└── docx/                              ← 使用文档</code></pre>
+<h3 id="安装步骤">2.2 安装步骤</h3>
+<ol type="1">
+<li>进入安装包目录，双击 <strong>智信优控_本地_Setup_v3.3.3.exe</strong></li>
+<li>选择安装目录</li>
+</ol>
+<ul>
+<li><strong>推荐路径</strong>：<code>D:\智信优控_本地</code> 或其他非系统盘目录</li>
+<li><strong>避免路径</strong>：<code>C:\Program Files</code>（可能存在写权限问题）</li>
+</ul>
+<ol start="3" type="1">
+<li>勾选&quot;创建桌面快捷方式&quot;（可选）</li>
+<li>点击&quot;安装&quot;，等待安装完成（约 1-2 分钟）</li>
+<li>安装完成后可选择立即启动</li>
+</ol>
+<blockquote>
+<p><strong>重要提示</strong>：<code>.exe</code> 和 <code>.bin</code> 文件必须在同一文件夹中，缺少 <code>.bin</code> 文件将导致安装失败。</p>
+</blockquote>
+<h3 id="复制案例数据">2.3 复制案例数据</h3>
+<p>安装完成后，将案例数据复制到安装目录：</p>
+<pre><code>复制: data/data.db         →  &lt;安装目录&gt;/_internal/backend/data.db
+复制: data/algorithms/     →  &lt;安装目录&gt;/_internal/backend/algorithms/</code></pre>
+<blockquote>
+<p>如果不复制案例数据，平台仍可启动，但部分模块（如数据融合）缺少示例数据。</p>
+</blockquote>
+<hr />
+<h2 id="三环境配置">三、环境配置</h2>
+<h3 id="方式-a一键配置推荐">3.1 方式 A：一键配置（推荐）</h3>
+<ol type="1">
+<li>进入安装包的 <code>env/</code> 文件夹</li>
+<li>双击 <strong>一键配置环境.bat</strong></li>
+<li>脚本将自动检测 Python 环境和 SUMO 安装路径，并生成配置文件</li>
+</ol>
+<h3 id="方式-b手动配置">3.2 方式 B：手动配置</h3>
+<ol type="1">
+<li>将 <code>env/config.local.env</code> 复制到安装目录（与 <code>智信优控.exe</code> 同级）</li>
+<li>用文本编辑器打开，取消注释并填写以下配置：</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode ini"><code class="sourceCode ini"><span class="co"># Python 算法环境路径（必填，算法子进程依赖此解释器）</span>
+<span class="dt">ZXK_ALGO_PYTHON_EXE</span><span class="ot">=</span><span class="st">D:\your_path\python.exe</span>
+
+<span class="co"># SUMO 安装根目录（信号优化/路径诱导/车速控制必填）</span>
+<span class="dt">SUMO_HOME</span><span class="ot">=</span><span class="st">C:\Program Files (x86)\Eclipse\Sumo</span>
+
+<span class="co"># CARLA 根目录（虚实结合仿真模块需要）</span>
+<span class="co"># CARLA_ROOT=D:\CARLA\WindowsNoEditor</span>
+
+<span class="co"># 云端管理平台 API 地址（本地-云端同步功能需要）</span>
+<span class="co"># CLOUD_API_URL=https://your-cloud-server.com</span></code></pre></div>
+<h3 id="python-算法环境要求">3.3 Python 算法环境要求</h3>
+<p>平台的算法模块（数据采集、预测、优化等）通过独立的 Python 子进程运行，需要一个已安装如下依赖的 Python 环境：</p>
+<table>
+<thead>
+<tr class="header">
+<th>依赖</th>
+<th>版本</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Python</td>
+<td>≥ 3.9</td>
+<td>运行环境</td>
+</tr>
+<tr class="even">
+<td>numpy</td>
+<td>-</td>
+<td>数值计算</td>
+</tr>
+<tr class="odd">
+<td>torch</td>
+<td>≥ 2.0</td>
+<td>深度学习算法（DQN/PPO）</td>
+</tr>
+<tr class="even">
+<td>ultralytics</td>
+<td>≥ 8.0</td>
+<td>YOLO11 目标检测</td>
+</tr>
+<tr class="odd">
+<td>traci</td>
+<td>-</td>
+<td>SUMO 仿真控制（随 SUMO 安装）</td>
+</tr>
+<tr class="even">
+<td>scikit-learn</td>
+<td>-</td>
+<td>机器学习算法</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>如果目标机器没有现成的 Python 环境，此步可暂时跳过。平台主体能正常启动，只是算法子进程会报错。</p>
+</blockquote>
+<hr />
+<h2 id="四外部软件安装">四、外部软件安装</h2>
+<h3 id="vc-2015-2022-redistributable必装">4.1 VC++ 2015-2022 Redistributable（必装）</h3>
+<p>DTALite 等组件依赖 VC++ 运行库。</p>
+<ul>
+<li><strong>下载地址</strong>：<a href="https://aka.ms/vs/17/release/vc_redist.x64.exe" class="uri">https://aka.ms/vs/17/release/vc_redist.x64.exe</a></li>
+<li><strong>安装方式</strong>：双击运行，按默认设置安装</li>
+<li><strong>验证</strong>：确认 <code>C:\Windows\System32\mfc140.dll</code> 存在</li>
+</ul>
+<h3 id="sumo-交通仿真器必装">4.2 SUMO 交通仿真器（必装）</h3>
+<p>信号优化、路径诱导、车速控制、三层级协同控制等模块依赖 SUMO。</p>
+<ul>
+<li><strong>版本</strong>：1.21.0 或更高</li>
+<li><strong>下载地址</strong>：<a href="https://sumo.dlr.de/docs/Downloads.php" class="uri">https://sumo.dlr.de/docs/Downloads.php</a></li>
+<li>Windows 64-bit MSI：<a href="https://sumo.dlr.de/releases/1.21.0/sumo-win64-1.21.0.msi" class="uri">https://sumo.dlr.de/releases/1.21.0/sumo-win64-1.21.0.msi</a></li>
+<li><strong>安装方式</strong>：双击 MSI 安装，默认路径即可</li>
+<li><strong>环境变量</strong>：安装后设置 <code>SUMO_HOME</code> 指向安装目录（如 <code>C:\Program Files (x86)\Eclipse\Sumo</code>）</li>
+<li><strong>验证</strong>：确认 <code>%SUMO_HOME%\bin\sumo-gui.exe</code> 存在</li>
+</ul>
+<blockquote>
+<p>一键配置脚本可自动检测 SUMO 路径。</p>
+</blockquote>
+<h3 id="carla-仿真器虚实结合模块需要">4.3 CARLA 仿真器（虚实结合模块需要）</h3>
+<p>CARLA 用于自动驾驶虚实结合仿真场景构建。</p>
+<p><strong>硬件要求</strong>：</p>
+<ul>
+<li>NVIDIA 显卡，显存 ≥ 4 GB（推荐 ≥ 6 GB）</li>
+<li>约 15 GB 磁盘空间</li>
+</ul>
+<p><strong>安装步骤</strong>：</p>
+<ol type="1">
+<li>下载 CARLA 0.9.15（Windows 版，约 15 GB）</li>
+</ol>
+<ul>
+<li>下载页面：<a href="https://github.com/carla-simulator/carla/releases/tag/0.9.15/" class="uri">https://github.com/carla-simulator/carla/releases/tag/0.9.15/</a></li>
+<li>文件名：<code>CARLA_0.9.15.zip</code></li>
+</ul>
+<ol start="2" type="1">
+<li>解压到目标目录（如 <code>D:\CARLA\CARLA_0.9.15\WindowsNoEditor</code>）</li>
+<li>设置环境变量 <code>CARLA_ROOT</code> 指向解压目录</li>
+<li>验证：确认 <code>%CARLA_ROOT%\CarlaUE4.exe</code> 存在</li>
+</ol>
+<p><strong>前置依赖</strong>：</p>
+<ul>
+<li>VC++ 2015-2022 Redistributable（见 4.1）</li>
+<li>DirectX End-User Runtime</li>
+<li>下载地址：<a href="https://www.microsoft.com/en-us/download/details.aspx?id=35" class="uri">https://www.microsoft.com/en-us/download/details.aspx?id=35</a></li>
+<li>安装后确认 <code>C:\Windows\System32\d3dx9_43.dll</code> 存在</li>
+</ul>
+<h3 id="dtalite-nexta交通流重构">4.4 DTALite + NEXTA（交通流重构）</h3>
+<ul>
+<li>安装包中 <code>software/dtalite/</code> 目录已自带完整工具</li>
+<li>将该目录解压/复制到安装目录的对应位置即可</li>
+<li>无需额外配置环境变量</li>
+</ul>
+<h3 id="cuda-toolkit可选gpu-加速">4.5 CUDA Toolkit（可选，GPU 加速）</h3>
+<p>仅在使用 DQN、PPO 等深度强化学习算法时需要。</p>
+<ul>
+<li><strong>版本要求</strong>：≥ 11.8（需与 PyTorch 版本匹配）</li>
+<li><strong>下载地址</strong>：<a href="https://developer.nvidia.com/cuda-toolkit" class="uri">https://developer.nvidia.com/cuda-toolkit</a></li>
+<li><strong>验证</strong>：运行 <code>nvidia-smi</code> 确认 CUDA 可用</li>
+</ul>
+<hr />
+<h2 id="五首次启动">五、首次启动</h2>
+<h3 id="启动平台">5.1 启动平台</h3>
+<ol type="1">
+<li>在安装目录（或桌面快捷方式）找到 <strong>智信优控.exe</strong>，双击运行</li>
+<li>等待后端服务初始化（约 5-10 秒）</li>
+<li>浏览器自动打开 <a href="http://localhost:8000" class="uri">http://localhost:8000</a></li>
+</ol>
+<h3 id="默认账户">5.2 默认账户</h3>
+<table>
+<thead>
+<tr class="header">
+<th>角色</th>
+<th>用户名</th>
+<th>密码</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>管理员</td>
+<td>admin</td>
+<td>123456</td>
+</tr>
+<tr class="even">
+<td>教师</td>
+<td>teacher</td>
+<td>123456</td>
+</tr>
+<tr class="odd">
+<td>学生</td>
+<td>student</td>
+<td>123456</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>首次登录后建议立即修改密码。</p>
+</blockquote>
+<h3 id="首次激活license">5.3 首次激活（License）</h3>
+<ol type="1">
+<li>启动软件后，系统自动生成机器码</li>
+<li>输入管理员提供的 License Key</li>
+<li>点击&quot;激活&quot;，等待云端验证</li>
+<li>激活成功后即可正常使用</li>
+</ol>
+<p>License 类型：</p>
+<table>
+<thead>
+<tr class="header">
+<th>类型</th>
+<th>有效期</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>试用版</td>
+<td>30 天</td>
+<td>评估试用</td>
+</tr>
+<tr class="even">
+<td>教育版</td>
+<td>180 天（按学期）</td>
+<td>高校教学</td>
+</tr>
+<tr class="odd">
+<td>永久版</td>
+<td>无期限</td>
+<td>长期使用</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="六功能验证清单">六、功能验证清单</h2>
+<p>安装完成后请逐项验证核心功能：</p>
+<table>
+<thead>
+<tr class="header">
+<th>序号</th>
+<th>验证项</th>
+<th>预期结果</th>
+<th>依赖</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>平台启动</td>
+<td>浏览器打开 localhost:8000</td>
+<td>无</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>三种角色登录</td>
+<td>admin/teacher/student 均可登录</td>
+<td>无</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>多源数据采集</td>
+<td>上传视频 → YOLO 检测运行</td>
+<td>Python + ultralytics</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>多源数据融合</td>
+<td>贝叶斯融合计算</td>
+<td>Python</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>交通流重构</td>
+<td>DTALite OD 矩阵反推</td>
+<td>DTALite</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>交通流预测</td>
+<td>选择模型 → 弹出训练窗口</td>
+<td>Python + torch</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>交通信号优化</td>
+<td>选择算法 → 启动 SUMO 仿真</td>
+<td>SUMO</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>路径诱导</td>
+<td>Dijkstra/SSP/A* 路径规划</td>
+<td>SUMO</td>
+</tr>
+<tr class="odd">
+<td>9</td>
+<td>车速控制</td>
+<td>IDM/PID/ACC 控制仿真</td>
+<td>SUMO</td>
+</tr>
+<tr class="even">
+<td>10</td>
+<td>三层级协同</td>
+<td>信号+路径+速度联合优化</td>
+<td>SUMO</td>
+</tr>
+<tr class="odd">
+<td>11</td>
+<td>虚实结合仿真</td>
+<td>CARLA+SUMO 联合仿真</td>
+<td>CARLA + SUMO</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="七服务端口说明">七、服务端口说明</h2>
+<table>
+<thead>
+<tr class="header">
+<th>服务</th>
+<th>端口</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>本地平台主服务</td>
+<td>8000</td>
+<td>前后端一体化，可通过 <code>LOCAL_APP_PORT</code> 配置</td>
+</tr>
+<tr class="even">
+<td>数据融合子服务</td>
+<td>5000</td>
+<td>自动启动</td>
+</tr>
+<tr class="odd">
+<td>交通流重构子服务</td>
+<td>5001</td>
+<td>自动启动</td>
+</tr>
+<tr class="even">
+<td>交通流预测子服务</td>
+<td>5002</td>
+<td>自动启动</td>
+</tr>
+<tr class="odd">
+<td>数据采集子服务</td>
+<td>5003</td>
+<td>自动启动</td>
+</tr>
+<tr class="even">
+<td>云端管理平台</td>
+<td>9000</td>
+<td>独立部署（Docker），可通过 <code>CLOUD_API_URL</code> 连接</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="八常见问题">八、常见问题</h2>
+<p><strong>Q1: 安装后双击 exe 没有反应？</strong> A: 检查是否安装在 <code>C:\Program Files</code> 下。由于写权限限制，建议安装到 <code>D:\</code> 或其他非系统目录。</p>
+<p><strong>Q2: 启动后显示&quot;后端服务未启动&quot;？</strong> A: 后端服务需要 5-10 秒初始化时间，请稍等。如持续显示，检查端口 8000 是否被其他程序占用。</p>
+<p><strong>Q3: 算法模块报错&quot;Python 未找到&quot;？</strong> A: 检查 <code>config.local.env</code> 中的 <code>ZXK_ALGO_PYTHON_EXE</code> 是否指向有效的 Python 路径。可通过一键配置脚本自动配置。</p>
+<p><strong>Q4: SUMO 仿真无法启动？</strong> A: 确认已安装 SUMO 并设置了 <code>SUMO_HOME</code> 环境变量。验证方法：打开命令行输入 <code>echo %SUMO_HOME%</code>，应显示 SUMO 安装路径。</p>
+<p><strong>Q5: CARLA 启动后黑屏或崩溃？</strong> A: (1) 检查 GPU 显存是否 ≥ 4 GB；(2) 笔记本用户请切换到独立显卡；(3) 确认已安装 DirectX End-User Runtime。</p>
+<p><strong>Q6: DTALite 报错缺少 mfc140.dll？</strong> A: 安装 VC++ 2015-2022 Redistributable（见第四节 4.1）。</p>
+<p><strong>Q7: 数据融合模块提示缺少数据？</strong> A: 请按第二节 2.3 的说明将案例数据复制到安装目录。</p>
+<p><strong>Q8: 激活失败？</strong> A: 检查网络连接是否正常，确认 License Key 正确且未被其他机器使用。</p>
+<p><strong>Q9: 如何修改平台端口？</strong> A: 在 <code>config.local.env</code> 中设置 <code>LOCAL_APP_PORT=自定义端口号</code>，然后重启平台。</p>
+<p><strong>Q10: 本地平台如何连接云端管理平台？</strong> A: 在 <code>config.local.env</code> 中设置 <code>CLOUD_API_URL</code> 为云端平台的实际地址（如 <code>https://your-server.com:9000</code>），重启后本地平台会自动同步教学任务和实验报告。</p>
+<hr />
+<h2 id="九卸载">九、卸载</h2>
+<ol type="1">
+<li>打开 Windows 设置 → 应用 → 已安装的应用</li>
+<li>搜索&quot;智信优控&quot;，点击&quot;卸载&quot;</li>
+<li>按提示完成卸载</li>
+<li>如需清除残留数据，手动删除安装目录</li>
+</ol>
+<hr />
+<h2 id="附录快速检查清单">附录：快速检查清单</h2>
+<table>
+<thead>
+<tr class="header">
+<th>组件</th>
+<th>检测方法</th>
+<th>必需？</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>平台主程序</td>
+<td>双击 <code>智信优控.exe</code> 能正常启动</td>
+<td>✅</td>
+</tr>
+<tr class="even">
+<td>VC++ Runtime</td>
+<td>检查 <code>%SystemRoot%\System32\mfc140.dll</code></td>
+<td>✅</td>
+</tr>
+<tr class="odd">
+<td>Python 环境</td>
+<td><code>config.local.env</code> 中 Python 路径有效</td>
+<td>✅（算法模块）</td>
+</tr>
+<tr class="even">
+<td>SUMO</td>
+<td><code>%SUMO_HOME%\bin\sumo-gui.exe</code> 存在</td>
+<td>✅（仿真模块）</td>
+</tr>
+<tr class="odd">
+<td>CARLA</td>
+<td><code>%CARLA_ROOT%\CarlaUE4.exe</code> 存在</td>
+<td>选装</td>
+</tr>
+<tr class="even">
+<td>DirectX Runtime</td>
+<td><code>%SystemRoot%\System32\d3dx9_43.dll</code> 存在</td>
+<td>CARLA 用户</td>
+</tr>
+<tr class="odd">
+<td>CUDA</td>
+<td>运行 <code>nvidia-smi</code> 成功</td>
+<td>选装（GPU 加速）</td>
+</tr>
+</tbody>
+</table>
+</main>
+<footer><div class="wrap">大连理工大学 智慧交通团队 · 教学科研使用请注明出处</div></footer>
+</body>
+</html>

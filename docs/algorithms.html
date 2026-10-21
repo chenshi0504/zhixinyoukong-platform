@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>学生自研算法题包 · 智信优控</title>
+<link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<header class="top"><div class="wrap"><h1 style="font-size:22px">学生自研算法题包</h1>
+<p style="font-size:14px">智信优控 · 面向车路云一体化的综合交通实验平台</p></div></header>
+<main class="wrap">
+<h1 id="学生自研算法能力设计">学生自研算法能力设计</h1>
+<h2 id="目标">目标</h2>
+<p>平台中的学生自研算法能力采用“标准数据包 + 标准提交格式 + 统一评测器”的轻量方案。学生不必直接调用本地仿真平台、SUMO、CARLA 或 DTALite 环境，也能围绕同一题目的原始数据开发算法，并与平台基准算法结果进行可重复对比。</p>
+<p>本次已将范围从单一“交通流短时预测”扩展为后端统一学生自研算法题库。统一入口为：</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> backend/algorithms/student_algorithm_suite.py build</code></pre></div>
+<p>输出目录：</p>
+<p><code>backend/algorithms/student_packs</code></p>
+<p>教师可通过统一评测命令评测学生提交：</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> backend/algorithms/student_algorithm_suite.py evaluate <span class="op">&lt;</span>task_id<span class="op">&gt;</span> <span class="op">&lt;</span>学生提交文件<span class="op">&gt;</span></code></pre></div>
+<p>当前纳入统一题库的后端任务包括：</p>
+<table>
+<thead>
+<tr class="header">
+<th>task_id</th>
+<th>后端模块</th>
+<th>学生提交内容</th>
+<th>评测方式</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>traffic_prediction</code></td>
+<td>交通流预测</td>
+<td>测试集流量预测 CSV</td>
+<td>MAE、RMSE、MAPE、R2</td>
+</tr>
+<tr class="even">
+<td><code>data_fusion</code></td>
+<td>多源数据融合</td>
+<td>每帧每类别融合概率 CSV</td>
+<td>与平台贝叶斯融合基准的 MAE/RMSE</td>
+</tr>
+<tr class="odd">
+<td><code>signal_optimization</code></td>
+<td>交通信号优化</td>
+<td>周期和各相位绿灯时长 CSV</td>
+<td>与 Webster 基准的周期/绿灯误差和约束可行性</td>
+</tr>
+<tr class="even">
+<td><code>path_guidance</code></td>
+<td>路径诱导</td>
+<td>OD 对路径序列和成本 CSV</td>
+<td>路径合法性、相对最短路成本</td>
+</tr>
+<tr class="odd">
+<td><code>traffic_reconstruction</code></td>
+<td>交通流重构</td>
+<td>路段分时重构流量 CSV</td>
+<td>与观测流量的 MAE、RMSE、MAPE、R2</td>
+</tr>
+<tr class="even">
+<td><code>vehicle_speed_control</code></td>
+<td>车速控制</td>
+<td>控制实验汇总指标 CSV</td>
+<td>与 PID 基准的延误、速度等指标对比</td>
+</tr>
+<tr class="odd">
+<td><code>coordination_control</code></td>
+<td>三层级/多层级/分层控制</td>
+<td>时序平均速度和等待车辆数 CSV</td>
+<td>与全协调基准时序指标的 RMSE</td>
+</tr>
+</tbody>
+</table>
+<p>暂不作为离线可复现题包直接评测的模块：</p>
+<table style="width:35%;">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>模块</th>
+<th>原因</th>
+<th>处理方式</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>data_collection</code></td>
+<td>依赖视频源、YOLO/ByteTrack 权重和推理环境</td>
+<td>在文档中规定检测结果 JSON/轨迹 CSV 提交格式，后续有标注集后接入检测指标</td>
+</tr>
+<tr class="even">
+<td><code>carla_simulation</code></td>
+<td>依赖 CARLA 服务、地图和传感器环境</td>
+<td>规定轨迹、碰撞次数、完成率等指标提交格式</td>
+</tr>
+<tr class="odd">
+<td><code>vehicle_dev_control</code></td>
+<td>依赖车规级车辆控制或 CARLA 环境</td>
+<td>并入 CARLA/车辆控制类指标规范</td>
+</tr>
+<tr class="even">
+<td><code>simulation</code></td>
+<td>承载仿真环境，不是独立算法题目</td>
+<td>由信号、路径、速度、协调任务复用</td>
+</tr>
+</tbody>
+</table>
+<h2 id="已落地的基准题目">已落地的基准题目</h2>
+<p>题目：交通流短时预测</p>
+<p>位置：<code>backend/algorithms/traffic_prediction</code></p>
+<p>原始数据：<code>Traffic flow data.csv</code></p>
+<p>基准算法：<code>DecisionTreeRegressor(max_depth=10, random_state=42)</code></p>
+<p>基准测试命令：</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> backend/algorithms/traffic_prediction/predictor.py --model dtr</code></pre></div>
+<p>本次测试结果：</p>
+<table>
+<thead>
+<tr class="header">
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MAE</td>
+<td>80.01</td>
+</tr>
+<tr class="even">
+<td>RMSE</td>
+<td>118.87</td>
+</tr>
+<tr class="odd">
+<td>R2</td>
+<td>0.9371</td>
+</tr>
+</tbody>
+</table>
+<p>脚本会生成 <code>charts/results.txt</code>、<code>charts/实验报告.txt</code>、<code>charts/pre.jpg</code> 等平台展示结果。</p>
+<h2 id="统一学生算法数据包">统一学生算法数据包</h2>
+<p>生成全部题包：</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> backend/algorithms/student_algorithm_suite.py build</code></pre></div>
+<p>列出支持的任务：</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> backend/algorithms/student_algorithm_suite.py list</code></pre></div>
+<p>每个题包目录都包含：</p>
+<table>
+<thead>
+<tr class="header">
+<th>文件</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>metadata.json</code></td>
+<td>任务 ID、模块 ID、输入文件、提交列、主指标</td>
+</tr>
+<tr class="even">
+<td><code>student_submission_template.csv</code></td>
+<td>学生提交格式模板</td>
+</tr>
+<tr class="odd">
+<td><code>baseline_*</code></td>
+<td>平台基准结果或基准指标</td>
+</tr>
+<tr class="even">
+<td>任务输入文件</td>
+<td>学生可见的训练/测试/场景/路网/观测数据</td>
+</tr>
+</tbody>
+</table>
+<p>统一包根目录还包含 <code>suite_metadata.json</code>，用于教师端或云端平台读取全部题目信息。</p>
+<h2 id="交通流预测数据包">交通流预测数据包</h2>
+<p>生成命令：</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> backend/algorithms/traffic_prediction/student_algorithm_pack.py</code></pre></div>
+<p>输出目录：</p>
+<p><code>backend/algorithms/traffic_prediction/student_pack</code></p>
+<p>统一套件也会把同一内容生成到：</p>
+<p><code>backend/algorithms/student_packs/traffic_prediction</code></p>
+<p>数据包文件：</p>
+<table>
+<thead>
+<tr class="header">
+<th>文件</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>raw_traffic_flow.csv</code></td>
+<td>题目涉及的原始数据整理版</td>
+</tr>
+<tr class="even">
+<td><code>train.csv</code></td>
+<td>学生训练数据，包含特征和 <code>target_total_flow</code></td>
+</tr>
+<tr class="odd">
+<td><code>test_features.csv</code></td>
+<td>学生预测用测试特征，不包含答案</td>
+</tr>
+<tr class="even">
+<td><code>student_submission_template.csv</code></td>
+<td>学生提交格式模板</td>
+</tr>
+<tr class="odd">
+<td><code>baseline_predictions.csv</code></td>
+<td>平台基准算法在同一测试集上的预测结果</td>
+</tr>
+<tr class="even">
+<td><code>test_ground_truth.csv</code></td>
+<td>教师评测用标准答案</td>
+</tr>
+<tr class="odd">
+<td><code>metadata.json</code></td>
+<td>特征、划分方式、评价指标和基准指标</td>
+</tr>
+<tr class="even">
+<td><code>README.md</code></td>
+<td>面向学生的简要说明</td>
+</tr>
+</tbody>
+</table>
+<p>数据包生成时得到的统一基准结果：</p>
+<table>
+<thead>
+<tr class="header">
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MAE</td>
+<td>79.6619</td>
+</tr>
+<tr class="even">
+<td>RMSE</td>
+<td>118.4984</td>
+</tr>
+<tr class="odd">
+<td>MAPE</td>
+<td>10.7515%</td>
+</tr>
+<tr class="even">
+<td>R2</td>
+<td>0.937576</td>
+</tr>
+</tbody>
+</table>
+<p>该结果与 <code>predictor.py</code> 的结果略有差异，是因为学生数据包在完整监督样本上先切分再建模，而原平台脚本先切分原始序列再分别构造滞后样本。后续统一对比以 <code>student_pack/metadata.json</code> 内的基准为准。</p>
+<h2 id="学生提交格式">学生提交格式</h2>
+<p>学生提交 CSV 文件，至少包含两列：</p>
+<pre class="csv"><code>sample_id,prediction_total_flow
+2300,925.0
+2301,918.0</code></pre>
+<p>约束：</p>
+<ul>
+<li><code>sample_id</code> 必须与 <code>test_features.csv</code> 完全一致。</li>
+<li><code>prediction_total_flow</code> 必须为数值。</li>
+<li>不允许缺失样本、重复样本或额外样本。</li>
+<li>学生可使用任意语言和任意算法，只要最终输出符合 CSV 格式。</li>
+</ul>
+<h2 id="统一评测">统一评测</h2>
+<p>单模块交通预测评测命令：</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> backend/algorithms/traffic_prediction/evaluate_student_submission.py <span class="op">&lt;</span>学生提交CSV<span class="op">&gt;</span></code></pre></div>
+<p>统一套件评测命令：</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> backend/algorithms/student_algorithm_suite.py evaluate traffic_prediction <span class="op">&lt;</span>学生提交CSV<span class="op">&gt;</span>
+<span class="ex">python</span> backend/algorithms/student_algorithm_suite.py evaluate data_fusion <span class="op">&lt;</span>学生提交CSV<span class="op">&gt;</span>
+<span class="ex">python</span> backend/algorithms/student_algorithm_suite.py evaluate signal_optimization <span class="op">&lt;</span>学生提交CSV<span class="op">&gt;</span>
+<span class="ex">python</span> backend/algorithms/student_algorithm_suite.py evaluate path_guidance <span class="op">&lt;</span>学生提交CSV<span class="op">&gt;</span>
+<span class="ex">python</span> backend/algorithms/student_algorithm_suite.py evaluate traffic_reconstruction <span class="op">&lt;</span>学生提交CSV<span class="op">&gt;</span>
+<span class="ex">python</span> backend/algorithms/student_algorithm_suite.py evaluate vehicle_speed_control <span class="op">&lt;</span>学生提交CSV<span class="op">&gt;</span>
+<span class="ex">python</span> backend/algorithms/student_algorithm_suite.py evaluate coordination_control <span class="op">&lt;</span>学生提交CSV<span class="op">&gt;</span></code></pre></div>
+<p>示例：用基准预测文件自评。</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> backend/algorithms/traffic_prediction/evaluate_student_submission.py backend/algorithms/traffic_prediction/student_pack/baseline_predictions.csv --output backend/algorithms/traffic_prediction/student_pack/baseline_evaluation.json</code></pre></div>
+<p>评测输出包括：</p>
+<ul>
+<li>学生算法 MAE、RMSE、MAPE、R2。</li>
+<li>平台基准算法 MAE、RMSE、MAPE、R2。</li>
+<li>学生算法相对基准的 RMSE 差值和改进百分比。</li>
+<li>是否在 RMSE 指标上超过基准。</li>
+</ul>
+<p>当前主指标：RMSE，越小越好。</p>
+<h2 id="教学使用流程">教学使用流程</h2>
+<p>教师准备阶段：</p>
+<ol type="1">
+<li>运行基准算法，确认平台基准可复现。</li>
+<li>运行 <code>student_algorithm_pack.py</code> 生成数据包。</li>
+<li>将 <code>student_pack</code> 中除 <code>test_ground_truth.csv</code> 外的文件发给学生。</li>
+<li>在任务要求中说明提交 CSV 格式和主评价指标。</li>
+</ol>
+<p>学生开发阶段：</p>
+<ol type="1">
+<li>读取 <code>train.csv</code> 训练自研算法。</li>
+<li>读取 <code>test_features.csv</code> 生成预测。</li>
+<li>按 <code>student_submission_template.csv</code> 格式提交结果。</li>
+<li>报告中说明算法思路、特征处理、参数设置和与基准的预期差异。</li>
+</ol>
+<p>教师评测阶段：</p>
+<ol type="1">
+<li>收集学生提交 CSV。</li>
+<li>使用 <code>evaluate_student_submission.py</code> 批量评测。</li>
+<li>按 RMSE、MAE、MAPE、R2 生成排行和分析。</li>
+<li>结合报告说明给出成绩，不只看单一指标。</li>
+</ol>
+<h2 id="后端提交链路">后端提交链路</h2>
+<p>平台原有“算法模板/学生算法脚本”API 继续保留，用于学生在平台内提交 Python 脚本、运行测试、教师查看结果。已通过以下后端测试验证：</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> -m pytest backend/tests/test_algorithm_integration.py backend/tests/test_algorithm_properties.py -q</code></pre></div>
+<p>本次统一题包解决的是算法数据、基准结果和评测标准的整理问题；API 提交链路解决的是学生代码提交、执行日志和教师查看问题。两者可以组合使用：教师发布题包，学生提交 CSV/JSON 结果或脚本，平台统一保存与评测。</p>
+<h2 id="可扩展设计">可扩展设计</h2>
+<p>其他模块可按同一接口扩展：</p>
+<table>
+<thead>
+<tr class="header">
+<th>模块</th>
+<th>数据包输入</th>
+<th>学生输出</th>
+<th>评价指标</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>交通流重构</td>
+<td>路段观测流量、OD 先验</td>
+<td>OD 矩阵或路段流量</td>
+<td>RMSE、MAPE、守恒误差</td>
+</tr>
+<tr class="even">
+<td>信号优化</td>
+<td>固定路口流量与相位约束</td>
+<td>配时方案 CSV/JSON</td>
+<td>平均延误、排队长度、通行量</td>
+</tr>
+<tr class="odd">
+<td>路径诱导</td>
+<td>路网边表、OD 对、边权</td>
+<td>路径序列</td>
+<td>路径成本、合法性、耗时</td>
+</tr>
+<tr class="even">
+<td>车速控制</td>
+<td>参考速度、前车轨迹</td>
+<td>控制序列或速度序列</td>
+<td>跟踪误差、舒适性、安全约束</td>
+</tr>
+<tr class="odd">
+<td>数据融合</td>
+<td>多源观测和真值</td>
+<td>融合目标状态</td>
+<td>RMSE、漏检率、误检率</td>
+</tr>
+</tbody>
+</table>
+<p>建议所有题目统一包含：</p>
+<ul>
+<li><code>raw_*</code>：题目原始数据。</li>
+<li><code>train.*</code>：学生可见训练数据。</li>
+<li><code>test_features.*</code>：学生可见测试输入。</li>
+<li><code>*_ground_truth.*</code>：教师评测答案。</li>
+<li><code>baseline_predictions.*</code> 或 <code>baseline_solution.*</code>：平台基准结果。</li>
+<li><code>student_submission_template.*</code>：提交模板。</li>
+<li><code>metadata.json</code>：字段、指标、基准和版本说明。</li>
+<li><code>evaluate_*.py</code>：统一评测器。</li>
+</ul>
+<h2 id="验证">验证</h2>
+<p>本次新增了统一离线包测试：</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> -m pytest backend/algorithms/tests/test_student_algorithm_suite.py -q</code></pre></div>
+<p>同时保留交通预测单包测试：</p>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">python</span> -m pytest backend/algorithms/traffic_prediction/tests/test_student_algorithm_pack.py</code></pre></div>
+<p>测试覆盖：</p>
+<ul>
+<li>七个后端题包必需文件生成。</li>
+<li>每个题包模板列与 <code>metadata.json</code> 一致。</li>
+<li>每个题包使用平台基准提交可通过统一评测器。</li>
+<li>交通预测训练集、测试集、答案和基准预测样本数一致。</li>
+<li>交通预测测试特征不泄露 <code>target_total_flow</code>。</li>
+</ul>
+</main>
+<footer><div class="wrap">大连理工大学 智慧交通团队 · 教学科研使用请注明出处</div></footer>
+</body>
+</html>

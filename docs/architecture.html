@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>平台定位与架构 · 智信优控</title>
+<link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<header class="top"><div class="wrap"><h1 style="font-size:22px">平台定位与架构</h1>
+<p style="font-size:14px">智信优控 · 面向车路云一体化的综合交通实验平台</p></div></header>
+<main class="wrap">
+<h1 id="云端管理平台-平台定位与架构设计">云端管理平台 — 平台定位与架构设计</h1>
+<blockquote>
+<p>文档版本：v1.1 | 编写日期：2026-02-21</p>
+<p>说明：云端管理平台与本地客户端通过 HTTP API + JSON 通信，两边实现语言完全解耦。 本文档描述的是通用架构模式和接口契约，不绑定特定编程语言。</p>
+</blockquote>
+<h2 id="一平台定位">一、平台定位</h2>
+<h3 id="为什么需要云端管理平台">1.1 为什么需要云端管理平台？</h3>
+<p>本地离线客户端解决了&quot;实验功能运行&quot;的问题，但以下场景无法仅靠本地客户端实现：</p>
+<table>
+<thead>
+<tr class="header">
+<th>场景</th>
+<th>问题</th>
+<th>云端平台的作用</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>多教室部署</td>
+<td>教师在A教室发的任务，B教室的学生看不到</td>
+<td>统一任务下发，所有客户端同步</td>
+</tr>
+<tr class="even">
+<td>软件授权</td>
+<td>安装包可以无限复制，无法控制分发</td>
+<td>License发放与机器码绑定</td>
+</tr>
+<tr class="odd">
+<td>报告收集</td>
+<td>学生报告散落在各台电脑上，教师无法统一查看</td>
+<td>报告统一上传到云端，教师在线批阅</td>
+</tr>
+<tr class="even">
+<td>使用统计</td>
+<td>不知道哪些学校在用、用了多少</td>
+<td>使用数据汇总，生成报表</td>
+</tr>
+<tr class="odd">
+<td>版本更新</td>
+<td>需要逐台电脑手动更新</td>
+<td>推送更新通知，客户端自动下载</td>
+</tr>
+</tbody>
+</table>
+<h3 id="核心原则">1.2 核心原则</h3>
+<ul>
+<li><strong>轻量级</strong>：不运行任何算法或仿真，仅做数据管理和同步</li>
+<li><strong>低成本</strong>：2核4G云服务器即可支撑数百用户</li>
+<li><strong>非必需</strong>：断网后本地客户端所有实验功能正常使用，云端仅在联网时同步</li>
+</ul>
+<hr />
+<h2 id="二与本地客户端的关系">二、与本地客户端的关系</h2>
+<h3 id="整体交互流程">2.1 整体交互流程</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                     云端管理平台                                  │
+│                  cloud.zhixinyoukong.com                         │
+│                                                                  │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────┐   │
+│  │ 管理后台  │  │ License  │  │ 任务中心  │  │ 报告中心      │   │
+│  │ Web页面  │  │ 服务     │  │          │  │              │   │
+│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └──────┬───────┘   │
+│       │              │             │               │            │
+│  ─────┴──────────────┴─────────────┴───────────────┴────────── │
+│                    RESTful API + PostgreSQL                      │
+│                    Nginx/Caddy (HTTPS)                           │
+└──────────────────────────────────────────────────────────────────┘
+                               │
+                    HTTPS API  │  双向同步
+                               │
+        ┌──────────────────────┼──────────────────────┐
+        │                      │                      │
+        ▼                      ▼                      ▼
+┌──────────────┐    ┌──────────────┐    ┌──────────────┐
+│ 客户端 A     │    │ 客户端 B     │    │ 客户端 C     │
+│ 学校A机房    │    │ 学校B实验室  │    │ 学生个人电脑  │
+│              │    │              │    │              │
+│ ┌──────────┐│    │ ┌──────────┐│    │ ┌──────────┐│
+│ │本地SQLite ││    │ │本地SQLite ││    │ │本地SQLite ││
+│ │用户/任务  ││    │ │用户/任务  ││    │ │用户/任务  ││
+│ │报告/实验  ││    │ │报告/实验  ││    │ │报告/实验  ││
+│ └──────────┘│    │ └──────────┘│    │ └──────────┘│
+│              │    │              │    │              │
+│ 实验功能     │    │ 实验功能     │    │ 实验功能     │
+│ 100%离线可用 │    │ 100%离线可用 │    │ 100%离线可用 │
+└──────────────┘    └──────────────┘    └──────────────┘</code></pre>
+<h3 id="数据同步机制">2.2 数据同步机制</h3>
+<pre><code>本地客户端                                    云端管理平台
+    │                                              │
+    │  ① 首次启动：激活请求                         │
+    │  POST /api/cloud/license/activate            │
+    │  {machine_id, license_key}                   │
+    │  ─────────────────────────────────────────►  │
+    │                                              │  验证License
+    │                  ◄─────────────────────────  │  绑定机器码
+    │  {activation_token, expires_at}              │
+    │                                              │
+    │  ② 登录时：同步用户数据                       │
+    │  POST /api/cloud/sync/users                  │
+    │  ─────────────────────────────────────────►  │
+    │                  ◄─────────────────────────  │
+    │  {updated_users, new_users}                  │
+    │                                              │
+    │  ③ 定时：拉取新任务                           │
+    │  GET /api/cloud/tasks?since=last_sync_time   │
+    │  ─────────────────────────────────────────►  │
+    │                  ◄─────────────────────────  │
+    │  {new_tasks, updated_tasks}                  │
+    │                                              │
+    │  ④ 学生提交报告时：上传到云端                  │
+    │  POST /api/cloud/reports/upload               │
+    │  {task_id, student_id, file}                 │
+    │  ─────────────────────────────────────────►  │
+    │                                              │
+    │  ⑤ 定时：上报使用数据                         │
+    │  POST /api/cloud/analytics/report            │
+    │  {experiment_count, active_users, ...}       │
+    │  ─────────────────────────────────────────►  │
+    │                                              │</code></pre>
+<h3 id="同步策略">2.3 同步策略</h3>
+<table>
+<thead>
+<tr class="header">
+<th>数据类型</th>
+<th>同步方向</th>
+<th>同步时机</th>
+<th>冲突处理</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>用户账户</td>
+<td>云端 → 本地</td>
+<td>登录时</td>
+<td>云端为准</td>
+</tr>
+<tr class="even">
+<td>实验任务</td>
+<td>云端 → 本地</td>
+<td>启动时 + 定时(5分钟)</td>
+<td>云端为准</td>
+</tr>
+<tr class="odd">
+<td>实验报告</td>
+<td>本地 → 云端</td>
+<td>提交时</td>
+<td>本地暂存，联网后上传</td>
+</tr>
+<tr class="even">
+<td>实验记录</td>
+<td>本地 → 云端</td>
+<td>定时(10分钟)</td>
+<td>追加模式，不覆盖</td>
+</tr>
+<tr class="odd">
+<td>License状态</td>
+<td>云端 → 本地</td>
+<td>启动时</td>
+<td>云端为准</td>
+</tr>
+<tr class="even">
+<td>使用统计</td>
+<td>本地 → 云端</td>
+<td>定时(30分钟)</td>
+<td>追加模式</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="三云端平台技术架构">三、云端平台技术架构</h2>
+<h3 id="技术选型原则">3.1 技术选型原则</h3>
+<p>云端管理平台是一个独立的Web服务，不依赖本地客户端的Python技术栈。选型遵循以下原则：</p>
+<ul>
+<li><strong>语言无关</strong>：后端可以用任何成熟的Web框架（Go/Gin、Java/Spring Boot、Node.js/Express、Python/FastAPI、Rust/Axum等），根据团队熟悉度和性能需求选择</li>
+<li><strong>标准协议</strong>：对外只暴露RESTful JSON API，本地客户端通过HTTP调用，不关心云端用什么语言实现</li>
+<li><strong>通用架构模式</strong>：采用经典的三层架构（Controller → Service → Repository），任何语言都适用</li>
+</ul>
+<table style="width:33%;">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>组件</th>
+<th>要求</th>
+<th>候选方案</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>后端API</td>
+<td>RESTful JSON，支持JWT认证</td>
+<td>Go/Gin, Java/Spring Boot, Node.js/Express, Python/FastAPI, Rust/Axum 等</td>
+</tr>
+<tr class="even">
+<td>数据库</td>
+<td>关系型，支持并发</td>
+<td>PostgreSQL（推荐）、MySQL</td>
+</tr>
+<tr class="odd">
+<td>反向代理</td>
+<td>HTTPS终止，静态文件托管</td>
+<td>Nginx, Caddy</td>
+</tr>
+<tr class="even">
+<td>文件存储</td>
+<td>报告文件、更新包</td>
+<td>本地磁盘（初期），对象存储（后续）</td>
+</tr>
+<tr class="odd">
+<td>部署方式</td>
+<td>容器化，一键部署</td>
+<td>Docker Compose</td>
+</tr>
+<tr class="even">
+<td>管理后台前端</td>
+<td>SPA或SSR均可</td>
+<td>React, Vue, 纯HTML/JS, 或后端模板渲染</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>关键点：云端平台和本地客户端之间的契约是 <strong>HTTP API + JSON</strong>，两边的实现语言完全解耦。</p>
+</blockquote>
+<h3 id="架构模式">3.2 架构模式</h3>
+<p>无论选择哪种语言，云端服务都遵循相同的分层架构：</p>
+<pre><code>┌─────────────────────────────────────────────────────────┐
+│                    管理后台前端                            │
+│              （SPA / 模板渲染 / 纯HTML+JS）               │
+└────────────────────────┬────────────────────────────────┘
+                         │ HTTP
+┌────────────────────────▼────────────────────────────────┐
+│                                                          │
+│  Controller / Router 层（路由 + 请求验证 + 响应格式化）    │
+│  ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐         │
+│  │ Auth │ │License│ │ Task │ │Report│ │ Sync │  ...     │
+│  └──┬───┘ └──┬───┘ └──┬───┘ └──┬───┘ └──┬───┘         │
+│     │        │        │        │        │               │
+│  ───┴────────┴────────┴────────┴────────┴────────────── │
+│                                                          │
+│  Service 层（业务逻辑 + 权限校验）                        │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐                │
+│  │AuthService│ │TaskService│ │SyncService│  ...          │
+│  └──┬───────┘ └──┬───────┘ └──┬───────┘                │
+│     │            │            │                          │
+│  ───┴────────────┴────────────┴──────────────────────── │
+│                                                          │
+│  Repository 层（数据访问 + ORM/SQL）                      │
+│  ┌──────────┐ ┌──────────┐ ┌──────────┐                │
+│  │UserRepo  │ │TaskRepo  │ │ReportRepo│  ...            │
+│  └──┬───────┘ └──┬───────┘ └──┬───────┘                │
+│     │            │            │                          │
+│  ───┴────────────┴────────────┴──────────────────────── │
+│                                                          │
+│  数据层                                                  │
+│  ┌──────────────┐  ┌──────────────┐                     │
+│  │ PostgreSQL   │  │ 文件存储      │                     │
+│  │ (关系数据)    │  │ (报告/更新包) │                     │
+│  └──────────────┘  └──────────────┘                     │
+└─────────────────────────────────────────────────────────┘</code></pre>
+<h3 id="服务器部署架构">3.3 服务器部署架构</h3>
+<pre><code>┌─────────────────────────────────────────────────┐
+│  云服务器（2核4G，如阿里云ECS）                    │
+│                                                  │
+│  ┌────────────────────────────────────────────┐ │
+│  │  Nginx / Caddy (:443 HTTPS)                │ │
+│  │  ├── /              → 管理后台前端页面      │ │
+│  │  ├── /api/cloud/    → 后端API服务           │ │
+│  │  └── /uploads/      → 报告文件下载          │ │
+│  └────────────────────┬───────────────────────┘ │
+│                       │                          │
+│  ┌────────────────────▼───────────────────────┐ │
+│  │  后端API服务 (:8080)                        │ │
+│  │  （语言无关，对外统一RESTful JSON）          │ │
+│  │                                             │ │
+│  │  /api/cloud/auth/      认证与注册           │ │
+│  │  /api/cloud/license/   License管理          │ │
+│  │  /api/cloud/tasks/     任务管理             │ │
+│  │  /api/cloud/reports/   报告管理             │ │
+│  │  /api/cloud/users/     用户管理             │ │
+│  │  /api/cloud/sync/      数据同步             │ │
+│  │  /api/cloud/analytics/ 使用统计             │ │
+│  │  /api/cloud/updates/   版本更新             │ │
+│  │  /api/cloud/admin/     管理后台API          │ │
+│  └────────────────────┬───────────────────────┘ │
+│                       │                          │
+│  ┌────────────────────▼───────────────────────┐ │
+│  │  PostgreSQL (:5432)                         │ │
+│  │  数据库：zhixinyoukong                      │ │
+│  │  表：users, licenses, tasks, reports,       │ │
+│  │      analytics, sync_logs                   │ │
+│  └────────────────────────────────────────────┘ │
+│                                                  │
+│  ┌────────────────────────────────────────────┐ │
+│  │  文件存储                                   │ │
+│  │  /data/uploads/reports/   学生报告文件       │ │
+│  │  /data/uploads/updates/   软件更新包        │ │
+│  │  /data/backups/           数据库备份         │ │
+│  └────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────┘</code></pre>
+<h3 id="数据库设计">3.3 数据库设计</h3>
+<div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="co">-- 学校/机构表</span>
+<span class="kw">CREATE</span> <span class="kw">TABLE</span> organizations (
+    <span class="kw">id</span> SERIAL <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,
+    name <span class="dt">VARCHAR</span>(<span class="dv">100</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,
+    contact_name <span class="dt">VARCHAR</span>(<span class="dv">50</span>),
+    contact_phone <span class="dt">VARCHAR</span>(<span class="dv">20</span>),
+    license_count <span class="dt">INT</span> <span class="kw">DEFAULT</span> <span class="dv">0</span>,
+    created_at <span class="dt">TIMESTAMP</span> <span class="kw">DEFAULT</span> NOW()
+);
+
+<span class="co">-- License表</span>
+<span class="kw">CREATE</span> <span class="kw">TABLE</span> licenses (
+    <span class="kw">id</span> SERIAL <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,
+    license_key <span class="dt">VARCHAR</span>(<span class="dv">64</span>) <span class="kw">UNIQUE</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,
+    org_id <span class="dt">INT</span> <span class="kw">REFERENCES</span> organizations(<span class="kw">id</span>),
+    machine_id <span class="dt">VARCHAR</span>(<span class="dv">128</span>),          <span class="co">-- 绑定的机器码</span>
+    license_type <span class="dt">VARCHAR</span>(<span class="dv">20</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>, <span class="co">-- trial/education/permanent</span>
+    activated_at <span class="dt">TIMESTAMP</span>,
+    expires_at <span class="dt">TIMESTAMP</span>,
+    is_active <span class="dt">BOOLEAN</span> <span class="kw">DEFAULT</span> <span class="kw">TRUE</span>,
+    created_at <span class="dt">TIMESTAMP</span> <span class="kw">DEFAULT</span> NOW()
+);
+
+<span class="co">-- 云端用户表（与本地用户同步）</span>
+<span class="kw">CREATE</span> <span class="kw">TABLE</span> cloud_users (
+    <span class="kw">id</span> SERIAL <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,
+    username <span class="dt">VARCHAR</span>(<span class="dv">50</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,
+    password_hash <span class="dt">VARCHAR</span>(<span class="dv">255</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,
+    <span class="kw">role</span> <span class="dt">VARCHAR</span>(<span class="dv">20</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,
+    real_name <span class="dt">VARCHAR</span>(<span class="dv">50</span>),
+    org_id <span class="dt">INT</span> <span class="kw">REFERENCES</span> organizations(<span class="kw">id</span>),
+    local_user_id <span class="dt">INT</span>,                <span class="co">-- 对应本地客户端的user id</span>
+    last_sync_at <span class="dt">TIMESTAMP</span>,
+    created_at <span class="dt">TIMESTAMP</span> <span class="kw">DEFAULT</span> NOW(),
+    <span class="kw">UNIQUE</span>(username, org_id)
+);
+
+<span class="co">-- 云端任务表</span>
+<span class="kw">CREATE</span> <span class="kw">TABLE</span> cloud_tasks (
+    <span class="kw">id</span> SERIAL <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,
+    title <span class="dt">VARCHAR</span>(<span class="dv">200</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,
+    description TEXT,
+    module_id <span class="dt">VARCHAR</span>(<span class="dv">50</span>),
+    teacher_id <span class="dt">INT</span> <span class="kw">REFERENCES</span> cloud_users(<span class="kw">id</span>),
+    org_id <span class="dt">INT</span> <span class="kw">REFERENCES</span> organizations(<span class="kw">id</span>),
+    deadline <span class="dt">TIMESTAMP</span>,
+    status <span class="dt">VARCHAR</span>(<span class="dv">20</span>) <span class="kw">DEFAULT</span> <span class="st">&#39;draft&#39;</span>,
+    created_at <span class="dt">TIMESTAMP</span> <span class="kw">DEFAULT</span> NOW()
+);
+
+<span class="co">-- 云端报告表</span>
+<span class="kw">CREATE</span> <span class="kw">TABLE</span> cloud_reports (
+    <span class="kw">id</span> SERIAL <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,
+    task_id <span class="dt">INT</span> <span class="kw">REFERENCES</span> cloud_tasks(<span class="kw">id</span>),
+    student_id <span class="dt">INT</span> <span class="kw">REFERENCES</span> cloud_users(<span class="kw">id</span>),
+    file_path <span class="dt">VARCHAR</span>(<span class="dv">500</span>),
+    file_name <span class="dt">VARCHAR</span>(<span class="dv">255</span>),
+    score <span class="dt">REAL</span>,
+    feedback TEXT,
+    status <span class="dt">VARCHAR</span>(<span class="dv">20</span>) <span class="kw">DEFAULT</span> <span class="st">&#39;submitted&#39;</span>,
+    is_late <span class="dt">BOOLEAN</span> <span class="kw">DEFAULT</span> <span class="kw">FALSE</span>,
+    submitted_at <span class="dt">TIMESTAMP</span> <span class="kw">DEFAULT</span> NOW(),
+    graded_at <span class="dt">TIMESTAMP</span>
+);
+
+<span class="co">-- 使用统计表</span>
+<span class="kw">CREATE</span> <span class="kw">TABLE</span> analytics (
+    <span class="kw">id</span> SERIAL <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,
+    license_id <span class="dt">INT</span> <span class="kw">REFERENCES</span> licenses(<span class="kw">id</span>),
+    org_id <span class="dt">INT</span> <span class="kw">REFERENCES</span> organizations(<span class="kw">id</span>),
+    report_date <span class="dt">DATE</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,
+    active_users <span class="dt">INT</span> <span class="kw">DEFAULT</span> <span class="dv">0</span>,
+    experiment_count <span class="dt">INT</span> <span class="kw">DEFAULT</span> <span class="dv">0</span>,
+    module_usage JSONB,               <span class="co">-- {&quot;signal_opt&quot;: 15, &quot;path_guidance&quot;: 8, ...}</span>
+    created_at <span class="dt">TIMESTAMP</span> <span class="kw">DEFAULT</span> NOW()
+);
+
+<span class="co">-- 同步日志表</span>
+<span class="kw">CREATE</span> <span class="kw">TABLE</span> sync_logs (
+    <span class="kw">id</span> SERIAL <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,
+    license_id <span class="dt">INT</span> <span class="kw">REFERENCES</span> licenses(<span class="kw">id</span>),
+    sync_type <span class="dt">VARCHAR</span>(<span class="dv">50</span>),            <span class="co">-- users/tasks/reports/analytics</span>
+    direction <span class="dt">VARCHAR</span>(<span class="dv">10</span>),            <span class="co">-- upload/download</span>
+    record_count <span class="dt">INT</span> <span class="kw">DEFAULT</span> <span class="dv">0</span>,
+    status <span class="dt">VARCHAR</span>(<span class="dv">20</span>),
+    synced_at <span class="dt">TIMESTAMP</span> <span class="kw">DEFAULT</span> NOW()
+);</code></pre></div>
+<h3 id="管理后台页面">3.4 管理后台页面</h3>
+<p>云端管理平台提供一个Web管理后台，供我方运营人员和学校管理员使用：</p>
+<pre><code>管理后台页面结构：
+
+┌─────────────────────────────────────────────────────────┐
+│  智信优控 · 云端管理后台                    [管理员] 退出  │
+├──────────┬──────────────────────────────────────────────┤
+│          │                                              │
+│  📊 概览  │  ┌──────────────────────────────────────┐   │
+│          │  │  今日活跃用户: 156                     │   │
+│  🏫 机构  │  │  总授权数: 12 / 已激活: 8             │   │
+│  管理    │  │  本月实验次数: 2,340                   │   │
+│          │  │  待批阅报告: 45                        │   │
+│  🔑 License│ └──────────────────────────────────────┘   │
+│  管理    │                                              │
+│          │  ┌──────────────────────────────────────┐   │
+│  👥 用户  │  │  最近活跃机构                         │   │
+│  管理    │  │  ┌──────┬──────┬──────┬──────────┐   │   │
+│          │  │  │ 机构  │ 用户数│ 实验数│ 最后活跃  │   │   │
+│  📋 任务  │  │  ├──────┼──────┼──────┼──────────┤   │   │
+│  管理    │  │  │ 大连  │  45  │ 320  │ 今天      │   │   │
+│          │  │  │ 理工  │      │      │           │   │   │
+│  📝 报告  │  │  ├──────┼──────┼──────┼──────────┤   │   │
+│  管理    │  │  │ 深圳  │  32  │ 180  │ 昨天      │   │   │
+│          │  │  │ 科技  │      │      │           │   │   │
+│  📈 统计  │  │  └──────┴──────┴──────┴──────────┘   │   │
+│  分析    │  └──────────────────────────────────────┘   │
+│          │                                              │
+│  ⚙️ 系统  │                                              │
+│  设置    │                                              │
+│          │                                              │
+└──────────┴──────────────────────────────────────────────┘</code></pre>
+<hr />
+<h2 id="四api接口设计">四、API接口设计</h2>
+<h3 id="接口总览">4.1 接口总览</h3>
+<p>所有云端API以 <code>/api/cloud/</code> 为前缀，与本地客户端的 <code>/api/v1/</code> 区分。</p>
+<pre><code>认证相关：
+  POST   /api/cloud/auth/register        用户注册
+  POST   /api/cloud/auth/login           登录获取token
+  POST   /api/cloud/auth/refresh         刷新token
+
+License相关：
+  POST   /api/cloud/license/activate     激活License
+  GET    /api/cloud/license/verify       验证License状态
+  POST   /api/cloud/license/generate     生成License（管理员）
+
+数据同步：
+  POST   /api/cloud/sync/users           同步用户数据
+  GET    /api/cloud/sync/tasks           拉取任务更新
+  POST   /api/cloud/sync/reports         上传报告
+  POST   /api/cloud/sync/analytics       上报使用数据
+
+任务管理：
+  GET    /api/cloud/tasks                获取任务列表
+  POST   /api/cloud/tasks                创建任务
+  PUT    /api/cloud/tasks/:id            更新任务
+  DELETE /api/cloud/tasks/:id            删除任务
+
+报告管理：
+  GET    /api/cloud/reports              获取报告列表
+  GET    /api/cloud/reports/:id/download 下载报告文件
+  PUT    /api/cloud/reports/:id/grade    评分
+
+用户管理：
+  GET    /api/cloud/users                获取用户列表
+  POST   /api/cloud/users/import         批量导入用户
+  PUT    /api/cloud/users/:id            更新用户信息
+
+统计分析：
+  GET    /api/cloud/analytics/overview   总览数据
+  GET    /api/cloud/analytics/usage      使用趋势
+  GET    /api/cloud/analytics/modules    模块使用统计
+
+版本更新：
+  GET    /api/cloud/updates/check        检查更新
+  GET    /api/cloud/updates/download     下载更新包
+
+管理后台：
+  GET    /api/cloud/admin/organizations  机构列表
+  POST   /api/cloud/admin/organizations  创建机构
+  GET    /api/cloud/admin/dashboard      仪表盘数据</code></pre>
+<hr />
+<h2 id="五部署方案">五、部署方案</h2>
+<h3 id="docker-compose-部署">5.1 Docker Compose 部署</h3>
+<p>无论后端用什么语言，部署结构都是一样的：三个容器（反向代理 + API服务 + 数据库）。</p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="co"># docker-compose.cloud.yml</span>
+<span class="fu">version:</span><span class="at"> </span><span class="st">&#39;3.8&#39;</span>
+
+<span class="fu">services:</span>
+  <span class="fu">nginx:</span>
+    <span class="fu">image:</span><span class="at"> nginx:alpine</span>
+    <span class="fu">ports:</span>
+      <span class="kw">-</span> <span class="st">&quot;80:80&quot;</span>
+      <span class="kw">-</span> <span class="st">&quot;443:443&quot;</span>
+    <span class="fu">volumes:</span>
+      <span class="kw">-</span> <span class="fu">./nginx.conf:</span><span class="at">/etc/nginx/nginx.conf</span>
+      <span class="kw">-</span> <span class="fu">./ssl:</span><span class="at">/etc/nginx/ssl</span>
+      <span class="kw">-</span> <span class="fu">./frontend-admin:</span><span class="at">/usr/share/nginx/html</span>
+    <span class="fu">depends_on:</span>
+      <span class="kw">-</span> api
+
+  <span class="fu">api:</span>
+    <span class="fu">build:</span><span class="at"> ./cloud-api          </span><span class="co"># Dockerfile根据所选语言编写</span>
+    <span class="fu">environment:</span>
+      <span class="kw">-</span> <span class="fu">DATABASE_URL=postgresql:</span><span class="at">//user:pass@db:5432/zhixinyoukong</span>
+      <span class="kw">-</span> SECRET_KEY=$<span class="kw">{</span>SECRET_KEY<span class="kw">}</span>
+      <span class="kw">-</span> PORT=8080
+    <span class="fu">volumes:</span>
+      <span class="kw">-</span> <span class="fu">./data/uploads:</span><span class="at">/app/uploads</span>
+    <span class="fu">depends_on:</span>
+      <span class="kw">-</span> db
+
+  <span class="fu">db:</span>
+    <span class="fu">image:</span><span class="at"> postgres:15-alpine</span>
+    <span class="fu">environment:</span>
+      <span class="kw">-</span> POSTGRES_DB=zhixinyoukong
+      <span class="kw">-</span> POSTGRES_USER=user
+      <span class="kw">-</span> POSTGRES_PASSWORD=pass
+    <span class="fu">volumes:</span>
+      <span class="kw">-</span> <span class="fu">pgdata:</span><span class="at">/var/lib/postgresql/data</span>
+
+<span class="fu">volumes:</span>
+  <span class="fu">pgdata:</span></code></pre></div>
+<blockquote>
+<p>Dockerfile 示例因语言而异：Go项目可以用多阶段构建产出一个极小的二进制镜像；Node.js项目用 <code>node:alpine</code>；Python项目用 <code>python:3.11-slim</code>。但 docker-compose 的编排结构不变。</p>
+</blockquote>
+<h3 id="服务器配置建议">5.2 服务器配置建议</h3>
+<table>
+<thead>
+<tr class="header">
+<th>规模</th>
+<th>服务器配置</th>
+<th>预估成本（月）</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>小型（1-3所学校，&lt;200用户）</td>
+<td>2核4G，50G SSD</td>
+<td>~100元</td>
+</tr>
+<tr class="even">
+<td>中型（5-10所学校，&lt;1000用户）</td>
+<td>4核8G，100G SSD</td>
+<td>~300元</td>
+</tr>
+<tr class="odd">
+<td>大型（10+所学校，1000+用户）</td>
+<td>8核16G，200G SSD</td>
+<td>~800元</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>由于云端不运行任何算法，主要开销是数据库查询和文件存储，配置需求极低。</p>
+</blockquote>
+</main>
+<footer><div class="wrap">大连理工大学 智慧交通团队 · 教学科研使用请注明出处</div></footer>
+</body>
+</html>

@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>API 接口说明 · 智信优控</title>
+<link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<header class="top"><div class="wrap"><h1 style="font-size:22px">API 接口说明</h1>
+<p style="font-size:14px">智信优控 · 面向车路云一体化的综合交通实验平台</p></div></header>
+<main class="wrap">
+<h1 id="智信优控综合交通实验平台-api接口规范文档">智信优控综合交通实验平台 API接口规范文档</h1>
+<h2 id="文档信息">文档信息</h2>
+<p>文档标题：API接口规范文档</p>
+<p>平台名称：面向车路云一体化的综合交通实验平台</p>
+<p>版本号：v1.0.0</p>
+<p>文档版本：1.0</p>
+<p>发布日期：2024年11月18日</p>
+<p>维护部门：智信优控实验平台开发组</p>
+<hr />
+<h2 id="概述">1. 概述</h2>
+<h3 id="文档目的">1.1 文档目的</h3>
+<p>本文档规定了智信优控综合交通实验平台前后端通信的API接口规范，包括接口设计原则、通信协议、数据格式、错误处理等内容。本文档适用于前端开发人员、后端开发人员和系统集成人员。</p>
+<h3 id="适用范围">1.2 适用范围</h3>
+<p>本规范适用于平台所有API接口的设计、开发和维护。</p>
+<h3 id="核心设计原则">1.3 核心设计原则</h3>
+<p>RESTful架构：遵循REST设计原则，使用标准HTTP方法进行资源操作。</p>
+<p>统一接口：所有接口采用统一的请求响应格式，便于客户端统一处理。</p>
+<p>版本管理：通过URL路径进行版本控制，支持多版本并存。</p>
+<p>安全认证：采用JWT Token认证机制，确保接口安全。</p>
+<p>可扩展性：预留扩展空间，支持未来功能增加。</p>
+<hr />
+<h2 id="技术规范">2. 技术规范</h2>
+<h3 id="基础配置">2.1 基础配置</h3>
+<p>基础URL：http://localhost:8000</p>
+<p>API版本：v1</p>
+<p>协议：HTTP/HTTPS</p>
+<p>数据格式：JSON</p>
+<p>字符编码：UTF-8</p>
+<h3 id="认证方式">2.2 认证方式</h3>
+<p>认证类型：JWT Token</p>
+<p>Token位置：HTTP Authorization请求头</p>
+<p>Token格式：Bearer {token}</p>
+<p>Token有效期：3600秒（1小时）</p>
+<p>刷新Token有效期：7天</p>
+<h3 id="请求规范">2.3 请求规范</h3>
+<h4 id="http方法">2.3.1 HTTP方法</h4>
+<p>GET：用于查询资源，不修改服务器状态。</p>
+<p>POST：用于创建新资源或执行操作。</p>
+<p>PUT：用于完整更新现有资源。</p>
+<p>PATCH：用于部分更新资源。</p>
+<p>DELETE：用于删除资源。</p>
+<h4 id="请求头">2.3.2 请求头</h4>
+<p>Content-Type：application/json</p>
+<p>Authorization：Bearer {access_token}（需要认证的请求）</p>
+<p>Accept：application/json</p>
+<h4 id="请求参数">2.3.3 请求参数</h4>
+<p>路径参数：在URL路径中指定，如/api/v1/users/{user_id}</p>
+<p>查询参数：在URL查询字符串中指定，如?page=1&amp;size=10</p>
+<p>请求体：使用JSON格式，仅用于POST、PUT、PATCH请求</p>
+<h3 id="响应规范">2.4 响应规范</h3>
+<h4 id="响应格式">2.4.1 响应格式</h4>
+<p>所有响应均为JSON格式，包含以下字段：</p>
+<p>code：整数，表示响应状态码</p>
+<p>message：字符串，表示响应消息</p>
+<p>data：对象或数组，表示响应数据</p>
+<h4 id="成功响应示例">2.4.2 成功响应示例</h4>
+<pre><code>{
+  &quot;code&quot;: 200,
+  &quot;message&quot;: &quot;success&quot;,
+  &quot;data&quot;: {
+    &quot;id&quot;: 1,
+    &quot;name&quot;: &quot;示例数据&quot;
+  }
+}</code></pre>
+<h4 id="列表响应示例">2.4.3 列表响应示例</h4>
+<pre><code>{
+  &quot;code&quot;: 200,
+  &quot;message&quot;: &quot;success&quot;,
+  &quot;data&quot;: {
+    &quot;items&quot;: [...],
+    &quot;total&quot;: 100,
+    &quot;page&quot;: 1,
+    &quot;size&quot;: 10,
+    &quot;pages&quot;: 10
+  }
+}</code></pre>
+<h4 id="错误响应示例">2.4.4 错误响应示例</h4>
+<pre><code>{
+  &quot;code&quot;: 400,
+  &quot;message&quot;: &quot;参数错误&quot;,
+  &quot;detail&quot;: &quot;用户名不能为空&quot;
+}</code></pre>
+<h3 id="http状态码">2.5 HTTP状态码</h3>
+<p>200 OK：请求成功</p>
+<p>201 Created：资源创建成功</p>
+<p>204 No Content：删除成功，无返回内容</p>
+<p>400 Bad Request：请求参数错误</p>
+<p>401 Unauthorized：未授权，需要登录</p>
+<p>403 Forbidden：禁止访问，权限不足</p>
+<p>404 Not Found：资源不存在</p>
+<p>500 Internal Server Error：服务器内部错误</p>
+<h3 id="分页规范">2.6 分页规范</h3>
+<p>分页参数：page（页码，从1开始）、size（每页数据数，默认10，最大100）</p>
+<p>分页响应字段：total（总数）、page（当前页）、size（每页数）、pages（总页数）</p>
+<p>示例：GET /api/v1/tasks?page=1&amp;size=10</p>
+<hr />
+<h2 id="认证与授权">3. 认证与授权</h2>
+<h3 id="登录流程">3.1 登录流程</h3>
+<p>请求：</p>
+<pre><code>POST /api/v1/auth/login
+Content-Type: application/json
+
+{
+  &quot;username&quot;: &quot;admin&quot;,
+  &quot;password&quot;: &quot;123456&quot;
+}</code></pre>
+<p>响应：</p>
+<pre><code>{
+  &quot;code&quot;: 200,
+  &quot;message&quot;: &quot;登录成功&quot;,
+  &quot;data&quot;: {
+    &quot;access_token&quot;: &quot;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;,
+    &quot;token_type&quot;: &quot;bearer&quot;,
+    &quot;expires_in&quot;: 3600,
+    &quot;user&quot;: {
+      &quot;id&quot;: 1,
+      &quot;username&quot;: &quot;admin&quot;,
+      &quot;role&quot;: &quot;teacher&quot;
+    }
+  }
+}</code></pre>
+<h3 id="token使用">3.2 Token使用</h3>
+<p>在后续请求中添加Authorization请求头：</p>
+<pre><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+<h3 id="token刷新">3.3 Token刷新</h3>
+<p>当access_token过期时，使用refresh_token获取新token：</p>
+<pre><code>POST /api/v1/auth/refresh
+Authorization: Bearer {refresh_token}</code></pre>
+<hr />
+<h2 id="接口定义">4. 接口定义</h2>
+<h3 id="认证接口">4.1 认证接口</h3>
+<h4 id="用户登录">4.1.1 用户登录</h4>
+<p>接口地址：POST /api/v1/auth/login</p>
+<p>请求参数：username（用户名）、password（密码）</p>
+<p>响应数据：access_token、token_type、expires_in、user</p>
+<h4 id="token刷新-1">4.1.2 Token刷新</h4>
+<p>接口地址：POST /api/v1/auth/refresh</p>
+<p>请求头：Authorization: Bearer {refresh_token}</p>
+<p>响应数据：access_token、expires_in</p>
+<h3 id="数据采集接口">4.2 数据采集接口</h3>
+<h4 id="启动数据采集">4.2.1 启动数据采集</h4>
+<p>接口地址：POST /api/v1/data-collection/start</p>
+<p>请求参数：data_source（数据源）、collection_type（采集类型）、duration（采集时长）</p>
+<p>响应数据：task_id、status、start_time</p>
+<h4 id="获取采集数据">4.2.2 获取采集数据</h4>
+<p>接口地址：GET /api/v1/data-collection/data/{task_id}</p>
+<p>路径参数：task_id（采集任务ID）</p>
+<p>响应数据：task_id、data_points（数据点数组）</p>
+<h3 id="交通流接口">4.3 交通流接口</h3>
+<h4 id="交通流重构">4.3.1 交通流重构</h4>
+<p>接口地址：POST /api/v1/traffic/reconstruction</p>
+<p>请求参数：algorithm（算法）、data_source（数据源）、time_range（时间范围）</p>
+<p>响应数据：task_id、od_matrix（OD矩阵）、accuracy（精度）</p>
+<h4 id="交通流预测">4.3.2 交通流预测</h4>
+<p>接口地址：POST /api/v1/traffic/prediction</p>
+<p>请求参数：model（模型）、prediction_horizon（预测时长）、historical_data（历史数据）</p>
+<p>响应数据：predictions（预测结果）、confidence（置信度）</p>
+<h3 id="控制策略接口">4.4 控制策略接口</h3>
+<h4 id="信号优化">4.4.1 信号优化</h4>
+<p>接口地址：POST /api/v1/strategies/signal-optimization</p>
+<p>请求参数：algorithm（算法）、intersection_id（路口ID）、optimization_objective（优化目标）</p>
+<p>响应数据：optimized_timing（优化信号时长）、expected_improvement（预期改进）</p>
+<h4 id="路径诱导">4.4.2 路径诱导</h4>
+<p>接口地址：POST /api/v1/strategies/path-guidance</p>
+<p>请求参数：algorithm（算法）、origin（起点）、destination（终点）、optimization_goal（优化目标）</p>
+<p>响应数据：path（路径）、distance（距离）、estimated_time（预计时间）</p>
+<h4 id="车速控制">4.4.3 车速控制</h4>
+<p>接口地址：POST /api/v1/strategies/speed-control</p>
+<p>请求参数：vehicle_id（车辆ID）、target_speed（目标速度）、control_mode（控制模式）</p>
+<p>响应数据：status（状态）、current_speed（当前速度）</p>
+<h3 id="仿真接口">4.5 仿真接口</h3>
+<h4 id="启动sumo仿真">4.5.1 启动SUMO仿真</h4>
+<p>接口地址：POST /api/v1/simulations/sumo/start</p>
+<p>请求参数：scenario（场景）、flow_rate（流量）、simulation_time（仿真时长）</p>
+<p>响应数据：session_id、status、start_time</p>
+<h4 id="获取仿真状态">4.5.2 获取仿真状态</h4>
+<p>接口地址：GET /api/v1/simulations/sumo/status/{session_id}</p>
+<p>路径参数：session_id（仿真会话ID）</p>
+<p>响应数据：session_id、status、progress、vehicles_completed</p>
+<h4 id="分析仿真结果">4.5.3 分析仿真结果</h4>
+<p>接口地址：POST /api/v1/simulations/sumo/analyze</p>
+<p>请求参数：session_id、analysis_type</p>
+<p>响应数据：time_series_svg、trip_analysis_svg、statistics</p>
+<h4 id="下载仿真报告">4.5.4 下载仿真报告</h4>
+<p>接口地址：GET /api/v1/simulations/sumo/report/{session_id}</p>
+<p>路径参数：session_id</p>
+<p>响应：DOCX文件流</p>
+<h3 id="任务管理接口">4.6 任务管理接口</h3>
+<h4 id="创建任务">4.6.1 创建任务</h4>
+<p>接口地址：POST /api/v1/tasks</p>
+<p>请求参数：title（标题）、module（模块）、description（描述）、deadline（截止时间）</p>
+<p>响应数据：id、title、status、created_at</p>
+<h4 id="获取任务列表">4.6.2 获取任务列表</h4>
+<p>接口地址：GET /api/v1/tasks?page=1&amp;size=10</p>
+<p>查询参数：page、size</p>
+<p>响应数据：items、total、page、size、pages</p>
+<h4 id="提交任务结果">4.6.3 提交任务结果</h4>
+<p>接口地址：POST /api/v1/tasks/{task_id}/submit</p>
+<p>路径参数：task_id</p>
+<p>请求参数：results（结果数据）</p>
+<p>响应数据：id、status、submitted_at</p>
+<h3 id="报告管理接口">4.7 报告管理接口</h3>
+<h4 id="生成报告">4.7.1 生成报告</h4>
+<p>接口地址：POST /api/v1/reports/generate</p>
+<p>请求参数：task_id、report_type、include_charts</p>
+<p>响应数据：report_id、status、created_at</p>
+<h4 id="获取报告列表">4.7.2 获取报告列表</h4>
+<p>接口地址：GET /api/v1/reports?user_id=1</p>
+<p>查询参数：user_id、page、size</p>
+<p>响应数据：items、total、page、size、pages</p>
+<h4 id="下载报告">4.7.3 下载报告</h4>
+<p>接口地址：GET /api/v1/reports/{report_id}/download</p>
+<p>路径参数：report_id</p>
+<p>响应：DOCX文件流</p>
+<hr />
+<h2 id="错误处理">5. 错误处理</h2>
+<h3 id="错误响应格式">5.1 错误响应格式</h3>
+<pre><code>{
+  &quot;code&quot;: 400,
+  &quot;message&quot;: &quot;参数错误&quot;,
+  &quot;detail&quot;: &quot;用户名不能为空&quot;
+}</code></pre>
+<h3 id="错误码定义">5.2 错误码定义</h3>
+<p>1000系列：参数错误（1000参数错误、1001参数缺失、1002参数类型错误、1003参数值超出范围）</p>
+<p>2000系列：认证错误（2000未登录、2001Token无效、2002Token过期、2003权限不足）</p>
+<p>3000系列：业务错误（3000资源不存在、3001资源已存在、3002操作失败、3003状态不允许）</p>
+<p>5000系列：系统错误（5000服务器错误、5001数据库错误、5002第三方服务错误、5003文件操作错误）</p>
+<h3 id="错误处理建议">5.3 错误处理建议</h3>
+<p>客户端应根据HTTP状态码和错误code进行相应处理。</p>
+<p>对于4xx错误，应检查请求参数和认证信息。</p>
+<p>对于5xx错误，应重试请求或联系技术支持。</p>
+<hr />
+<h2 id="调用示例">6. 调用示例</h2>
+<h3 id="javascript示例">6.1 JavaScript示例</h3>
+<p>登录请求：</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> response <span class="op">=</span> await <span class="at">fetch</span>(<span class="st">&#39;http://localhost:8000/api/v1/auth/login&#39;</span><span class="op">,</span> <span class="op">{</span>
+  <span class="dt">method</span><span class="op">:</span> <span class="st">&#39;POST&#39;</span><span class="op">,</span>
+  <span class="dt">headers</span><span class="op">:</span> <span class="op">{</span> <span class="st">&#39;Content-Type&#39;</span><span class="op">:</span> <span class="st">&#39;application/json&#39;</span> <span class="op">},</span>
+  <span class="dt">body</span><span class="op">:</span> <span class="va">JSON</span>.<span class="at">stringify</span>(<span class="op">{</span>
+    <span class="dt">username</span><span class="op">:</span> <span class="st">&#39;admin&#39;</span><span class="op">,</span>
+    <span class="dt">password</span><span class="op">:</span> <span class="st">&#39;123456&#39;</span>
+  <span class="op">}</span>)
+<span class="op">}</span>)<span class="op">;</span>
+<span class="kw">const</span> result <span class="op">=</span> await <span class="va">response</span>.<span class="at">json</span>()<span class="op">;</span>
+<span class="cf">if</span> (<span class="va">result</span>.<span class="at">code</span> <span class="op">===</span> <span class="dv">200</span>) <span class="op">{</span>
+  <span class="va">localStorage</span>.<span class="at">setItem</span>(<span class="st">&#39;token&#39;</span><span class="op">,</span> <span class="va">result</span>.<span class="va">data</span>.<span class="at">access_token</span>)<span class="op">;</span>
+<span class="op">}</span></code></pre></div>
+<p>认证请求：</p>
+<div class="sourceCode"><pre class="sourceCode javascript"><code class="sourceCode javascript"><span class="kw">const</span> token <span class="op">=</span> <span class="va">localStorage</span>.<span class="at">getItem</span>(<span class="st">&#39;token&#39;</span>)<span class="op">;</span>
+<span class="kw">const</span> response <span class="op">=</span> await <span class="at">fetch</span>(<span class="st">&#39;http://localhost:8000/api/v1/tasks&#39;</span><span class="op">,</span> <span class="op">{</span>
+  <span class="dt">method</span><span class="op">:</span> <span class="st">&#39;GET&#39;</span><span class="op">,</span>
+  <span class="dt">headers</span><span class="op">:</span> <span class="op">{</span>
+    <span class="st">&#39;Authorization&#39;</span><span class="op">:</span> <span class="vs">`Bearer </span><span class="sc">${</span>token<span class="sc">}</span><span class="vs">`</span><span class="op">,</span>
+    <span class="st">&#39;Content-Type&#39;</span><span class="op">:</span> <span class="st">&#39;application/json&#39;</span>
+  <span class="op">}</span>
+<span class="op">}</span>)<span class="op">;</span>
+<span class="kw">const</span> result <span class="op">=</span> await <span class="va">response</span>.<span class="at">json</span>()<span class="op">;</span></code></pre></div>
+<h3 id="python示例">6.2 Python示例</h3>
+<p>登录请求：</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">import</span> requests
+
+response <span class="op">=</span> requests.post(<span class="st">&#39;http://localhost:8000/api/v1/auth/login&#39;</span>, json<span class="op">=</span>{
+  <span class="st">&#39;username&#39;</span>: <span class="st">&#39;admin&#39;</span>,
+  <span class="st">&#39;password&#39;</span>: <span class="st">&#39;123456&#39;</span>
+})
+token <span class="op">=</span> response.json()[<span class="st">&#39;data&#39;</span>][<span class="st">&#39;access_token&#39;</span>]</code></pre></div>
+<p>认证请求：</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python">headers <span class="op">=</span> {<span class="st">&#39;Authorization&#39;</span>: <span class="ss">f&#39;Bearer </span><span class="sc">{</span>token<span class="sc">}</span><span class="ss">&#39;</span>}
+response <span class="op">=</span> requests.get(<span class="st">&#39;http://localhost:8000/api/v1/tasks&#39;</span>, headers<span class="op">=</span>headers)
+result <span class="op">=</span> response.json()</code></pre></div>
+<h3 id="curl示例">6.3 cURL示例</h3>
+<p>登录请求：</p>
+<pre><code>curl -X POST http://localhost:8000/api/v1/auth/login \
+  -H &quot;Content-Type: application/json&quot; \
+  -d &#39;{&quot;username&quot;:&quot;admin&quot;,&quot;password&quot;:&quot;123456&quot;}&#39;</code></pre>
+<p>认证请求：</p>
+<pre><code>curl -X GET http://localhost:8000/api/v1/tasks \
+  -H &quot;Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...&quot;</code></pre>
+<hr />
+<h2 id="开发指南">7. 开发指南</h2>
+<h3 id="新接口开发规范">7.1 新接口开发规范</h3>
+<p>路径格式：/api/v1/{module}/{action}</p>
+<p>响应格式：统一的JSON格式</p>
+<p>参数验证：所有参数必须进行验证</p>
+<p>错误处理：所有错误必须返回标准错误响应</p>
+<p>文档注册：所有接口必须在Swagger文档中注册</p>
+<h3 id="版本升级策略">7.2 版本升级策略</h3>
+<p>不兼容修改：创建新版本/api/v2/</p>
+<p>版本维护：旧版本API保持可用至少6个月</p>
+<p>版本通知：版本升级前提前通知所有客户端</p>
+<h3 id="性能优化">7.3 性能优化</h3>
+<p>大数据查询：使用分页机制</p>
+<p>频繁查询：使用缓存机制</p>
+<p>长时间操作：使用异步任务队列</p>
+<p>大文件上传：支持分块上传</p>
+<h3 id="安全性要求">7.4 安全性要求</h3>
+<p>权限验证：所有敏感操作进行权限验证</p>
+<p>输入验证：所有用户输入进行验证和清理</p>
+<p>日志记录：所有API调用记录日志</p>
+<p>安全审计：定期进行安全审计和漏洞扫描</p>
+<hr />
+<h2 id="接口清单">8. 接口清单</h2>
+<p>认证模块：POST /api/v1/auth/login、POST /api/v1/auth/refresh</p>
+<p>数据采集模块：POST /api/v1/data-collection/start、GET /api/v1/data-collection/data/{task_id}</p>
+<p>交通流模块：POST /api/v1/traffic/reconstruction、POST /api/v1/traffic/prediction</p>
+<p>控制策略模块：POST /api/v1/strategies/signal-optimization、POST /api/v1/strategies/path-guidance、POST /api/v1/strategies/speed-control</p>
+<p>仿真模块：POST /api/v1/simulations/sumo/start、GET /api/v1/simulations/sumo/status/{session_id}、POST /api/v1/simulations/sumo/analyze、GET /api/v1/simulations/sumo/report/{session_id}</p>
+<p>任务管理模块：POST /api/v1/tasks、GET /api/v1/tasks、POST /api/v1/tasks/{task_id}/submit</p>
+<p>报告管理模块：POST /api/v1/reports/generate、GET /api/v1/reports、GET /api/v1/reports/{report_id}/download</p>
+<hr />
+<h2 id="附录文档修订记录">附录：文档修订记录</h2>
+<p>版本1.0：2024年11月18日，初始版本发布</p>
+<hr />
+<p>文档结束</p>
+</main>
+<footer><div class="wrap">大连理工大学 智慧交通团队 · 教学科研使用请注明出处</div></footer>
+</body>
+</html>

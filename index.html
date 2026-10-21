@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>智信优控 · 面向车路云一体化的综合交通实验平台</title>
+<meta name="description" content="面向交通工程与智慧交通专业的教学科研一体化实验平台：数据采集、融合、重构、预测、信号优化、路径诱导、车速控制、三层级协同、虚实结合仿真。" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <h1>智信优控 · 面向车路云一体化的综合交通实验平台</h1>
+    <p>把「数据 → 仿真 → 控制 → 教学」整条链路装进一台普通机房电脑</p>
+    <span class="en">Zhixin Youkong — Integrated Traffic Experiment Platform for Vehicle-Road-Cloud Integration</span>
+  </div>
+</header>
+
+<nav class="topnav">
+  <div class="wrap">
+    <a href="#about">平台简介</a>
+    <a href="#features">功能模块</a>
+    <a href="#start">快速开始</a>
+    <a href="#docs">文档</a>
+    <a href="#deploy">部署</a>
+    <a href="https://github.com/" target="_blank" rel="noopener">源码仓库</a>
+  </div>
+</nav>
+
+<main class="wrap">
+
+  <section id="about">
+    <h2>平台简介</h2>
+    <p>
+      平台面向交通工程、智慧交通、管理科学与工程专业，采用「本地桌面端 + 云端管理端 + 硬件在环」三形态：
+      本地端在 Windows 上一键安装、断网可用，承担算法实验；云端管理端供教师发布任务、评阅报告、查看统计；
+      硬件在环通过 MQTT/ROS 把算法下发到真实智能小车，在校园点云地图上完成虚实闭环验证。
+    </p>
+    <div class="note">
+      本页是托管在 GitHub Pages 上的<strong>静态文档站</strong>，用于介绍平台、查阅手册与下载源码。
+      平台后端依赖 FastAPI / SUMO / CARLA / GPU，无法在 GitHub Pages 上运行；
+      若要在线做实验，请按 <a href="#deploy">部署说明</a> 把云端管理端部署到服务器或容器平台。
+    </div>
+  </section>
+
+  <section id="features">
+    <h2>功能模块</h2>
+    <div class="grid">
+      <div class="card"><h3>多源数据采集</h3><p>YOLO11 目标检测与跟踪，视频车辆检测、分车型流量统计与精度比对。</p></div>
+      <div class="card"><h3>多源数据融合</h3><p>贝叶斯决策级融合，结合检测置信度与点云熵，量化融合增益。</p></div>
+      <div class="card"><h3>交通流重构</h3><p>DTALite 动态分配与交叉口转向流量 OD 反推，由有限观测重建路网状态。</p></div>
+      <div class="card"><h3>交通流预测</h3><p>线性回归、随机森林、决策树、LSTM、GRU 多模型对比与误差分析。</p></div>
+      <div class="card"><h3>交通信号优化</h3><p>Webster、HCM、BO、TuRBO、MPC-TuRBO、GA、PSO、DQN、PPO 配时优化。</p></div>
+      <div class="card"><h3>路径诱导</h3><p>Dijkstra、A*、Floyd、SSP 与动态路阻下的路径规划与诱导评价。</p></div>
+      <div class="card"><h3>车速控制</h3><p>PID、MPC、ACC、CACC、IDM，跟踪误差与舒适性权衡实验。</p></div>
+      <div class="card"><h3>三层级协同优化</h3><p>信号—路径—速度联合优化，单层 / 双层 / 三层效果定量对比。</p></div>
+      <div class="card"><h3>虚实结合仿真</h3><p>SUMO + CARLA 联合场景、算法批量测试、MQTT/ROS 实车回环。</p></div>
+      <div class="card"><h3>教学管理</h3><p>任务发布、学生与分组管理、报告在线评阅、过程性成绩统计。</p></div>
+    </div>
+  </section>
+
+  <section id="start">
+    <h2>快速开始（本地）</h2>
+    <pre><code># 1. 安装 Python 3.10+（勾选 Add to PATH）
+# 2. 双击「启动平台前后端.bat」，或：
+cd backend
+pip install -r requirements.txt
+python run.py
+
+# 3. 浏览器打开
+http://localhost:8000</code></pre>
+    <p>外部依赖：SUMO 1.21+（信号/路径/车速实验）、CARLA 0.9.15（虚实仿真，需 NVIDIA 显卡）、DTALite（随包提供）。</p>
+    <div class="note">首次运行默认账号 <code>admin / teacher / student</code>，初始密码均为 <code>123456</code>；对外提供服务前务必修改。</div>
+  </section>
+
+  <section id="docs">
+    <h2>文档</h2>
+    <div class="grid">
+      <div class="card"><h3><a href="docs/install.html">安装手册</a></h3><p>环境要求、安装步骤、外部依赖与常见故障排查。</p></div>
+      <div class="card"><h3><a href="docs/teacher.html">教师使用手册</a></h3><p>任务发布、报告评阅、学生信息管理。</p></div>
+      <div class="card"><h3><a href="docs/student.html">学生使用手册</a></h3><p>实验流程、模块操作与结果提交。</p></div>
+      <div class="card"><h3><a href="docs/architecture.html">平台架构</a></h3><p>本地端 / 云端 / 算法子服务的设计与边界。</p></div>
+      <div class="card"><h3><a href="docs/api.html">API 接口说明</a></h3><p>后端接口清单与调用方式。</p></div>
+      <div class="card"><h3><a href="docs/hil.html">硬件在环平台</a></h3><p>真实车/虚拟车、校园点云地图与 MQTT/ROS 链路。</p></div>
+      <div class="card"><h3><a href="docs/algorithms.html">学生自研算法题包</a></h3><p>7 类可离线复现题目、提交格式与统一评测。</p></div>
+      <div class="card"><h3><a href="docs/textbook.html">配套教材</a></h3><p>7 章 + 附录，14 个实验的目录与结构。</p></div>
+    </div>
+  </section>
+
+  <section id="deploy">
+    <h2>部署到公网</h2>
+    <table>
+      <tr><th>目标</th><th>可行方案</th></tr>
+      <tr><td>公网可浏览（介绍与文档）</td><td>GitHub Pages（本页），仓库内置 <code>.github/workflows/pages.yml</code></td></tr>
+      <tr><td>公网可登录（教学管理）</td><td>云端管理端部署到 Render / Railway / VPS，见仓库 <code>deploy/README.md</code></td></tr>
+      <tr><td>公网可做仿真实验</td><td>部署在校内 GPU 服务器，经远程桌面、Nginx 反向代理或 VPN 访问</td></tr>
+    </table>
+    <p>仓库已提供 <code>deploy/Dockerfile.api</code>、<code>deploy/docker-compose.public.yml</code>、<code>deploy/render.yaml</code> 与 <code>PUBLISH.md</code> 推送清单。</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    智信优控 · 面向车路云一体化的综合交通实验平台 ｜ 大连理工大学经济管理学院 智慧交通研究院<br />
+    版权归大连理工大学智慧交通团队所有；教学科研使用请注明出处，商业使用需书面授权。联系：chenshi_edu@gmail.com
+  </div>
+</footer>
+
+</body>
+</html>
